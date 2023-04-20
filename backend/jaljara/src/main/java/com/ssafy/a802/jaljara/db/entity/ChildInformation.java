@@ -18,18 +18,18 @@ public class ChildInformation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "parent_id")
-	private Long parentsId;
+	@Column(name = "parent_id", nullable = false)
+	private long parentsId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "parent_id", insertable = false, updatable = false)
+	@JoinColumn(name = "parent_id", insertable = false, updatable = false, nullable = false)
 	private User parents;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "child_id", insertable = false, updatable = false)
 	private User child;
 
-	@Column(name = "follow_to_id")
+	@Column(name = "child_id")
 	private Long childId;
 
 	private String currentReward;
