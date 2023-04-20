@@ -38,18 +38,8 @@ public class User extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private UserType userType;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	// @JoinColumn(name = "sleep_data_id") 양방향 아니어도 될듯
-	private List<SleepLog> sleepLongList = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user")
-	private List<Reward> rewardList = new ArrayList<>();
-
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mission_today_id")
 	private MissionToday missionToday;
-
-	@OneToMany(mappedBy = "user")
-	private List<MissionLog> missionLogList = new ArrayList<>();
 
 }

@@ -30,4 +30,8 @@ public class MissionLog {
 	@JoinColumn(name = "mission_log_id")
 	private MissionAttachment missionAttachment;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
+
 }
