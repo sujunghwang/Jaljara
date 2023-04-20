@@ -27,7 +27,7 @@ public class MissionLog {
 	private boolean isSuccess;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "mission_log_id")
+	@JoinColumn(name = "mission_attachment_id")
 	private MissionAttachment missionAttachment;
 
 	@ManyToOne(fetch = FetchType.LAZY)

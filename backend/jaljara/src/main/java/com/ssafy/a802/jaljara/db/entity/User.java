@@ -38,8 +38,4 @@ public class User extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private UserType userType;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "mission_today_id")
-	private MissionToday missionToday;
-
 }
