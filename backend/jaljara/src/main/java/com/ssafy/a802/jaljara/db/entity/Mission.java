@@ -1,11 +1,6 @@
 package com.ssafy.a802.jaljara.db.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Mission {
@@ -14,6 +9,12 @@ public class Mission {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Enumerated(EnumType.STRING)
+	@Transient
 	private MissionContents missionContents;
+
+	private String type;
+
+	private String content;
+
+
 }
