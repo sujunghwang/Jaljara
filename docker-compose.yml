@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  jaljara_backend:
+    container_name: jaljara_backend
+    build:
+      context: ./backend/jaljara/
+      dockerfile: dockerfile
+    ports:
+      - "8080:80"
+    stdin_open: true
+    tty: true
+    networks:
+      - default
+      - jaljara_net
+
+  redis:
+    image: redis
+    command: ["redis-server", "--appendonly", "yes",  "--replica-read-only", "no",  "--requirepass", "tXBUXtFK6zjrL3vPcyl8NoKgyTPjZ7Ss"]
+    ports:
+      - "6379:6379"
+    networks:
+      - default
+      - jaljara_net
+
+networks:
+  jaljara_net:
+    driver: bridge
