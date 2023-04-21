@@ -1,15 +1,11 @@
 package com.ssafy.a802.jaljara.db.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.time.LocalDateTime;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class MissionLog {
@@ -19,19 +15,15 @@ public class MissionLog {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "mission_id")
-	private Mission mission;
+	@JoinColumn(name = "user_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private User user;
+
+	private String missionContent;
 
 	private LocalDateTime successTimestamp;
 
 	private boolean isSuccess;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "mission_attachment_id")
-	private MissionAttachment missionAttachment;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private User user;
 
 }
