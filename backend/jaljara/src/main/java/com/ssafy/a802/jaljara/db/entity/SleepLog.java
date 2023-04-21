@@ -1,5 +1,8 @@
 package com.ssafy.a802.jaljara.db.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -29,6 +32,7 @@ public class SleepLog {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
 }

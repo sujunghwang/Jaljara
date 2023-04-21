@@ -1,5 +1,8 @@
 package com.ssafy.a802.jaljara.db.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -23,10 +26,12 @@ public class ChildInformation {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id", insertable = false, updatable = false, nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User parents;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "child_id", insertable = false, updatable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User child;
 
 	@Column(name = "child_id")
