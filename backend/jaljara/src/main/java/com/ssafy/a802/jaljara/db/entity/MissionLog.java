@@ -19,7 +19,7 @@ public class MissionLog {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
-	private String missionContent;
+	private String content;
 
 	private LocalDateTime successTimestamp;
 

@@ -18,5 +18,5 @@ public class Contents {
 	@Enumerated(EnumType.STRING)
 	private ContentType contentType;
 
-	private String contentUrl;
+	private String url;
 }

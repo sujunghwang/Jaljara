@@ -24,7 +24,7 @@ public class SleepLog {
 
 	private LocalDateTime bedTime;
 
-	private LocalDateTime wakeUpTime;
+	private LocalDateTime wakeupTime;
 
 	private double sleepRate;
 

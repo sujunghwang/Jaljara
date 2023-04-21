@@ -16,6 +16,8 @@ public class MissionToday {
 
 	private boolean isClear;
 
+	private String url;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "mission_id")
 	private Mission mission;
