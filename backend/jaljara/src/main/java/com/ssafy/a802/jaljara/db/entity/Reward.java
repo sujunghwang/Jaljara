@@ -24,9 +24,9 @@ public class Reward {
 
 	private LocalDateTime getTimestamp;
 
-	private boolean isUsed;
-
 	private LocalDateTime usedTimestamp;
+
+	private boolean isUsed;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
