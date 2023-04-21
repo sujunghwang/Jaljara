@@ -39,10 +39,10 @@ public class ChildInformation {
 
 	private String currentReward;
 
-	private int stackCount;
+	private int streakCount;
 
 	private LocalDateTime targetBedTime;
 
-	private LocalDateTime targetWakeUpTime;
+	private LocalDateTime targetWakeupTime;
 
 }

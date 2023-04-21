@@ -16,6 +16,6 @@ public class MissionAttachment {
 	private MissionLog missionLog;
 
 	@Enumerated(EnumType.STRING)
-	private MissionContents missionContents;
+	private MissionType missionType;
 
 }

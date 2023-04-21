@@ -9,10 +9,8 @@ public class Mission {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Transient
-	private MissionContents missionContents;
-
-	private String type;
+	@Enumerated(EnumType.STRING)
+	private MissionType missionType;
 
 	private String content;
 
