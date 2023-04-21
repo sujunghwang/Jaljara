@@ -1,5 +1,8 @@
 package com.ssafy.a802.jaljara.db.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 
 @Entity
@@ -19,5 +22,6 @@ public class MissionToday {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 }
