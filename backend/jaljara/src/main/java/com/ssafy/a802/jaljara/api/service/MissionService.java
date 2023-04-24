@@ -1,13 +1,10 @@
 package com.ssafy.a802.jaljara.api.service;
 
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Random;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssafy.a802.jaljara.api.dto.request.MissionLogSaveRequestDto;
 import com.ssafy.a802.jaljara.api.dto.response.MissionTodayResponseDto;
 import com.ssafy.a802.jaljara.db.entity.Mission;
 import com.ssafy.a802.jaljara.db.entity.MissionLog;
@@ -33,11 +30,13 @@ public class MissionService {
 	private final MissionAttachmentRepository missionAttachmentRepository;
 	private final UserRepository userRepository;
 
+	@Transactional
 	public Mission getRandomMission() {
 		return missionRepository.findRandomMission();
 	}
 
 	//create mission today
+	@Transactional
 	public void generateMissionToday(Long userId) {
 		User findUser = userRepository.findById(userId).orElseThrow(() ->
 			new IllegalArgumentException("사용자의 아이디가 존재하지 않습니다.: " + userId));
@@ -50,7 +49,12 @@ public class MissionService {
 		// if user mission today first
 		if (Objects.isNull(missionToday)) {
 			//just generate mission today
-			saveMissionToday(findUser, randomMission);
+			missionTodayRepository.save(MissionToday.builder()
+				.user(findUser)
+				.mission(randomMission)
+				.remainRerollCount(DEFAULT_REROLL_COUNT)
+				.isClear(false)
+				.build());
 
 		} else {
 			//move exist mission today to mission log
@@ -63,21 +67,17 @@ public class MissionService {
 
 			//remove exist mission today and generate mission today
 			missionTodayRepository.delete(missionToday);
-			saveMissionToday(findUser, randomMission);
+			missionTodayRepository.save(MissionToday.builder()
+				.user(findUser)
+				.mission(randomMission)
+				.remainRerollCount(DEFAULT_REROLL_COUNT)
+				.isClear(false)
+				.build());
 		}
 	}
 
-	//save mission today
-	private void saveMissionToday(User findUser, Mission randomMission) {
-		missionTodayRepository.save(MissionToday.builder()
-			.user(findUser)
-			.mission(randomMission)
-			.remainRerollCount(DEFAULT_REROLL_COUNT)
-			.isClear(false)
-			.build());
-	}
-
 	//today mission reroll
+	@Transactional
 	public void rerollMissionToday(Long userId) {
 
 		User findUser = userRepository.findById(userId).orElseThrow(() ->
@@ -105,6 +105,7 @@ public class MissionService {
 	}
 
 	//complete mission today (parents okay sign)
+	@Transactional
 	public void updateMissionTodayIsClear(Long userId) {
 		MissionToday missionToday = missionTodayRepository.findByUserId(userId).orElseThrow(
 			() -> new IllegalArgumentException("해당 유저에게 오늘의 미션이 존재하지 않습니다. userId: " + userId));
