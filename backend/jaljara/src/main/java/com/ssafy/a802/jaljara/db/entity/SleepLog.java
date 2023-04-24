@@ -4,8 +4,8 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.Time;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -23,16 +23,17 @@ public class SleepLog {
 	private long id;
 
 	@Column(nullable = false)
-	private LocalDateTime bedTime;
+	private Time bedTime;
 
 	@Column(nullable = false)
-	private LocalDateTime wakeupTime;
+	private Time wakeupTime;
 
 	@Column(nullable = false)
 	private double sleepRate;
 
 	@Column(nullable = false)
-	private LocalDate date;
+	@Temporal(TemporalType.DATE)
+	private Date date;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", insertable = false, updatable = false, nullable = false)
