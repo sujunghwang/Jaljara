@@ -7,7 +7,13 @@ import java.time.LocalDateTime;
 
 import javax.persistence.*;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Entity
+@Getter
+@NoArgsConstructor
 public class MissionLog {
 
 	@Id
@@ -21,9 +27,15 @@ public class MissionLog {
 
 	private String content;
 
-	private LocalDateTime successTimestamp;
+	private LocalDateTime date;
 
 	private boolean isSuccess;
 
-
+	@Builder
+	public MissionLog(User user, String content, LocalDateTime date, boolean isSuccess) {
+		this.user = user;
+		this.content = content;
+		this.date = date;
+		this.isSuccess = isSuccess;
+	}
 }
