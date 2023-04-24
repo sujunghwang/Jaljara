@@ -5,8 +5,14 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Entity
-public class MissionToday {
+@Getter
+@NoArgsConstructor
+public class MissionToday extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +32,20 @@ public class MissionToday {
 	@JoinColumn(name = "user_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
+
+	@Builder(toBuilder = true)
+	public MissionToday(Long id, int remainRerollCount, boolean isClear, String url,
+		Mission mission, User user) {
+		this.id = id;
+		this.remainRerollCount = remainRerollCount;
+		this.isClear = isClear;
+		this.url = url;
+		this.mission = mission;
+		this.user = user;
+	}
+
+	//====비즈니스 로직=====//
+	public void reroll() {
+		this.remainRerollCount--;
+	}
 }
