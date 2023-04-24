@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.Time;
+import java.util.Date;
 
 public class SleepLogRequestDto {
     @Getter
@@ -15,8 +15,8 @@ public class SleepLogRequestDto {
     @Builder
     public static class SleepLogInput {
         private long userId;
-        private LocalDate date;
-        private LocalDateTime bedTime;
-        private LocalDateTime wakeupTime;
+        private Date date;
+        private Time bedTime;
+        private Time wakeupTime;
     }
 }

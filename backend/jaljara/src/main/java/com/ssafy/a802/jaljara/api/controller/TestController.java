@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -24,17 +24,17 @@ public class TestController {
         resultMap.put("res", res);
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
-    @PostMapping("/{userId}/{date}")
-    public ResponseEntity<?> test(@PathVariable long userId, @PathVariable String date){
+    @GetMapping("/{userId}/{date}/simple")
+    public ResponseEntity<?> getSleepLogSimple(@PathVariable long userId, @PathVariable String date) throws ParseException {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("res", sleepLogService.findSleepLogByMonth(userId, date));
         return new ResponseEntity<>(resultMap, HttpStatus.OK);
     }
 
-//    @PostMapping("/{userId}/{date}")
-//    public ResponseEntity<?> addSleepLog(@PathVariable long userId, @PathVariable String date){
-//        Map<String, Object> resultMap = new HashMap<>();
-//        resultMap.put("res", sleepLogService.findSleepLogByDay(userId, date));
-//        return new ResponseEntity<>(resultMap, HttpStatus.OK);
-//    }
+    @GetMapping("/{userId}/{date}")
+    public ResponseEntity<?> getSleepLog(@PathVariable long userId, @PathVariable String date) throws ParseException {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("res", sleepLogService.findSleepLogByDay(userId, date));
+        return new ResponseEntity<>(resultMap, HttpStatus.OK);
+    }
 }
