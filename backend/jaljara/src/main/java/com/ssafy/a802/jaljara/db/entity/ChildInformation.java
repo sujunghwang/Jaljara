@@ -13,7 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class ChildInformation {
 
 	@Id
@@ -38,6 +38,7 @@ public class ChildInformation {
 	private long childId;
 
 	@Column(nullable = false)
+	@Builder.Default
 	private String currentReward = "";
 
 	@Column(nullable = false, columnDefinition = "SMALLINT")
