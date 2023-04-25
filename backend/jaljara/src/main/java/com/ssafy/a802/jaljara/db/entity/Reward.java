@@ -1,36 +1,36 @@
 package com.ssafy.a802.jaljara.db.entity;
 
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDateTime;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
-public class Reward {
+@Table(name="reward")
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Builder(toBuilder = true)
+public class Reward extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Column(nullable = false, updatable = false)
+	private long id;
 
+	@Column(nullable = false)
 	private String content;
 
-	private LocalDateTime getTimestamp;
-
-	private LocalDateTime usedTimestamp;
-
-	private boolean isUsed;
+	@Column(nullable = false)
+	@Builder.Default
+	private boolean isUsed = false;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", insertable = false, updatable = false, nullable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
+	@Column(name = "user_id", nullable = false)
+	private long userId;
 }
