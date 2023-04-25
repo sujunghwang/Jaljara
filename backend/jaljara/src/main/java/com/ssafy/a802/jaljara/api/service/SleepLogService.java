@@ -21,7 +21,7 @@ public class SleepLogService {
     private final SleepLogRepository sleepLogRepository;
     private final ChildInformationRepository childInformationRepository;
 
-    public int addSleepLog(SleepLogRequestDto.SleepLogInput sleepLogInput){
+    public void addSleepLog(SleepLogRequestDto.SleepLogInput sleepLogInput){
         ChildInformation childInformation = childInformationRepository.findByChildId(sleepLogInput.getUserId());
         Duration duration = Duration.between(sleepLogInput.getBedTime().toLocalTime(), sleepLogInput.getWakeupTime().toLocalTime());
         Duration targetDuration = Duration.between(childInformation.getTargetBedTime().toLocalTime(), childInformation.getTargetWakeupTime().toLocalTime());
@@ -31,20 +31,20 @@ public class SleepLogService {
             targetDuration = targetDuration.plusHours(24);
 
         double sleepRate = (double)duration.getSeconds()/targetDuration.getSeconds();
+        if(sleepRate > 1)
+            sleepRate = 1.0;
+
         sleepLogRepository.save(SleepLog.builder()
                 .userId(sleepLogInput.getUserId())
                 .bedTime(sleepLogInput.getBedTime())
                 .wakeupTime(sleepLogInput.getWakeupTime())
                 .date(sleepLogInput.getDate())
                 .sleepRate(sleepRate).build());
-        return 1;
     }
 
     public SleepLogResponseDto.SleepLogDetail findSleepLogByDay(long userId, String date) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         SleepLog sleepLog = sleepLogRepository.findByUserIdAndDate(userId, formatter.parse(date));
-        if(sleepLog == null)
-            return null;
 
         return SleepLogResponseDto.SleepLogDetail.builder()
                 .userId(userId)

@@ -40,6 +40,14 @@ public class ChildInformationService {
                         .build());
     }
 
+    public void modifyStreakCntPlus(long childId){
+        ChildInformation childInformation = childInformationRepository.findByChildId(childId);
+        childInformationRepository.save(
+                childInformation.toBuilder()
+                        .streakCount(childInformation.getStreakCount() + 1)
+                        .build());
+    }
+
     public List<UserResponseDto.SimpleUserInfo> findChildListByParentId(long parentId){
         List<ChildInformation> childInformations = childInformationRepository.findAllByParentId(parentId);
         List<UserResponseDto.SimpleUserInfo> simpleChildInfoList = new ArrayList<>();

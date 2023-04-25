@@ -20,12 +20,4 @@ public class SleepLogResponseDto {
         private Time wakeupTime;
         private double sleepRate;
     }
-
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class SleepLogSimple {
-        private boolean isRecorded;
-    }
 }
