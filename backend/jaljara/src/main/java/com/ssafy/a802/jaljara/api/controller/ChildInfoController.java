@@ -1,21 +1,14 @@
 package com.ssafy.a802.jaljara.api.controller;
 
 import com.ssafy.a802.jaljara.api.dto.request.ChildInformationRequestDto;
-import com.ssafy.a802.jaljara.api.dto.request.SleepLogRequestDto;
 import com.ssafy.a802.jaljara.api.dto.response.ChildInformationResponseDto;
-import com.ssafy.a802.jaljara.api.dto.response.SleepLogResponseDto;
 import com.ssafy.a802.jaljara.api.dto.response.UserResponseDto;
 import com.ssafy.a802.jaljara.api.service.ChildInformationService;
-import com.ssafy.a802.jaljara.api.service.RewardService;
-import com.ssafy.a802.jaljara.api.service.SleepLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
