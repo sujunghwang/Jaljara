@@ -8,7 +8,6 @@ import com.ssafy.a802.jaljara.api.dto.response.UserResponseDto;
 import com.ssafy.a802.jaljara.api.service.ChildInformationService;
 import com.ssafy.a802.jaljara.api.service.RewardService;
 import com.ssafy.a802.jaljara.api.service.SleepLogService;
-import com.ssafy.a802.jaljara.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +30,13 @@ public class ParentController {
     @GetMapping("/childinfos/{parentId}")
     public ResponseEntity<?> getChildList(@PathVariable long parentId){
         List<UserResponseDto.SimpleUserInfo> childList = childInformationService.findChildListByParentId(parentId);
-        return new ResponseEntity<>(new ApiResponse<>(childList), HttpStatus.OK);
+        return new ResponseEntity<>(childList, HttpStatus.OK);
     }
 
     @GetMapping("/childinfos/detail/{childId}")
     public ResponseEntity<?> getChildDetail(@PathVariable long childId){
         ChildInformationResponseDto.ChildInfoDetail childDetail = childInformationService.findChildInformationByChildId(childId);
-        return new ResponseEntity<>(new ApiResponse<>(childDetail), HttpStatus.OK);
+        return new ResponseEntity<>(childDetail, HttpStatus.OK);
     }
 
     @PutMapping("/childinfos/reward")
@@ -61,19 +60,19 @@ public class ParentController {
     @GetMapping("/sleeplogs/{childId}/{date}/simple")
     public ResponseEntity<?> getDayHasLogList(@PathVariable long childId, @PathVariable String date) throws ParseException {
         List<Integer> dayHasLogList = sleepLogService.findSleepLogByMonth(childId, date);
-        return new ResponseEntity<>(new ApiResponse<>(dayHasLogList), HttpStatus.OK);
+        return new ResponseEntity<>(dayHasLogList, HttpStatus.OK);
     }
 
     @GetMapping("/sleeplogs/{childId}/{date}")
     public ResponseEntity<?> getSleepLogDetail(@PathVariable long childId, @PathVariable String date) throws ParseException {
         SleepLogResponseDto.SleepLogDetail sleepLogDetail = sleepLogService.findSleepLogByDay(childId, date);
-        return new ResponseEntity<>(new ApiResponse<>(sleepLogDetail), HttpStatus.OK);
+        return new ResponseEntity<>(sleepLogDetail, HttpStatus.OK);
     }
 
     @GetMapping("/sleeplogs/{childId}")
     public ResponseEntity<?> getSleepLogDetailToday(@PathVariable long childId) throws ParseException {
         SleepLogResponseDto.SleepLogDetail sleepLogDetail = sleepLogService.findSleepLogByDay(childId, LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-        return new ResponseEntity<>(new ApiResponse<>(sleepLogDetail), HttpStatus.OK);
+        return new ResponseEntity<>(sleepLogDetail, HttpStatus.OK);
     }
 
     @PostMapping("/sleeplogs")
