@@ -1,4 +1,4 @@
-package com.ssafy.a802.jaljara.common;
+package com.ssafy.a802.jaljara.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
