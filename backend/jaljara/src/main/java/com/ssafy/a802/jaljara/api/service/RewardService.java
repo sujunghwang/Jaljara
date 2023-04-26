@@ -109,6 +109,7 @@ public class RewardService {
         if(reward.isUsed())
             throw new CustomException(HttpStatus.BAD_REQUEST, "해당 보상은 이미 사용되었습니다. 보상: " + reward.getContent());
 
-        rewardRepository.save(reward.toBuilder().isUsed(true).build());
+        reward.use();
+        rewardRepository.save(reward);
     }
 }
