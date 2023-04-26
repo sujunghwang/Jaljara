@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,8 @@ import com.ssafy.a802.jaljara.db.repository.mission.MissionLogRepository;
 import com.ssafy.a802.jaljara.db.repository.mission.MissionRepository;
 import com.ssafy.a802.jaljara.db.repository.mission.MissionRepositoryImpl;
 import com.ssafy.a802.jaljara.db.repository.mission.MissionTodayRepository;
+import com.ssafy.a802.jaljara.exception.CustomException;
+import com.ssafy.a802.jaljara.exception.ExceptionFactory;
 
 import lombok.RequiredArgsConstructor;
 
@@ -66,12 +69,12 @@ public class MissionService {
 	public void addMissionToday(Long userId) {
 
 		User findUser = userRepository.findById(userId).orElseThrow(() ->
-			new IllegalArgumentException("사용자의 아이디가 존재하지 않습니다.: " + userId));
+			ExceptionFactory.userNotFound(userId));
 
 		//get random mission
 		Mission randomMission = getRandomMission();
 
-		MissionToday missionToday = missionTodayRepository.findByUserId(userId).orElse(null);
+		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElse(null);
 
 		//today date init
 		LocalDateTime localDateTime = LocalDateTime.now();
@@ -81,7 +84,7 @@ public class MissionService {
 		Date date = Date.from(instant);
 
 		// if user mission today first
-		if (Objects.isNull(missionToday)) {
+		if (Objects.isNull(findMissionToday)) {
 			//just generate mission today
 			missionTodayRepository.save(MissionToday.builder()
 				.user(findUser)
@@ -95,17 +98,17 @@ public class MissionService {
 			//move exist mission today to mission log
 			MissionLog savedMissionLog = missionLogRepository.save(MissionLog.builder()
 				.user(findUser)
-				.content(missionToday.getMission().getContent())
-				.isSuccess(missionToday.isClear())
-				.missionDate(missionToday.getMissionDate())
+				.content(findMissionToday.getMission().getContent())
+				.isSuccess(findMissionToday.isClear())
+				.missionDate(findMissionToday.getMissionDate())
 				.build());
 
 			//if missionToday isSuccessed true then save missionLog Attachement
-			if (!Objects.isNull(missionToday.getUrl())) {
+			if (!Objects.isNull(findMissionToday.getUrl())) {
 				missionAttachmentRepository.save(MissionAttachment.builder()
-					.url(missionToday.getUrl())
+					.url(findMissionToday.getUrl())
 					.missionLog(savedMissionLog)
-					.missionType(missionToday.getMission().getMissionType())
+					.missionType(findMissionToday.getMission().getMissionType())
 					.build());
 			}
 
@@ -125,19 +128,19 @@ public class MissionService {
 	//find mission today
 	public MissionTodayResponseDto findMissionToday(Long userId) {
 
-		userRepository.findById(userId).orElseThrow(
-			() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. userId: " + userId));
+		userRepository.findById(userId).orElseThrow(() ->
+			ExceptionFactory.userNotFound(userId));
 
-		MissionToday missionToday = missionTodayRepository.findByUserId(userId).orElseThrow(
-			() -> new IllegalArgumentException("해당 유저에게 오늘의 미션이 존재하지 않습니다. userId: " + userId));
+		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
+			ExceptionFactory.userMissionTodayNotFound(userId));
 
 		return MissionTodayResponseDto.builder()
-			.missionTodayId(missionToday.getId())
-			.missionId(missionToday.getMission().getId())
-			.userId(missionToday.getUser().getId())
-			.remainRerollCount(missionToday.getRemainRerollCount())
-			.isClear(missionToday.isClear())
-			.url(missionToday.getUrl())
+			.missionTodayId(findMissionToday.getId())
+			.missionId(findMissionToday.getMission().getId())
+			.userId(findMissionToday.getUser().getId())
+			.remainRerollCount(findMissionToday.getRemainRerollCount())
+			.isClear(findMissionToday.isClear())
+			.url(findMissionToday.getUrl())
 			.build();
 	}
 
@@ -145,25 +148,22 @@ public class MissionService {
 	@Transactional
 	public void modifyMissionTodayReroll(Long userId) {
 
-		userRepository.findById(userId).orElseThrow(
-			() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. userId: " + userId));
-
 		User findUser = userRepository.findById(userId).orElseThrow(() ->
-			new IllegalArgumentException("사용자의 아이디가 존재하지 않습니다. userId: " + userId));
+			ExceptionFactory.userNotFound(userId));
 
 		//generate new random mission today
 		Mission randomMission = getRandomMission();
 
-		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 유저에게 오늘의 미션이 존재하지 않습니다. userId: " + userId));
+		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
+			ExceptionFactory.userMissionTodayNotFound(userId));
 
 		if (findMissionToday.getRemainRerollCount() == 0) {
-			throw new IllegalArgumentException("더 이상 리롤을 진행할 수 없습니다. 남은 리롤 횟수: "
+			throw new CustomException(HttpStatus.BAD_REQUEST, "더 이상 리롤을 진행할 수 없습니다. 남은 리롤 횟수: "
 				+ findMissionToday.getRemainRerollCount());
 		}
 
 		if (findMissionToday.isClear()) {
-			throw new IllegalArgumentException("이미 미션 수행을 완료하였습니다.");
+			throw new CustomException(HttpStatus.BAD_REQUEST, "이미 미션 수행을 완료하였습니다.");
 		}
 
 		//reroll count --
@@ -180,14 +180,14 @@ public class MissionService {
 	@Transactional
 	public void modifyMissionTodayIsClear(Long userId) {
 
-		userRepository.findById(userId).orElseThrow(
-			() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. userId: " + userId));
+		User findUser = userRepository.findById(userId).orElseThrow(() ->
+			ExceptionFactory.userNotFound(userId));
 
-		MissionToday missionToday = missionTodayRepository.findByUserId(userId).orElseThrow(
-			() -> new IllegalArgumentException("해당 유저에게 오늘의 미션이 존재하지 않습니다. userId: " + userId));
+		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
+			ExceptionFactory.userMissionTodayNotFound(userId));
 
-		missionTodayRepository.save(missionToday.toBuilder()
-			.id(missionToday.getId())
+		missionTodayRepository.save(findMissionToday.toBuilder()
+			.id(findMissionToday.getId())
 			.isClear(true)
 			.build());
 	}
@@ -195,24 +195,24 @@ public class MissionService {
 	//delete mission today
 	@Transactional
 	public void removeMissionToday(Long userId) {
-		userRepository.findById(userId).orElseThrow(
-			() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. userId: " + userId));
+		User findUser = userRepository.findById(userId).orElseThrow(() ->
+			ExceptionFactory.userNotFound(userId));
 
-		MissionToday missionToday = missionTodayRepository.findByUserId(userId).orElseThrow(
-			() -> new IllegalArgumentException("해당 유저에게 오늘의 미션이 존재하지 않습니다. userId: " + userId));
+		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
+			ExceptionFactory.userMissionTodayNotFound(userId));
 
-		missionTodayRepository.delete(missionToday);
+		missionTodayRepository.delete(findMissionToday);
 	}
 
 	//perform a mission (S3 save logic)
 	//s3 save -> db save
 	@Transactional
 	public void saveMissionTodayAttachment(Long userId, MultipartFile multipartFile) throws IOException {
-		userRepository.findById(userId).orElseThrow(
-			() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. userId: " + userId));
+		User findUser = userRepository.findById(userId).orElseThrow(() ->
+			ExceptionFactory.userNotFound(userId));
 
-		MissionToday missionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
-			new IllegalArgumentException("해당 유저에게 오늘의 미션이 존재하지 않습니다. userId: " + userId));
+		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
+			ExceptionFactory.userMissionTodayNotFound(userId));
 
 		//ex) https://jaljara.s3.ap-northeast-1.amazonaws.com/randomUUID
 
@@ -235,8 +235,8 @@ public class MissionService {
 
 		String s3Url = amazonS3Client.getUrl(bucketName, uploadPath).toString(); //available access url
 
-		missionTodayRepository.save(missionToday.toBuilder()
-			.id(missionToday.getId())
+		missionTodayRepository.save(findMissionToday.toBuilder()
+			.id(findMissionToday.getId())
 			.url(s3Url)
 			.build());
 	}
@@ -244,8 +244,8 @@ public class MissionService {
 	//get user's mission log attachment that day
 	public MissionLogRequestDto findMissionLogWithMissionAttachment(Long userId, String missionDate) throws
 		ParseException {
-		userRepository.findById(userId).orElseThrow(
-			() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다. userId: " + userId));
+		User findUser = userRepository.findById(userId).orElseThrow(() ->
+			ExceptionFactory.userNotFound(userId));
 
 		//String to Date
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");

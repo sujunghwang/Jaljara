@@ -16,4 +16,8 @@ public final class ExceptionFactory {
         else
             return new CustomException(HttpStatus.BAD_REQUEST, "해당 유저는 자녀 유저가 아닙니다. userId: " + userId);
     }
+
+    public static CustomException userMissionTodayNotFound(long userId) {
+        return new CustomException(HttpStatus.NOT_FOUND, "해당 유저에게 오늘의 미션이 존재하지 않습니다. userIdl " + userId);
+    }
 }
