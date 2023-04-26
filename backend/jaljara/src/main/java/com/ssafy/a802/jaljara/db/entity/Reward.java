@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Builder(toBuilder = true)
+@Builder
 public class Reward extends BaseEntity {
 
 	@Id
@@ -33,4 +33,8 @@ public class Reward extends BaseEntity {
 
 	@Column(name = "user_id", nullable = false)
 	private long userId;
+
+	public void use(){
+		this.isUsed = !this.isUsed;
+	}
 }
