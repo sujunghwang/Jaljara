@@ -1,4 +1,3 @@
-
 server:
   port: 8080
 
@@ -10,17 +9,17 @@ server:
 
 spring:
   datasource:
-#    ec2 db
-    url: jdbc:mysql://blahblah-database.c0ojtysqxjes.ap-northeast-2.rds.amazonaws.com:3306/jaljara?useUnicode=true&characterEncoding=utf-8
-    username: jaljara
-    password: tXBUXtFK6zjrL3vPcyl8NoKgyTPjZ7Ss
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    ec2 db
+       url: jdbc:mysql://blahblah-database.c0ojtysqxjes.ap-northeast-2.rds.amazonaws.com:3306/jaljara?useUnicode=true&characterEncoding=utf-8
+       username: jaljara
+       password: tXBUXtFK6zjrL3vPcyl8NoKgyTPjZ7Ss
+       driver-class-name: com.mysql.cj.jdbc.Driver
 
-#    local
-#    url: jdbc:mysql://localhost:3306/jaljara?useUnicode=true&characterEncoding=utf-8
-#    username: root
-#    password: ssafy
-#    driver-class-name: com.mysql.cj.jdbc.Driver
+    #    local
+    # url: jdbc:mysql://localhost:3306/jaljara?useUnicode=true&characterEncoding=utf-8
+    # username: root
+    # password: ssafy
+    # driver-class-name: com.mysql.cj.jdbc.Driver
 
   output.ansi.enabled: always
 
@@ -38,6 +37,11 @@ spring:
       write-dates-as-timestamps: false
     time-zone: Asia/Seoul
 
+  http:
+    multipart:
+      maxFileSize: 20MB
+      maxRequestSize: 20MB
+
 logging.level:
   org.hibernate.SQL: debug
   #org.hibernate.type: trace
@@ -52,3 +56,13 @@ jwt:
 
 auth:
   google_api_id: 693682333355-lklamagdho01dqjbph9l6c4ing39173q.apps.googleusercontent.com
+
+cloud:
+  aws:
+    credentials:
+      secretKey: fxJVaPPyLDosdhIjIBITBjvwGOs3i+vRSLpVHSIM
+      accessKey: AKIA5GZGTYMPY3FGEPZI
+    s3:
+      bucket: jaljara
+    region:
+      static: ap-northeast-2
