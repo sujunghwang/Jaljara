@@ -59,8 +59,8 @@ public class AuthService {
     @Value("${auth.google_api_id}")
     private String GOOGLE_API_ID;
 
-    private Payload tokenVerifier(Provider provier, String token) {
-        switch(provier) {
+    private Payload tokenVerifier(Provider provider, String token) {
+        switch(provider) {
             case GOOGLE: {
                 GoogleIdToken.Payload payload = googleTokenVerifier(token);
 

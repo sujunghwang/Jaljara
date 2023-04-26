@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ContentsService {
 
-	private final ContentsRepository contentsRepository;
 	private final ContentsRepositoryImpl contentsRepositoryImpl;
 
 	//get contents list
