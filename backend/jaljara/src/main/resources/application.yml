@@ -41,3 +41,14 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   #org.hibernate.type: trace
+
+jwt:
+  secret: yfJbwc6Mhfwc8GPlCg3Tft579JtMPIb8
+  # 7 days for access token
+  access_exp_time: 604800000
+  # 30 days for refresh token
+  refresh_exp_time: 2592000000
+  issuer: https://jaljara.movebxeax.me
+
+auth:
+  google_api_id: 693682333355-lklamagdho01dqjbph9l6c4ing39173q.apps.googleusercontent.com
