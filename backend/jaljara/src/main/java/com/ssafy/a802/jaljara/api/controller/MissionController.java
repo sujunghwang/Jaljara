@@ -3,6 +3,8 @@ package com.ssafy.a802.jaljara.api.controller;
 import java.io.IOException;
 import java.text.ParseException;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,34 +29,41 @@ public class MissionController {
 
 	//오늘의 미션 조회
 	@GetMapping("/{userId}")
-	public MissionTodayResponseDto getMissionToday(@PathVariable Long userId) {
-		return missionService.findMissionToday(userId);
+	public ResponseEntity<?> getMissionToday(@PathVariable Long userId) {
+		MissionTodayResponseDto missionToday = missionService.findMissionToday(userId);
+		return new ResponseEntity<>(missionToday, HttpStatus.OK);
 	}
 
 	//미션 리롤
 	@GetMapping("/{userId}/reroll")
-	public void rerellMissionToday(@PathVariable Long userId) {
+	public ResponseEntity<?> rerollMissionToday(@PathVariable Long userId) {
 		missionService.modifyMissionTodayReroll(userId);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	//미션 수행
 	@PostMapping("/attatchment/{userId}")
-	public void uploadMissionTodayAttachment(@PathVariable Long userId, @RequestPart("file") MultipartFile file) throws
+	public ResponseEntity<?> uploadMissionTodayAttachment(@PathVariable Long userId,
+		@RequestPart("file") MultipartFile file) throws
 		IOException {
 		missionService.saveMissionTodayAttachment(userId, file);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	//미션 승인
 	@PutMapping("/{userId}/clear")
-	public void clearMissionToday(@PathVariable Long userId) {
+	public ResponseEntity<?> clearMissionToday(@PathVariable Long userId) {
 		missionService.modifyMissionTodayIsClear(userId);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	//해당 날짜 미션 기록 조회
 	@GetMapping("/parent/missions/{userId}/{date}")
-	public MissionLogRequestDto getMissionLogWithThatDay(@PathVariable Long userId, @PathVariable String date) throws
+	public ResponseEntity<?> getMissionLogWithThatDay(@PathVariable Long userId, @PathVariable String date) throws
 		ParseException {
-		return missionService.findMissionLogWithMissionAttachment(userId, date);
+		MissionLogRequestDto missionLogWithDate =
+			missionService.findMissionLogWithMissionAttachment(userId, date);
+		return new ResponseEntity<>(missionLogWithDate, HttpStatus.OK);
 	}
 
 	//미션 생성 - 테스트용 실제로는 스케쥴러로 돌아감
