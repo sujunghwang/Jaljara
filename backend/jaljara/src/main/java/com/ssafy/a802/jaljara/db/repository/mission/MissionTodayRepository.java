@@ -9,9 +9,5 @@ import org.springframework.data.repository.query.Param;
 import com.ssafy.a802.jaljara.db.entity.MissionToday;
 
 public interface MissionTodayRepository extends JpaRepository<MissionToday, Long> {
-
-	// @Query("select mt from MissionToday mt where mt.user.id = :userId")
-	// MissionToday findByUserId(@Param("userId") Long userId);
-
 	Optional<MissionToday> findByUserId(Long userId);
 }
