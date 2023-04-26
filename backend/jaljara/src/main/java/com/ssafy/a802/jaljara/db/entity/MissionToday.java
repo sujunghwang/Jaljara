@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class MissionToday extends Date {
+public class MissionToday {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
