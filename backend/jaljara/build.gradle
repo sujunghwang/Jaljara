@@ -44,6 +44,9 @@ dependencies {
 	//query logging
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'
 
+	// AWS SDK S3
+	implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.1000')
+	implementation 'com.amazonaws:aws-java-sdk-s3'
 }
 
 tasks.named('test') {

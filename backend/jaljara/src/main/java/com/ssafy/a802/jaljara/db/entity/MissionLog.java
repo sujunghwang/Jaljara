@@ -3,7 +3,7 @@ package com.ssafy.a802.jaljara.db.entity;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -25,17 +25,21 @@ public class MissionLog {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 
+	@Column(nullable = false)
 	private String content;
 
-	private LocalDateTime date;
+	@Column(nullable = false)
+	@Temporal(TemporalType.DATE)
+	private Date missionDate;
 
+	@Column(nullable = false)
 	private boolean isSuccess;
 
 	@Builder
-	public MissionLog(User user, String content, LocalDateTime date, boolean isSuccess) {
+	public MissionLog(User user, String content, Date missionDate, boolean isSuccess) {
 		this.user = user;
 		this.content = content;
-		this.date = date;
+		this.missionDate = missionDate;
 		this.isSuccess = isSuccess;
 	}
 }
