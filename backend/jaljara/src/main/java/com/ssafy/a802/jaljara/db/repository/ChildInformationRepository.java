@@ -6,11 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChildInformationRepository extends JpaRepository<ChildInformation, Long> {
-    ChildInformation findByChildId(long childId);
+    Optional<ChildInformation> findByChildId(long childId);
+    boolean existsByChildId(long childId);
     List<ChildInformation> findAllByParentId(long parentId);
-    @Transactional
-    void deleteByChildId(long childId);
 }

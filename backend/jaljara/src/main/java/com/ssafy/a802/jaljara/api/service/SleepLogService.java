@@ -6,7 +6,10 @@ import com.ssafy.a802.jaljara.db.entity.ChildInformation;
 import com.ssafy.a802.jaljara.db.entity.SleepLog;
 import com.ssafy.a802.jaljara.db.repository.ChildInformationRepository;
 import com.ssafy.a802.jaljara.db.repository.SleepLogRepository;
+import com.ssafy.a802.jaljara.exception.CustomException;
+import com.ssafy.a802.jaljara.exception.ExceptionFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -22,7 +25,9 @@ public class SleepLogService {
     private final ChildInformationRepository childInformationRepository;
 
     public void addSleepLog(SleepLogRequestDto.SleepLogInput sleepLogInput){
-        ChildInformation childInformation = childInformationRepository.findByChildId(sleepLogInput.getUserId());
+        ChildInformation childInformation = childInformationRepository.findByChildId(sleepLogInput.getUserId()).orElseThrow(
+                () -> new CustomException(HttpStatus.NOT_FOUND, "부모와 연결되지 않은 유저입니다. userId: " + sleepLogInput.getUserId()));
+
         Duration duration = Duration.between(sleepLogInput.getBedTime().toLocalTime(), sleepLogInput.getWakeupTime().toLocalTime());
         Duration targetDuration = Duration.between(childInformation.getTargetBedTime().toLocalTime(), childInformation.getTargetWakeupTime().toLocalTime());
         if(duration.isNegative())
