@@ -32,4 +32,8 @@ public final class ExceptionFactory {
     public static CustomException jwtAuthenticateFail() {
         return new CustomException(HttpStatus.UNAUTHORIZED, "권한이 없습니다.");
     }
+
+    public static CustomException invalidParentCode() {
+        return new CustomException(HttpStatus.BAD_REQUEST, "잘못된 인증 코드 입니다.");
+    }
 }
