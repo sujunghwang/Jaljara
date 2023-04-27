@@ -4,9 +4,9 @@ import com.ssafy.a802.jaljara.api.dto.request.ChildInformationRequestDto;
 import com.ssafy.a802.jaljara.api.dto.response.ChildInformationResponseDto;
 import com.ssafy.a802.jaljara.api.dto.response.UserResponseDto;
 import com.ssafy.a802.jaljara.api.service.ChildInformationService;
-import com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter;
-import com.ssafy.a802.jaljara.common.annotation.ValidParentAndChildIdParameter;
-import com.ssafy.a802.jaljara.common.annotation.ValidParentIdParameter;
+import com.ssafy.a802.jaljara.common.annotation.ValidChild;
+import com.ssafy.a802.jaljara.common.annotation.ValidParentAndChild;
+import com.ssafy.a802.jaljara.common.annotation.ValidParent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +21,14 @@ public class ChildInfoController {
     private final ChildInformationService childInformationService;
 
     @PostMapping("/connect/{parentId}/{childId}")
-    @ValidParentAndChildIdParameter
+    @ValidParentAndChild
     public ResponseEntity<?> addChildInformation(@PathVariable long parentId, @PathVariable long childId){
         childInformationService.addChildInformation(parentId, childId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{parentId}")
-    @ValidParentIdParameter
+    @ValidParent
     public ResponseEntity<?> getChildList(@PathVariable long parentId){
         List<UserResponseDto.SimpleUserInfo> childList = childInformationService.findChildListByParentId(parentId);
         if(childList.size() == 0)
@@ -37,35 +37,35 @@ public class ChildInfoController {
     }
 
     @GetMapping("/detail/{childId}")
-    @ValidChildIdParameter
+    @ValidChild
     public ResponseEntity<?> getChildDetail(@PathVariable Long childId){
         ChildInformationResponseDto.ChildInfoDetail childDetail = childInformationService.findChildInformationByChildId(childId);
         return new ResponseEntity<>(childDetail, HttpStatus.OK);
     }
 
     @PutMapping("/reward")
-    @ValidChildIdParameter
+    @ValidChild
     public ResponseEntity<?> modifyCurrentReward(@RequestBody ChildInformationRequestDto.CurrentRewardInput input){
         childInformationService.modifyCurrentReward(input);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/sleep")
-    @ValidChildIdParameter
+    @ValidChild
     public ResponseEntity<?> modifyTargetSleep(@RequestBody ChildInformationRequestDto.TargetSleepInput input){
         childInformationService.modifyTargetSleepTime(input);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/streakCnt/{childId}")
-    @ValidChildIdParameter
+    @ValidChild
     public ResponseEntity<?> modifyStreakCnt(@PathVariable long childId){
         childInformationService.modifyStreakCntPlus(childId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{childId}")
-    @ValidChildIdParameter
+    @ValidChild
     public ResponseEntity<?> removeChild(@PathVariable long childId){
         childInformationService.removeChildInformationByChildId(childId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -23,7 +23,7 @@ public class ParameterValidationAspect {
         this.userRepository = userRepository;
     }
 
-    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter) && args(childId, ..)")
+    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChild) && args(childId, ..)")
     public void validationChild(long childId) {
         //childId에 해당하는 유저가 없는 경우
         User child = userRepository.findById(childId).orElseThrow(
@@ -34,7 +34,7 @@ public class ParameterValidationAspect {
             throw ExceptionFactory.userTypeMismatch(childId, UserType.CHILD);
     }
 
-    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidParentIdParameter) && args(parentId, ..)")
+    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidParent) && args(parentId, ..)")
     public void validationParent(long parentId) {
         //parentId에 해당하는 유저가 없는 경우
         User parent = userRepository.findById(parentId).orElseThrow(
@@ -45,22 +45,22 @@ public class ParameterValidationAspect {
             throw ExceptionFactory.userTypeMismatch(parentId, UserType.PARENTS);
     }
 
-    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter) && args(currentRewardInput, ..)")
+    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChild) && args(currentRewardInput, ..)")
     public void validationChild(ChildInformationRequestDto.CurrentRewardInput currentRewardInput) {
         validationChild(currentRewardInput.getChildId());
     }
 
-    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter) && args(targetSleepInput, ..)")
+    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChild) && args(targetSleepInput, ..)")
     public void validationChild(ChildInformationRequestDto.TargetSleepInput targetSleepInput) {
         validationChild(targetSleepInput.getChildId());
     }
 
-    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter) && args(sleepLogInput, ..)")
+    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChild) && args(sleepLogInput, ..)")
     public void validationChild(SleepLogRequestDto.SleepLogInput sleepLogInput) {
         validationChild(sleepLogInput.getUserId());
     }
 
-    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidParentAndChildIdParameter) && args(parentId, childId, ..)")
+    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidParentAndChild) && args(parentId, childId, ..)")
     public void validationParentAndChild(long parentId, long childId) {
         validationParent(parentId);
         validationChild(childId);

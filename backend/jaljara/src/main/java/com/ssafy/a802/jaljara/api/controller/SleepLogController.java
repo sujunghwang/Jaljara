@@ -3,7 +3,7 @@ package com.ssafy.a802.jaljara.api.controller;
 import com.ssafy.a802.jaljara.api.dto.request.SleepLogRequestDto;
 import com.ssafy.a802.jaljara.api.dto.response.SleepLogResponseDto;
 import com.ssafy.a802.jaljara.api.service.SleepLogService;
-import com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter;
+import com.ssafy.a802.jaljara.common.annotation.ValidChild;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,14 +21,14 @@ public class SleepLogController {
     private final SleepLogService sleepLogService;
 
     @PostMapping()
-    @ValidChildIdParameter
+    @ValidChild
     public ResponseEntity<?> addSleepLog(@RequestBody SleepLogRequestDto.SleepLogInput sleepLogInput){
         sleepLogService.addSleepLog(sleepLogInput);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{childId}/{date}/simple")
-    @ValidChildIdParameter
+    @ValidChild
     public ResponseEntity<?> getDayHasLogList(@PathVariable long childId, @PathVariable String date) throws ParseException {
         List<Integer> dayHasLogList = sleepLogService.findSleepLogByMonth(childId, date);
         if(dayHasLogList.size() == 0)
@@ -37,14 +37,14 @@ public class SleepLogController {
     }
 
     @GetMapping("/{childId}/{date}")
-    @ValidChildIdParameter
+    @ValidChild
     public ResponseEntity<?> getSleepLogDetail(@PathVariable long childId, @PathVariable String date) throws ParseException {
         SleepLogResponseDto.SleepLogDetail sleepLogDetail = sleepLogService.findSleepLogByDay(childId, date);
         return new ResponseEntity<>(sleepLogDetail, HttpStatus.OK);
     }
 
     @GetMapping("/{childId}")
-    @ValidChildIdParameter
+    @ValidChild
     public ResponseEntity<?> getSleepLogDetailToday(@PathVariable long childId) throws ParseException {
         //현재 시간 기준 어제의 수면 기록 조회
         SleepLogResponseDto.SleepLogDetail sleepLogDetail =
