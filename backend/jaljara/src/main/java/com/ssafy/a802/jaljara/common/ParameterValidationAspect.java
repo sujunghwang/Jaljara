@@ -34,42 +34,6 @@ public class ParameterValidationAspect {
             throw ExceptionFactory.userTypeMismatch(childId, UserType.CHILD);
     }
 
-    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter) && args(currentRewardInput, ..)")
-    public void validationChild(ChildInformationRequestDto.CurrentRewardInput currentRewardInput) {
-        long childId = currentRewardInput.getChildId();
-        //childId에 해당하는 유저가 없는 경우
-        User child = userRepository.findById(childId).orElseThrow(
-                () -> ExceptionFactory.userNotFound(childId));
-
-        //해당 유저가 자녀 유저가 아닌 경우
-        if(child.getUserType() != UserType.CHILD)
-            throw ExceptionFactory.userTypeMismatch(childId, UserType.CHILD);
-    }
-
-    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter) && args(targetSleepInput, ..)")
-    public void validationChild(ChildInformationRequestDto.TargetSleepInput targetSleepInput) {
-        long childId = targetSleepInput.getChildId();
-        //childId에 해당하는 유저가 없는 경우
-        User child = userRepository.findById(childId).orElseThrow(
-                () -> ExceptionFactory.userNotFound(childId));
-
-        //해당 유저가 자녀 유저가 아닌 경우
-        if(child.getUserType() != UserType.CHILD)
-            throw ExceptionFactory.userTypeMismatch(childId, UserType.CHILD);
-    }
-
-    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter) && args(sleepLogInput, ..)")
-    public void validationChild(SleepLogRequestDto.SleepLogInput sleepLogInput) {
-        long childId = sleepLogInput.getUserId();
-        //childId에 해당하는 유저가 없는 경우
-        User child = userRepository.findById(childId).orElseThrow(
-                () -> ExceptionFactory.userNotFound(childId));
-
-        //해당 유저가 자녀 유저가 아닌 경우
-        if(child.getUserType() != UserType.CHILD)
-            throw ExceptionFactory.userTypeMismatch(childId, UserType.CHILD);
-    }
-
     @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidParentIdParameter) && args(parentId, ..)")
     public void validationParent(long parentId) {
         //parentId에 해당하는 유저가 없는 경우
@@ -81,18 +45,24 @@ public class ParameterValidationAspect {
             throw ExceptionFactory.userTypeMismatch(parentId, UserType.PARENTS);
     }
 
+    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter) && args(currentRewardInput, ..)")
+    public void validationChild(ChildInformationRequestDto.CurrentRewardInput currentRewardInput) {
+        validationChild(currentRewardInput.getChildId());
+    }
+
+    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter) && args(targetSleepInput, ..)")
+    public void validationChild(ChildInformationRequestDto.TargetSleepInput targetSleepInput) {
+        validationChild(targetSleepInput.getChildId());
+    }
+
+    @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChildIdParameter) && args(sleepLogInput, ..)")
+    public void validationChild(SleepLogRequestDto.SleepLogInput sleepLogInput) {
+        validationChild(sleepLogInput.getUserId());
+    }
+
     @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidParentAndChildIdParameter) && args(parentId, childId, ..)")
     public void validationParentAndChild(long parentId, long childId) {
-        //해당하는 유저가 없는 경우
-        User parent = userRepository.findById(parentId).orElseThrow(
-                () -> ExceptionFactory.userNotFound(parentId));
-        User child = userRepository.findById(childId).orElseThrow(
-                () -> ExceptionFactory.userNotFound(childId));
-
-        //해당 유저의 유저 타입이 다른 경우
-        if(parent.getUserType() != UserType.PARENTS)
-            throw ExceptionFactory.userTypeMismatch(parentId, UserType.PARENTS);
-        if(child.getUserType() != UserType.CHILD)
-            throw ExceptionFactory.userTypeMismatch(childId, UserType.CHILD);
+        validationParent(parentId);
+        validationChild(childId);
     }
 }
