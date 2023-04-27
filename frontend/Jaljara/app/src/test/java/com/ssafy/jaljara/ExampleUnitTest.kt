@@ -1,4 +1,4 @@
-package com.example.jaljara
+package com.ssafy.jaljara
 
 import org.junit.Test
 
