@@ -2,7 +2,6 @@ package com.ssafy.a802.jaljara.api.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ssafy.a802.jaljara.db.entity.MissionToday;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,8 +11,7 @@ public class MissionTodayResponseDto {
 	private Long missionTodayId;
 	private Long userId;
 	private Long missionId;
-
-	@JsonProperty
+	@JsonProperty("isClear")
 	private boolean isClear;
 	private int remainRerollCount;
 	private String url;

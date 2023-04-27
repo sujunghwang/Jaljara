@@ -38,7 +38,7 @@ public class ContentsController {
 	}
 
 	@GetMapping("/{contentsId}")
-	public ResponseEntity<?> getContents(@PathVariable Long contentsId) {
+	public ResponseEntity<?> getContents(@PathVariable long contentsId) {
 		ContentsDetailResponseDto contents = contentsService.findContents(contentsId);
 		return new ResponseEntity<>(contents, HttpStatus.OK);
 	}

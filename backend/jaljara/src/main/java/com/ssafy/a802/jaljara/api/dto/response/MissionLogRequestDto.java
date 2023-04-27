@@ -14,7 +14,7 @@ public class MissionLogRequestDto {
 
 	private Long missionLogId;
 	private Long userId;
-	@JsonProperty
+	@JsonProperty("isSuccess")
 	private boolean isSuccess;
 	private Date missionDate;
 	private MissionType missionType;

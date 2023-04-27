@@ -19,7 +19,7 @@ public class MissionAttachment {
 	private String url;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "mission_log_id", insertable = false, nullable = false, updatable = false)
+	@JoinColumn(name = "mission_log_id", nullable = false, updatable = false)
 	private MissionLog missionLog;
 
 	@Enumerated(EnumType.STRING)

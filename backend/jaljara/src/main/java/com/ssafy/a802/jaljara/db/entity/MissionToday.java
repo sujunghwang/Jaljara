@@ -18,7 +18,7 @@ public class MissionToday {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 
 	private int remainRerollCount;
 
@@ -40,7 +40,7 @@ public class MissionToday {
 	private User user;
 
 	@Builder(toBuilder = true)
-	public MissionToday(Long id, int remainRerollCount, boolean isClear, String url,
+	public MissionToday(long id, int remainRerollCount, boolean isClear, String url,
 		Mission mission, User user, Date missionDate) {
 		this.id = id;
 		this.remainRerollCount = remainRerollCount;

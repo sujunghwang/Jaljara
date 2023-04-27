@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.a802.jaljara.api.dto.response.MissionLogRequestDto;
 import com.ssafy.a802.jaljara.api.dto.response.MissionTodayResponseDto;
 import com.ssafy.a802.jaljara.api.service.MissionService;
+import com.ssafy.a802.jaljara.common.annotation.ValidChild;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,37 +30,42 @@ public class MissionController {
 
 	//오늘의 미션 조회
 	@GetMapping("/{userId}")
-	public ResponseEntity<?> getMissionToday(@PathVariable Long userId) {
+	@ValidChild
+	public ResponseEntity<?> getMissionToday(@PathVariable long userId) {
 		MissionTodayResponseDto missionToday = missionService.findMissionToday(userId);
 		return new ResponseEntity<>(missionToday, HttpStatus.OK);
 	}
 
 	//미션 리롤
 	@GetMapping("/{userId}/reroll")
-	public ResponseEntity<?> rerollMissionToday(@PathVariable Long userId) {
+	@ValidChild
+	public ResponseEntity<?> rerollMissionToday(@PathVariable long userId) {
 		missionService.modifyMissionTodayReroll(userId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	//미션 수행
-	@PostMapping("/attatchment/{userId}")
-	public ResponseEntity<?> uploadMissionTodayAttachment(@PathVariable Long userId,
+	@PostMapping("/attachment/{userId}")
+	@ValidChild
+	public ResponseEntity<?> uploadMissionTodayAttachment(@PathVariable long userId,
 		@RequestPart("file") MultipartFile file) throws
 		IOException {
-		missionService.saveMissionTodayAttachment(userId, file);
+		missionService.addMissionTodayAttachment(userId, file);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	//미션 승인
 	@PutMapping("/{userId}/clear")
-	public ResponseEntity<?> clearMissionToday(@PathVariable Long userId) {
+	@ValidChild
+	public ResponseEntity<?> clearMissionToday(@PathVariable long userId) {
 		missionService.modifyMissionTodayIsClear(userId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	//해당 날짜 미션 기록 조회
-	@GetMapping("/parent/missions/{userId}/{date}")
-	public ResponseEntity<?> getMissionLogWithThatDay(@PathVariable Long userId, @PathVariable String date) throws
+	@GetMapping("/{userId}/{date}")
+	@ValidChild
+	public ResponseEntity<?> getMissionLogWithThatDay(@PathVariable long userId, @PathVariable String date) throws
 		ParseException {
 		MissionLogRequestDto missionLogWithDate =
 			missionService.findMissionLogWithMissionAttachment(userId, date);
@@ -68,7 +74,8 @@ public class MissionController {
 
 	//미션 생성 - 테스트용 실제로는 스케쥴러로 돌아감
 	@PostMapping("/test/generateMissionToday/{userId}")
-	public void generateMissionToday(@PathVariable Long userId) {
+	@ValidChild
+	public void generateMissionToday(@PathVariable long userId) {
 		missionService.addMissionToday(userId);
 	}
 }
