@@ -13,7 +13,7 @@ public class Contents {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private long id;
 
 	@Enumerated(EnumType.STRING)
 	private ContentType contentType;

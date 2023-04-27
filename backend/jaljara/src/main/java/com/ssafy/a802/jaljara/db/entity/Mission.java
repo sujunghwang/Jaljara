@@ -14,7 +14,7 @@ public class Mission {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false, insertable = false)
-	private Long id;
+	private long id;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)

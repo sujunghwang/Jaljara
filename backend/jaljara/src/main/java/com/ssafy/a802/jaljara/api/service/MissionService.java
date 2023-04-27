@@ -10,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -32,6 +33,7 @@ import com.ssafy.a802.jaljara.db.entity.MissionLog;
 import com.ssafy.a802.jaljara.db.entity.MissionToday;
 import com.ssafy.a802.jaljara.db.entity.SleepLog;
 import com.ssafy.a802.jaljara.db.entity.User;
+import com.ssafy.a802.jaljara.db.entity.UserType;
 import com.ssafy.a802.jaljara.db.repository.UserRepository;
 import com.ssafy.a802.jaljara.db.repository.mission.MissionAttachmentRepository;
 import com.ssafy.a802.jaljara.db.repository.mission.MissionLogRepository;
@@ -62,12 +64,19 @@ public class MissionService {
 		return missionRepository.findRandomMission();
 	}
 
-	//create mission today
 	// cron "초 분 시 일 월 년"
+	@Transactional
 	@Scheduled(cron = "00 00 00 * * *", zone = "Asia/Seoul")
+	public void addMissionTodayChildren() {
+		List<User> allByUserType = userRepository.findAllByUserType(UserType.CHILD);
+		for (User user : allByUserType) {
+			addMissionToday(user.getId());
+		}
+	}
+
+	//create mission today
 	@Transactional
 	public void addMissionToday(Long userId) {
-
 		User findUser = userRepository.findById(userId).orElseThrow(() ->
 			ExceptionFactory.userNotFound(userId));
 
@@ -207,7 +216,7 @@ public class MissionService {
 	//perform a mission (S3 save logic)
 	//s3 save -> db save
 	@Transactional
-	public void saveMissionTodayAttachment(Long userId, MultipartFile multipartFile) throws IOException {
+	public void addMissionTodayAttachment(Long userId, MultipartFile multipartFile) throws IOException {
 		User findUser = userRepository.findById(userId).orElseThrow(() ->
 			ExceptionFactory.userNotFound(userId));
 

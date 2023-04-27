@@ -42,11 +42,11 @@ public class MissionController {
 	}
 
 	//미션 수행
-	@PostMapping("/attatchment/{userId}")
+	@PostMapping("/attachment/{userId}")
 	public ResponseEntity<?> uploadMissionTodayAttachment(@PathVariable Long userId,
 		@RequestPart("file") MultipartFile file) throws
 		IOException {
-		missionService.saveMissionTodayAttachment(userId, file);
+		missionService.addMissionTodayAttachment(userId, file);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
