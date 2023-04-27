@@ -2,11 +2,8 @@ package com.ssafy.a802.jaljara.api.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ssafy.a802.jaljara.db.entity.MissionToday;
-
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 public class MissionTodayResponseDto {
