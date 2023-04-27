@@ -30,14 +30,6 @@ public class SleepLogService {
 
     public void addSleepLog(SleepLogRequestDto.SleepLogInput sleepLogInput){
         long childId = sleepLogInput.getUserId();
-        //childId에 해당하는 유저가 없는 경우
-        User child = userRepository.findById(childId).orElseThrow(
-                () -> ExceptionFactory.userNotFound(childId));
-
-        //해당 유저가 자녀 유저가 아닌 경우
-        if(child.getUserType() != UserType.CHILD)
-            throw ExceptionFactory.userTypeMismatch(childId, UserType.CHILD);
-
         //해당 유저와 연결된 부모가 없는 경우
         ChildInformation childInformation = childInformationRepository.findByChildId(childId).orElseThrow(
                 () -> new CustomException(HttpStatus.NOT_FOUND, "부모와 연결되지 않은 유저입니다. userId: " + childId));
@@ -73,14 +65,6 @@ public class SleepLogService {
     }
 
     public List<Integer> findSleepLogByMonth(long childId, String date) throws ParseException {
-        //childId에 해당하는 유저가 없는 경우
-        User child = userRepository.findById(childId).orElseThrow(
-                () -> ExceptionFactory.userNotFound(childId));
-
-        //해당 유저가 자녀 유저가 아닌 경우
-        if(child.getUserType() != UserType.CHILD)
-            throw ExceptionFactory.userTypeMismatch(childId, UserType.CHILD);
-
         //입력된 달의 1일부터 31일 중 저장된 모든 수면기록 조회
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         List<SleepLog> sleepLogs =
@@ -97,14 +81,6 @@ public class SleepLogService {
     }
 
     public SleepLogResponseDto.SleepLogDetail findSleepLogByDay(long childId, String date) throws ParseException {
-        //childId에 해당하는 유저가 없는 경우
-        User child = userRepository.findById(childId).orElseThrow(
-                () -> ExceptionFactory.userNotFound(childId));
-
-        //해당 유저가 자녀 유저가 아닌 경우
-        if(child.getUserType() != UserType.CHILD)
-            throw ExceptionFactory.userTypeMismatch(childId, UserType.CHILD);
-
         //해당 유저가 해당 날짜에 측정된 수면 기록이 없는 경우
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         SleepLog sleepLog = sleepLogRepository.findByUserIdAndDate(childId, formatter.parse(date)).orElseThrow(
