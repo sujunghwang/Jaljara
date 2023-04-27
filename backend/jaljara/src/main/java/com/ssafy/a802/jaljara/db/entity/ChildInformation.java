@@ -45,10 +45,12 @@ public class ChildInformation {
 	@Builder.Default
 	private int streakCount = 0;
 
-	@Column
-	private Time targetBedTime;
+	@Column(nullable = false)
+	@Builder.Default
+	private Time targetBedTime = Time.valueOf("22:00:00");
 
-	@Column
-	private Time targetWakeupTime;
+	@Column(nullable = false)
+	@Builder.Default
+	private Time targetWakeupTime = Time.valueOf("08:00:00");;
 
 }

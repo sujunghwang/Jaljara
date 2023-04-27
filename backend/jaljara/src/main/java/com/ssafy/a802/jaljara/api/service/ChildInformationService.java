@@ -3,13 +3,9 @@ package com.ssafy.a802.jaljara.api.service;
 import com.ssafy.a802.jaljara.api.dto.request.ChildInformationRequestDto;
 import com.ssafy.a802.jaljara.api.dto.response.ChildInformationResponseDto;
 import com.ssafy.a802.jaljara.api.dto.response.UserResponseDto;
-import com.ssafy.a802.jaljara.db.entity.UserType;
-import com.ssafy.a802.jaljara.exception.CustomException;
 import com.ssafy.a802.jaljara.db.entity.ChildInformation;
-import com.ssafy.a802.jaljara.db.entity.User;
 import com.ssafy.a802.jaljara.db.repository.ChildInformationRepository;
-import com.ssafy.a802.jaljara.db.repository.UserRepository;
-import com.ssafy.a802.jaljara.exception.ExceptionFactory;
+import com.ssafy.a802.jaljara.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChildInformationService {
     private final ChildInformationRepository childInformationRepository;
-    private final UserRepository userRepository;
 
     public void addChildInformation(long parentId, long childId){
         //이미 자녀로 등록된 유저인 경우
