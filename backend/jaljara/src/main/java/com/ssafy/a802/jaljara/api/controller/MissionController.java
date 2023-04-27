@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.a802.jaljara.api.dto.response.MissionLogRequestDto;
 import com.ssafy.a802.jaljara.api.dto.response.MissionTodayResponseDto;
 import com.ssafy.a802.jaljara.api.service.MissionService;
+import com.ssafy.a802.jaljara.common.annotation.ValidChild;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +30,7 @@ public class MissionController {
 
 	//오늘의 미션 조회
 	@GetMapping("/{userId}")
+	@ValidChild
 	public ResponseEntity<?> getMissionToday(@PathVariable Long userId) {
 		MissionTodayResponseDto missionToday = missionService.findMissionToday(userId);
 		return new ResponseEntity<>(missionToday, HttpStatus.OK);
@@ -36,6 +38,7 @@ public class MissionController {
 
 	//미션 리롤
 	@GetMapping("/{userId}/reroll")
+	@ValidChild
 	public ResponseEntity<?> rerollMissionToday(@PathVariable Long userId) {
 		missionService.modifyMissionTodayReroll(userId);
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -43,6 +46,7 @@ public class MissionController {
 
 	//미션 수행
 	@PostMapping("/attachment/{userId}")
+	@ValidChild
 	public ResponseEntity<?> uploadMissionTodayAttachment(@PathVariable Long userId,
 		@RequestPart("file") MultipartFile file) throws
 		IOException {
@@ -52,6 +56,7 @@ public class MissionController {
 
 	//미션 승인
 	@PutMapping("/{userId}/clear")
+	@ValidChild
 	public ResponseEntity<?> clearMissionToday(@PathVariable Long userId) {
 		missionService.modifyMissionTodayIsClear(userId);
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -59,6 +64,7 @@ public class MissionController {
 
 	//해당 날짜 미션 기록 조회
 	@GetMapping("/{userId}/{date}")
+	@ValidChild
 	public ResponseEntity<?> getMissionLogWithThatDay(@PathVariable Long userId, @PathVariable String date) throws
 		ParseException {
 		MissionLogRequestDto missionLogWithDate =
@@ -68,6 +74,7 @@ public class MissionController {
 
 	//미션 생성 - 테스트용 실제로는 스케쥴러로 돌아감
 	@PostMapping("/test/generateMissionToday/{userId}")
+	@ValidChild
 	public void generateMissionToday(@PathVariable Long userId) {
 		missionService.addMissionToday(userId);
 	}
