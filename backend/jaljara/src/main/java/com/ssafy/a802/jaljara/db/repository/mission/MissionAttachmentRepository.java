@@ -10,5 +10,4 @@ import org.springframework.data.repository.query.Param;
 import com.ssafy.a802.jaljara.db.entity.MissionAttachment;
 
 public interface MissionAttachmentRepository extends JpaRepository<MissionAttachment, Long> {
-
 }

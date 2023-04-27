@@ -58,7 +58,7 @@ public class MissionController {
 	}
 
 	//해당 날짜 미션 기록 조회
-	@GetMapping("/parent/missions/{userId}/{date}")
+	@GetMapping("/{userId}/{date}")
 	public ResponseEntity<?> getMissionLogWithThatDay(@PathVariable Long userId, @PathVariable String date) throws
 		ParseException {
 		MissionLogRequestDto missionLogWithDate =

@@ -5,6 +5,8 @@ import com.ssafy.a802.jaljara.db.entity.MissionToday;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
 public class MissionTodayResponseDto {
@@ -12,8 +14,7 @@ public class MissionTodayResponseDto {
 	private Long missionTodayId;
 	private Long userId;
 	private Long missionId;
-
-	@JsonProperty
+	@JsonProperty("isClear")
 	private boolean isClear;
 	private int remainRerollCount;
 	private String url;
