@@ -21,7 +21,7 @@ public class MissionRepositoryImpl {
 			"select new com.ssafy.a802.jaljara.api.dto.response.MissionLogRequestDto"
 				+ "(ml.id, ml.user.id, ml.isSuccess, ml.missionDate, ma.missionType, ml.content, ma.url)"
 				+ " from MissionLog ml"
-				+ " join MissionAttachment ma"
+				+ " left outer join MissionAttachment ma"
 				+ " on ml.id = ma.missionLog.id"
 				+ " where ml.user.id =:userId"
 				+ " and ml.missionDate =:missionDate", MissionLogRequestDto.class)
