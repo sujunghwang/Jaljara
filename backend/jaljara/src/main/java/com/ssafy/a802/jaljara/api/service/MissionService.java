@@ -73,7 +73,7 @@ public class MissionService {
 
 	//create mission today
 	@Transactional
-	public void addMissionToday(Long userId) {
+	public void addMissionToday(long userId) {
 		User findUser = userRepository.findById(userId).orElseThrow(() ->
 			ExceptionFactory.userNotFound(userId));
 
@@ -132,7 +132,7 @@ public class MissionService {
 	}
 
 	//find mission today
-	public MissionTodayResponseDto findMissionToday(Long userId) {
+	public MissionTodayResponseDto findMissionToday(long userId) {
 
 		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
 			ExceptionFactory.userMissionTodayNotFound(userId));
@@ -149,7 +149,7 @@ public class MissionService {
 
 	//today mission reroll
 	@Transactional
-	public void modifyMissionTodayReroll(Long userId) {
+	public void modifyMissionTodayReroll(long userId) {
 
 		//generate new random mission today
 		Mission randomMission = getRandomMission();
@@ -178,7 +178,7 @@ public class MissionService {
 
 	//complete mission today (parents okay sign)
 	@Transactional
-	public void modifyMissionTodayIsClear(Long userId) {
+	public void modifyMissionTodayIsClear(long userId) {
 
 		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
 			ExceptionFactory.userMissionTodayNotFound(userId));
@@ -191,7 +191,7 @@ public class MissionService {
 
 	//delete mission today
 	@Transactional
-	public void removeMissionToday(Long userId) {
+	public void removeMissionToday(long userId) {
 
 		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
 			ExceptionFactory.userMissionTodayNotFound(userId));
@@ -202,7 +202,7 @@ public class MissionService {
 	//perform a mission (S3 save logic)
 	//s3 save -> db save
 	@Transactional
-	public void addMissionTodayAttachment(Long userId, MultipartFile multipartFile) throws IOException {
+	public void addMissionTodayAttachment(long userId, MultipartFile multipartFile) throws IOException {
 
 		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
 			ExceptionFactory.userMissionTodayNotFound(userId));
@@ -234,7 +234,7 @@ public class MissionService {
 	}
 
 	//get user's mission log attachment that day
-	public MissionLogRequestDto findMissionLogWithMissionAttachment(Long userId, String missionDate) throws
+	public MissionLogRequestDto findMissionLogWithMissionAttachment(long userId, String missionDate) throws
 		ParseException {
 
 		//String to Date

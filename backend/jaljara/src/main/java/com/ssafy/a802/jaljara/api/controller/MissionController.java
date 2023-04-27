@@ -31,7 +31,7 @@ public class MissionController {
 	//오늘의 미션 조회
 	@GetMapping("/{userId}")
 	@ValidChild
-	public ResponseEntity<?> getMissionToday(@PathVariable Long userId) {
+	public ResponseEntity<?> getMissionToday(@PathVariable long userId) {
 		MissionTodayResponseDto missionToday = missionService.findMissionToday(userId);
 		return new ResponseEntity<>(missionToday, HttpStatus.OK);
 	}
@@ -39,7 +39,7 @@ public class MissionController {
 	//미션 리롤
 	@GetMapping("/{userId}/reroll")
 	@ValidChild
-	public ResponseEntity<?> rerollMissionToday(@PathVariable Long userId) {
+	public ResponseEntity<?> rerollMissionToday(@PathVariable long userId) {
 		missionService.modifyMissionTodayReroll(userId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -47,7 +47,7 @@ public class MissionController {
 	//미션 수행
 	@PostMapping("/attachment/{userId}")
 	@ValidChild
-	public ResponseEntity<?> uploadMissionTodayAttachment(@PathVariable Long userId,
+	public ResponseEntity<?> uploadMissionTodayAttachment(@PathVariable long userId,
 		@RequestPart("file") MultipartFile file) throws
 		IOException {
 		missionService.addMissionTodayAttachment(userId, file);
@@ -57,7 +57,7 @@ public class MissionController {
 	//미션 승인
 	@PutMapping("/{userId}/clear")
 	@ValidChild
-	public ResponseEntity<?> clearMissionToday(@PathVariable Long userId) {
+	public ResponseEntity<?> clearMissionToday(@PathVariable long userId) {
 		missionService.modifyMissionTodayIsClear(userId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -65,7 +65,7 @@ public class MissionController {
 	//해당 날짜 미션 기록 조회
 	@GetMapping("/{userId}/{date}")
 	@ValidChild
-	public ResponseEntity<?> getMissionLogWithThatDay(@PathVariable Long userId, @PathVariable String date) throws
+	public ResponseEntity<?> getMissionLogWithThatDay(@PathVariable long userId, @PathVariable String date) throws
 		ParseException {
 		MissionLogRequestDto missionLogWithDate =
 			missionService.findMissionLogWithMissionAttachment(userId, date);
@@ -75,7 +75,7 @@ public class MissionController {
 	//미션 생성 - 테스트용 실제로는 스케쥴러로 돌아감
 	@PostMapping("/test/generateMissionToday/{userId}")
 	@ValidChild
-	public void generateMissionToday(@PathVariable Long userId) {
+	public void generateMissionToday(@PathVariable long userId) {
 		missionService.addMissionToday(userId);
 	}
 }
