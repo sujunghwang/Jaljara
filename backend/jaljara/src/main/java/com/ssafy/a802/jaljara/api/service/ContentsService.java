@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ssafy.a802.jaljara.api.dto.response.ContentsDetailResponseDto;
 import com.ssafy.a802.jaljara.api.dto.response.ContentsResponseDto;
 import com.ssafy.a802.jaljara.db.entity.ContentType;
-import com.ssafy.a802.jaljara.db.repository.ContentsRepository;
 import com.ssafy.a802.jaljara.db.repository.ContentsRepositoryImpl;
 
 import lombok.RequiredArgsConstructor;
