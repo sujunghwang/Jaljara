@@ -18,6 +18,6 @@ public final class ExceptionFactory {
     }
 
     public static CustomException userMissionTodayNotFound(long userId) {
-        return new CustomException(HttpStatus.NOT_FOUND, "해당 유저에게 오늘의 미션이 존재하지 않습니다. userIdl " + userId);
+        return new CustomException(HttpStatus.NOT_FOUND, "해당 유저에게 오늘의 미션이 존재하지 않습니다. userId: " + userId);
     }
 }
