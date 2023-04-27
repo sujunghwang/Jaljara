@@ -30,7 +30,7 @@ public class ContentsService {
 	}
 
 	//get contents
-	public ContentsDetailResponseDto findContents(Long contentsId) {
+	public ContentsDetailResponseDto findContents(long contentsId) {
 		return contentsRepositoryImpl.findContentsDetail(contentsId);
 	}
 }
