@@ -4,13 +4,9 @@ import com.ssafy.a802.jaljara.api.dto.request.SleepLogRequestDto;
 import com.ssafy.a802.jaljara.api.dto.response.SleepLogResponseDto;
 import com.ssafy.a802.jaljara.db.entity.ChildInformation;
 import com.ssafy.a802.jaljara.db.entity.SleepLog;
-import com.ssafy.a802.jaljara.db.entity.User;
-import com.ssafy.a802.jaljara.db.entity.UserType;
 import com.ssafy.a802.jaljara.db.repository.ChildInformationRepository;
 import com.ssafy.a802.jaljara.db.repository.SleepLogRepository;
-import com.ssafy.a802.jaljara.db.repository.UserRepository;
 import com.ssafy.a802.jaljara.exception.CustomException;
-import com.ssafy.a802.jaljara.exception.ExceptionFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,7 +20,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SleepLogService {
-    private final UserRepository userRepository;
     private final SleepLogRepository sleepLogRepository;
     private final ChildInformationRepository childInformationRepository;
 

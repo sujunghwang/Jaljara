@@ -20,7 +20,7 @@ public class RewardController {
     @ValidChildIdParameter
     public ResponseEntity<?> addReward(@PathVariable long userId){
         rewardService.addReward(userId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/{userId}")
