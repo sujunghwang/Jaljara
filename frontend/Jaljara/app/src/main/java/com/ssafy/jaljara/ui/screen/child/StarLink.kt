@@ -25,12 +25,14 @@ import com.ssafy.jaljara.R
 @Composable
 fun StarLink(){
 
-    var getBtnValid = false
+    var getBtnValid = true
     var rewardBtnValid = true
 
-    var streakCnt = 4
-    if(streakCnt == 7)
-        getBtnValid = true
+    var streakCnt = remember {
+        mutableStateOf(0)
+    }
+//    if(streakCnt == 7)
+//        getBtnValid = true
 
     var currentReward = "놀이동산 같이 가기"
     if(currentReward == "")
@@ -60,10 +62,22 @@ fun StarLink(){
                     fontSize = 40.sp
                 )
             }
+            var starLinkImg = R.drawable.star_link
+            when (streakCnt.value) {
+                1 -> starLinkImg = R.drawable.star_link_1
+                2 -> starLinkImg = R.drawable.star_link_2
+                3 -> starLinkImg = R.drawable.star_link_3
+                4 -> starLinkImg = R.drawable.star_link_4
+                5 -> starLinkImg = R.drawable.star_link_5
+                6 -> starLinkImg = R.drawable.star_link_6
+                7 -> starLinkImg = R.drawable.star_link_7
+            }
             Image(
-                painter = painterResource(id = R.drawable.star_link),
+                painter = painterResource(starLinkImg),
                 contentDescription = "star_link",
-                modifier = Modifier.size(size = 360.dp).padding(16.dp)
+                modifier = Modifier
+                    .size(size = 360.dp)
+                    .padding(16.dp)
             )
             Box(
                 modifier = Modifier
@@ -72,7 +86,7 @@ fun StarLink(){
                     .background(color = Color(0x40BAD6F0), shape = RoundedCornerShape(16.dp))
             ){
                 Text(
-                    text = "${streakCnt} / 7",
+                    text = "${streakCnt.value} / 7",
                     color = Color.White,
                     fontSize = 24.sp,
                     modifier = Modifier.padding(16.dp)
@@ -96,7 +110,9 @@ fun StarLink(){
                 )
             }
             Button(
-                onClick = {},
+                onClick = {
+                    streakCnt.value = (streakCnt.value + 1) % 8
+                },
                 contentPadding = PaddingValues(12.dp),
                 colors = ButtonDefaults.buttonColors(
                     disabledContainerColor = Color.LightGray,
