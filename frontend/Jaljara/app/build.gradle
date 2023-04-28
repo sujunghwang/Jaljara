@@ -67,4 +67,7 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    implementation "com.kakao.sdk:v2-user:2.13.0"
+    implementation 'com.google.android.gms:play-services-auth:20.5.0'
 }
