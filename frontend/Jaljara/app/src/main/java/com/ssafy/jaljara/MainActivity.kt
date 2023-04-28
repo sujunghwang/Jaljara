@@ -9,8 +9,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.ssafy.jaljara.ui.screen.JaljaraApp
+import com.ssafy.jaljara.ui.screen.parent.ParentApp
 import com.ssafy.jaljara.ui.theme.JaljaraTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,8 +23,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             JaljaraTheme {
-                JaljaraApp()
+                ParentApp()
             }
         }
+    }
+
+    @Composable
+    private fun getGoogleLoginAuth(): GoogleSignInClient {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestIdToken(stringResource(R.string.google_web_client_id))
+            .requestId()
+            .requestProfile()
+            .build()
+        return GoogleSignIn.getClient(this, gso)
     }
 }
