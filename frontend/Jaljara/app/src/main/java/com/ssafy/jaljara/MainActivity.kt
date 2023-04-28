@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ssafy.jaljara.ui.screen.JaljaraApp
+import com.ssafy.jaljara.ui.screen.child.ChildMainView
 import com.ssafy.jaljara.ui.theme.JaljaraTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,7 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             JaljaraTheme {
-                JaljaraApp()
+                ChildMainView()
             }
         }
     }
