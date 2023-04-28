@@ -73,7 +73,7 @@ fun CouponScreen(
     val currentScreen = CouponStatus.valueOf("UsedCoupon")
 
 
-    // 하단 네비게이션 선택 애니메이션 용
+    // 쿠폰 사용 여부 선택창
     var navBarSelectedItem by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(

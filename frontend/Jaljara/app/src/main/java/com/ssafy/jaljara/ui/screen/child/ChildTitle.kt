@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.ssafy.jaljara.R
 
 @Composable
-fun ChildTitle(modifier: Modifier = Modifier){
+fun ChildTitle(title:String, modifier: Modifier = Modifier){
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically
@@ -34,7 +34,7 @@ fun ChildTitle(modifier: Modifier = Modifier){
             contentDescription = null
         )
         Text(
-            text = "나의 보물상자",
+            text = title,
             color = Color.White,
             fontSize = 40.sp
         )

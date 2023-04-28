@@ -48,8 +48,9 @@ fun ChildApp(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ChildTitle(modifier.padding(top = 10.dp, bottom = 10.dp))
-        CouponScreen(Modifier.background(Color.Transparent))
+        ChildTitle("오늘의 미션", modifier.padding(top = 10.dp, bottom = 10.dp))
+//        CouponScreen(Modifier.background(Color.Transparent))
+        ChildMission()
     }
 }
 
