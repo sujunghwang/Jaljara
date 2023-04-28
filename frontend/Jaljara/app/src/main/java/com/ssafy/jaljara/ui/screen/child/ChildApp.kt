@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,28 +30,41 @@ import com.ssafy.jaljara.ui.vm.ParentViewModel
 
 enum class ChildScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
-    Fuck(title = 2),
+    별자리(title = 2),
     Hate(title = 3),
 }
 
 @Composable
 fun ParentNavigationBar(
-    items : List<ChildScreen> = listOf(ChildScreen.Start,ChildScreen.Fuck,ChildScreen.Hate),
+    items : List<ChildScreen> = listOf(ChildScreen.Start,ChildScreen.별자리,ChildScreen.Hate),
     navController : NavController,
     selectedItem : Int,
     onChangeNavIdx: (Int) -> Unit = {},
 ) {
     NavigationBar {
         items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                icon = { Icon(Icons.Filled.Favorite, contentDescription = item.name) },
-                label = { Text(item.name) },
-                selected = selectedItem == index,
-                onClick = {
-                    navController.navigate(item.name)
-                    onChangeNavIdx(index)
-                }
-            )
+            if(index == 1){
+                NavigationBarItem(
+                    icon = { Icon(Icons.Filled.Star, contentDescription = item.name) },
+                    label = { Text(item.name) },
+                    selected = selectedItem == index,
+                    onClick = {
+                        navController.navigate(item.name)
+                        onChangeNavIdx(index)
+                    }
+                )
+            }
+            else{
+                NavigationBarItem(
+                    icon = { Icon(Icons.Filled.Favorite, contentDescription = item.name) },
+                    label = { Text(item.name) },
+                    selected = selectedItem == index,
+                    onClick = {
+                        navController.navigate(item.name)
+                        onChangeNavIdx(index)
+                    }
+                )
+            }
         }
     }
 }
@@ -89,9 +103,9 @@ fun ChildApp(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = ChildScreen.Start.name) {
-                StarLink()
             }
-            composable(route = ChildScreen.Fuck.name) {
+            composable(route = ChildScreen.별자리.name) {
+                StarLink()
             }
             composable(route = ChildScreen.Hate.name) {
             }
