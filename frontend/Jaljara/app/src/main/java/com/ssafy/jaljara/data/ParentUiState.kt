@@ -8,6 +8,7 @@ data class ParentUiState(
     // 선택 된 자녀의 idx
     val selectedChildrenIdx : Int? = null,
 
-    // 선택 된 네비게이션 bar idx
-    val selectedNavIdx : Int = 0
+    // 네비게이션 표시
+    val showNavigation : Boolean = true,
+
 )
