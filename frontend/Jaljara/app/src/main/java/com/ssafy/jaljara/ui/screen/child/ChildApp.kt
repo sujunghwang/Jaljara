@@ -39,9 +39,7 @@ import com.ssafy.jaljara.ui.vm.ParentViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ChildApp(
-    modifier: Modifier = Modifier,
-    viewModel: ParentViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    modifier: Modifier = Modifier
 ) {
     Column(
         Modifier.background(color = Color(171,152,226)),
