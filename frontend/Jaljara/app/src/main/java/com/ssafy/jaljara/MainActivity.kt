@@ -16,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.ssafy.jaljara.ui.screen.JaljaraApp
 import com.ssafy.jaljara.ui.screen.parent.ParentApp
+import com.ssafy.jaljara.ui.screen.child.ChildMainView
 import com.ssafy.jaljara.ui.theme.JaljaraTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +24,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             JaljaraTheme {
-                ParentApp()
+//                ParentApp()
+                ChildMainView()
+
             }
         }
     }
