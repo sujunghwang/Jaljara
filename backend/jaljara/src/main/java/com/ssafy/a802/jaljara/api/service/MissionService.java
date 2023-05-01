@@ -143,6 +143,8 @@ public class MissionService {
 			.userId(findMissionToday.getUser().getId())
 			.remainRerollCount(findMissionToday.getRemainRerollCount())
 			.isClear(findMissionToday.isClear())
+			.content(findMissionToday.getMission().getContent())
+			.missionType(findMissionToday.getMission().getMissionType().toString())
 			.url(findMissionToday.getUrl())
 			.build();
 	}
