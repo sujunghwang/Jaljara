@@ -56,10 +56,14 @@ fun MissionTodayContainer(){
                 defaultElevation = 10.dp,
             ),
             shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            ),
             content = {
                 reloadMissionButton(
                     modifier = Modifier
-                        .clickable {  },
+                        .align(Alignment.End)
+                        .clickable { },
                 )
                 Text(text = "이 닦는 사진 찍기",
                     modifier = Modifier
@@ -75,7 +79,8 @@ fun MissionTodayContainer(){
 @Composable
 fun reloadMissionButton(modifier: Modifier){
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
     ) {
         Text(text = "재설정")
         Image(
@@ -95,6 +100,9 @@ fun SetSllepTimeContainer() {
                 defaultElevation = 10.dp,
             ),
             shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            ),
             content = {
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -137,6 +145,9 @@ fun RewardStatusContainer() {
                 defaultElevation = 10.dp,
             ),
             shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            ),
             content = {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -176,6 +187,9 @@ fun ContentContainer(contents: List<Content>) {
 fun ContentCard(content: Content) {
     Card(
         shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White,
+        ),
         modifier = Modifier
             .padding(end = 3.dp, bottom = 5.dp)
     ) {
