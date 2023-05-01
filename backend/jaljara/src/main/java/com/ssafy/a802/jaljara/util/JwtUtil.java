@@ -7,25 +7,32 @@ import com.auth0.jwk.JwkProviderBuilder;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.ssafy.a802.jaljara.api.dto.response.UserResponseDto;
 import com.ssafy.a802.jaljara.db.entity.UserType;
+import com.ssafy.a802.jaljara.exception.ExceptionFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtil {
-    private JwkProvider kakaoJwkProvider;
-    private Algorithm algorithm;
+    private static JwkProvider kakaoJwkProvider;
+    private static Algorithm algorithm;
     private static String SECRET_KEY;
     private static String ISSUER;
     private static long ACCESS_EXPIRATION_TIME;
     private static long REFRESH_EXPIRATION_TIME;
 
 
-    public JwtUtil(@Value("${jwt.secret}") String secretKey,
+    private JwtUtil(@Value("${jwt.secret}") String secretKey,
                    @Value("${jwt.issuer}") String issuer,
                    @Value("${jwt.access_exp_time}") long accessExpTime,
                    @Value("${jwt.refresh_exp_time}") long refreshExpTime) {
@@ -40,7 +47,7 @@ public class JwtUtil {
         algorithm = Algorithm.HMAC256(SECRET_KEY);
     }
 
-    public Jwk getKakaoJwk(DecodedJWT decodedJwt) {
+    public static Jwk getKakaoJwk(DecodedJWT decodedJwt) {
         Jwk jwk = null;
         try {
             jwk = kakaoJwkProvider.get(decodedJwt.getKeyId());
@@ -50,19 +57,47 @@ public class JwtUtil {
         return jwk;
     }
 
-    public String createAccessToken(Long id, String name, UserType userType) {
+    public static String createAccessToken(Long id, String name, UserType userType) {
         return createToken(id, name, userType, false);
     }
 
-    public String createRefreshToken(Long id, String name, UserType userType) {
+    public static String createRefreshToken(Long id, String name, UserType userType) {
         return createToken(id, name, userType, true);
     }
 
-    public Long verifyJwtTokenAndClaimId(String token) {
-        return JWT.require(algorithm).build().verify(token).getClaim("id").asLong();
+    public static Boolean isValidToken(String token) {
+        return verifyJwtToken(token);
     }
 
-    private String createToken(Long id, String name, UserType userType, boolean isRefresh) {
+    public static Long claimIdFromToken(String token) {
+        return verifyJwtTokenAndClaimId(token);
+    }
+
+    public static Authentication getAuthentication(String token) {
+
+        Long id = verifyJwtTokenAndClaimId(token);
+
+        if (id == null) {
+            throw ExceptionFactory.jwtAuthenticateFail();
+        }
+
+        return new UsernamePasswordAuthenticationToken(UserResponseDto.SimpleUserInfo.builder().userId(id).build(), "", new ArrayList<>());
+    }
+
+    private static Boolean verifyJwtToken(String token) {
+        JWT.require(algorithm).build().verify(token);
+        return true;
+    }
+
+    private static Long verifyJwtTokenAndClaimId(String token) {
+        return verifyJwtTokenAndGetClaims(token).get("id").asLong();
+    }
+
+    private static Map<String, Claim> verifyJwtTokenAndGetClaims(String token) {
+        return JWT.require(algorithm).build().verify(token).getClaims();
+    }
+
+    private static String createToken(Long id, String name, UserType userType, boolean isRefresh) {
         JWTCreator.Builder builder = JWT.create();
         Date now = new Date();
 
@@ -75,7 +110,7 @@ public class JwtUtil {
                 .sign(Algorithm.HMAC256(SECRET_KEY));
     }
 
-    private Date calculateExpirationTime(Date now, boolean isRefresh) {
+    private static Date calculateExpirationTime(Date now, boolean isRefresh) {
         return isRefresh ?
                 new Date(now.getTime() + ACCESS_EXPIRATION_TIME)
                 : new Date(now.getTime() + REFRESH_EXPIRATION_TIME);

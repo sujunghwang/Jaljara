@@ -9,12 +9,15 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.ssafy.a802.jaljara.api.dto.request.TokenRefreshRequestDto;
 import com.ssafy.a802.jaljara.api.dto.request.UserLoginRequestDto;
+import com.ssafy.a802.jaljara.api.dto.response.TokenRefreshResponseDto;
 import com.ssafy.a802.jaljara.api.dto.response.UserLoginResponseDto;
 import com.ssafy.a802.jaljara.api.dto.response.UserResponseDto;
 import com.ssafy.a802.jaljara.db.entity.User;
 import com.ssafy.a802.jaljara.db.entity.UserType;
 import com.ssafy.a802.jaljara.db.repository.UserRepository;
+import com.ssafy.a802.jaljara.exception.ExceptionFactory;
 import com.ssafy.a802.jaljara.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,7 +56,6 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final NetHttpTransport netHttpTransport = new NetHttpTransport();
-    private final JwtUtil jwtUtil;
 
 
     @Value("${auth.google_api_id}")
@@ -87,10 +89,8 @@ public class AuthService {
 
         try {
             idToken = verifier.verify(token);
-        } catch (GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw ExceptionFactory.openAuthorizationFailed();
         }
 
         if (idToken != null) {
@@ -101,7 +101,7 @@ public class AuthService {
     }
 
     private Payload kakaoTokenVerifier(String token) {
-        Jwk jwk = jwtUtil.getKakaoJwk(JWT.decode(token));
+        Jwk jwk = JwtUtil.getKakaoJwk(JWT.decode(token));
 
         Payload payload = null;
 
@@ -115,8 +115,8 @@ public class AuthService {
                     .email(decodedJWT.getClaim("email").asString())
                     .profilePictureUrl(decodedJWT.getClaim("picture").asString())
                     .build();
-        } catch (InvalidPublicKeyException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw ExceptionFactory.openAuthorizationFailed();
         }
 
         return payload;
@@ -131,13 +131,14 @@ public class AuthService {
                 .userInfo(UserResponseDto.SimpleUserInfo.builder()
                         .userId(user.getId())
                         .profileImageUrl(user.getProfileImageUrl())
+                        .userType(user.getUserType().name())
                         .build())
-                .accessToken(jwtUtil.createAccessToken(user.getId(), user.getName(), user.getUserType()))
-                .refreshToken(jwtUtil.createRefreshToken(user.getId(), user.getName(), user.getUserType()))
+                .accessToken(JwtUtil.createAccessToken(user.getId(), user.getName(), user.getUserType()))
+                .refreshToken(JwtUtil.createRefreshToken(user.getId(), user.getName(), user.getUserType()))
                 .build();
     }
 
-    public Optional<User> signupWithAnyProvider(UserLoginRequestDto userLoginRequestDto) {
+    public Optional<User> signupWithAnyProvider(UserLoginRequestDto userLoginRequestDto, UserType userType) {
         Payload payload = tokenVerifier(userLoginRequestDto.getProvider(), userLoginRequestDto.getToken());
 
         if (payload != null) {
@@ -150,13 +151,34 @@ public class AuthService {
                         .sub(payload.getSub())
                         .profileImageUrl(payload.getProfilePictureUrl())
                         .provider(userLoginRequestDto.getProvider().name())
-                        .userType(UserType.PARENTS)
+                        .userType(userType)
                         .build());
 
                 return userRepository.findBySub(sub);
             }
+
+            throw ExceptionFactory.userAlreadyExists();
         }
 
-        return null;
+        throw ExceptionFactory.openAuthorizationFailed();
+    }
+
+    public Optional<User> signupWithAnyProvider(UserLoginRequestDto userLoginRequestDto) {
+        return signupWithAnyProvider(userLoginRequestDto, UserType.PARENTS);
+    }
+
+    public TokenRefreshResponseDto refreshTokens(TokenRefreshRequestDto tokenRefreshRequestDto) {
+        try {
+            if (JwtUtil.isValidToken(tokenRefreshRequestDto.getRefreshToken())) {
+                User user = userRepository.findById(JwtUtil.claimIdFromToken(tokenRefreshRequestDto.getRefreshToken())).orElseThrow();
+
+                return TokenRefreshResponseDto.builder()
+                        .accessToken(JwtUtil.createAccessToken(user.getId(), user.getName(), user.getUserType()))
+                        .refreshToken(JwtUtil.createAccessToken(user.getId(), user.getName(), user.getUserType()))
+                        .build();
+            }
+        } catch (Exception e) {
+        }
+        throw ExceptionFactory.jwtAuthenticateFail();
     }
 }
