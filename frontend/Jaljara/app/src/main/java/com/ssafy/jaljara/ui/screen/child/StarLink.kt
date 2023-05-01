@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +29,7 @@ fun StarLink(){
     var getBtnValid = true
     var rewardBtnValid = true
 
-    var streakCnt = remember {
+    var streakCnt = rememberSaveable {
         mutableStateOf(0)
     }
 //    if(streakCnt == 7)
@@ -38,7 +39,7 @@ fun StarLink(){
     if(currentReward == "")
         rewardBtnValid = false
 
-    var openDialog = remember {
+    var openDialog = rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -97,7 +98,7 @@ fun StarLink(){
                         text = "${streakCnt.value} / 7",
                         color = Color.White,
                         fontSize = 20.sp,
-                        modifier = Modifier.padding(12.dp)
+                        modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp)
                     )
                 }
             }
