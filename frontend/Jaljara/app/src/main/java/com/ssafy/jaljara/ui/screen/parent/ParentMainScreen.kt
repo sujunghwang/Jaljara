@@ -93,7 +93,7 @@ fun CurrentRewardContainer() {
         shape = RoundedCornerShape(12.dp),
         content = {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(painter = painterResource(id = R.drawable.ic_launcher_foreground),
                     contentDescription = null,
@@ -110,19 +110,22 @@ fun CurrentRewardContainer() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChildSetTimeCard() {
+fun ChildSetTimeCard(modifier: Modifier = Modifier) {
 
     var wakeupTime by remember { mutableStateOf("5:00") }
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth(0.45f),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp,
         ),
+        modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         content = {
-            Column() {
+            Column(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth()
+            ) {
                 Text(text = "$wakeupTime", fontSize = 20.sp)
                 Text(text = "Wake Up")
                 Image(painter = painterResource(id = R.drawable.ic_launcher_foreground),
@@ -142,16 +145,18 @@ fun ParentMainScreenView() {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
-            .fillMaxHeight()
+            .fillMaxSize()
             .padding(20.dp)
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Children()
         CurrentRewardContainer()
-        Row() {
-            ChildSetTimeCard()
-            ChildSetTimeCard()
+        CurrentRewardContainer()
+        Row(modifier = Modifier.fillMaxWidth()) {
+            ChildSetTimeCard(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.1f))
+            ChildSetTimeCard(Modifier.weight(1f))
         }
     }
 }
