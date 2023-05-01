@@ -3,4 +3,6 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="google_web_client_id">693682333355-lklamagdho01dqjbph9l6c4ing39173q.apps.googleusercontent.com</string>
+    <string name="kakao_sdk_id">ec94db6be11f97297e7220d7de3f1e2c</string>
 </resources>
