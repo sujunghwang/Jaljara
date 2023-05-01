@@ -51,10 +51,13 @@ fun StarLink(){
         )
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.weight(1f)
+            ) {
                 Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon")
                 Text(
                     text = "바른 수면 별자리",
@@ -72,25 +75,31 @@ fun StarLink(){
                 6 -> starLinkImg = R.drawable.star_link_6
                 7 -> starLinkImg = R.drawable.star_link_7
             }
-            Image(
-                painter = painterResource(starLinkImg),
-                contentDescription = "star_link",
+            Column(
                 modifier = Modifier
-                    .size(size = 360.dp)
-                    .padding(16.dp)
-            )
-            Box(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .padding(16.dp)
-                    .background(color = Color(0x40BAD6F0), shape = RoundedCornerShape(16.dp))
-            ){
-                Text(
-                    text = "${streakCnt.value} / 7",
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(16.dp)
+                    .fillMaxSize()
+                    .weight(5f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(starLinkImg),
+                    contentDescription = "star_link",
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .fillMaxHeight(0.8f)
                 )
+                Box(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .background(color = Color(0x40BAD6F0), shape = RoundedCornerShape(16.dp))
+                ){
+                    Text(
+                        text = "${streakCnt.value} / 7",
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(12.dp)
+                    )
+                }
             }
             Button(
                 onClick = {
@@ -100,7 +109,7 @@ fun StarLink(){
                 colors = ButtonDefaults.buttonColors(Color(0xFF674AB3)),
                 modifier = Modifier
                     .wrapContentSize()
-                    .padding(top = 16.dp, bottom = 16.dp),
+                    .padding(10.dp),
                 enabled = rewardBtnValid
             ) {
                 Image(
