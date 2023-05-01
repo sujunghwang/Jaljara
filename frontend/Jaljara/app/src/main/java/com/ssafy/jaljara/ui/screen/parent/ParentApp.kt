@@ -110,8 +110,13 @@ fun ParentApp(
                 viewModel.setNavShow(true)
                 // 내 아이 수면 달력
                 SleepCalenderScreen(onClickDay = {
-                    Log.d("캘린더 라우터 클릭", it)
-                    navController.navigate(ParentScreen.SleepLogDetail.name + "/"+it)
+                    day ->
+                    Log.d("캘린더 라우터 클릭", day.toString())
+                    val sb = StringBuilder()
+
+                    // yyyyMMdd format
+                    val yyyyMMdd = sb.append(day.year).append(day.monthNumber).append(day.dayOfMonth)
+                    navController.navigate(ParentScreen.SleepLogDetail.name + "/"+yyyyMMdd)
                 })
                 navBarSelectedItem = 2
             }
