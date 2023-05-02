@@ -1,9 +1,15 @@
 package com.ssafy.jaljara.ui.screen
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -13,11 +19,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.data.ChildInfo
+import com.ssafy.jaljara.data.Content
+import com.ssafy.jaljara.data.DummyDataProvider
+import com.ssafy.jaljara.ui.screen.child.ContentCard
 
 @Composable
 fun ParentMain(){
@@ -39,15 +58,20 @@ fun ParentMainView(){
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Children()
-        CurrentRewardContainer()
-        CurrentRewardContainer()
+        Children(DummyDataProvider.childList)
+        CurrentRewardContainer("현재 보상", "놀이동산 가기")
+        CurrentRewardContainer("오늘의 미션", "이닦는 사진 찍기")
+        Row(modifier = Modifier.fillMaxWidth()) {
+            ChildSetTimeCard("Wake Up", "5:00", Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.1f))
+            ChildSetTimeCard("수면 설정하기", "8H", Modifier.weight(1f))
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Children(){
+fun Children(children: List<ChildInfo>){
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -56,33 +80,74 @@ fun Children(){
         ),
         shape = RoundedCornerShape(12.dp),
         content = {
-            Row(
+            LazyRow(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(60.dp,60.dp)
-                )
-                Image(painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(60.dp,60.dp)
-                )
-                Image(painter = painterResource(id = R.drawable.ic_person_add),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(50.dp,50.dp)
-                )
+                items(children){ Child(it) }
+                item(){
+                    Image(painter = painterResource(id = R.drawable.ic_person_add),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(50.dp,50.dp)
+                    )
+                }
             }
         }
     )
 }
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CurrentRewardContainer() {
-    var reward by remember { mutableStateOf("놀이동산 가기") }
+fun Child(childInfo: ChildInfo) {
+    // 이미지 비트맵
+    val bitmap : MutableState<Bitmap?> = mutableStateOf(null)
+
+    //현재 컨텍스트 가져오기
+    //이걸 비트맵으로 받겠다
+    //어떤 URL인데
+    //
+    Glide.with(LocalContext.current)
+        .asBitmap()
+        .load(childInfo.pictureUrl)
+        .into(object : CustomTarget<Bitmap>(){
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                //이미지 비트맵이 다 로드가 됐을때 들어오는 메소드
+                bitmap.value = resource //글라이더 라이브러리를 통해 다운받은 비트맵
+            }
+            override fun onLoadCleared(placeholder: Drawable?) { }
+        })
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(top= 5.dp,end = 7.dp)
+                .clip(CircleShape)
+        ) {
+            // 비트 맵이 있다면
+            bitmap.value?.asImageBitmap()?.let{fetchedBitmap ->
+                Image(bitmap = fetchedBitmap,
+                    contentScale = ContentScale.FillBounds,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp,50.dp)
+                )
+            } ?: Image(painter = painterResource(R.drawable.ic_no_person),
+                contentScale = ContentScale.FillBounds,
+                contentDescription = null,
+            ) // 비트맵이 없다면
+        }
+        Text(text = childInfo.childName)
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CurrentRewardContainer(title:String, content: String) {
+    var reward by remember { mutableStateOf(content) }
 
     Card(
         modifier = Modifier
@@ -100,7 +165,7 @@ fun CurrentRewardContainer() {
 //                        modifier = Modifier.size(60.dp, 60.dp)
                 )
                 Column() {
-                    Text(text = "현재 보상")
+                    Text(text = title)
                     Text(text = "$reward", fontSize = 20.sp)
                 }
             }
@@ -110,9 +175,9 @@ fun CurrentRewardContainer() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChildSetTimeCard(modifier: Modifier = Modifier) {
+fun ChildSetTimeCard(title:String, content: String, modifier: Modifier = Modifier) {
 
-    var wakeupTime by remember { mutableStateOf("5:00") }
+    var time by remember { mutableStateOf(content) }
 
     Card(
         elevation = CardDefaults.cardElevation(
@@ -126,8 +191,8 @@ fun ChildSetTimeCard(modifier: Modifier = Modifier) {
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "$wakeupTime", fontSize = 20.sp)
-                Text(text = "Wake Up")
+                Text(text = "$time", fontSize = 20.sp)
+                Text(text = title)
                 Image(painter = painterResource(id = R.drawable.ic_launcher_foreground),
                     contentDescription = null,
                     modifier = Modifier
@@ -150,13 +215,13 @@ fun ParentMainScreenView() {
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Children()
-        CurrentRewardContainer()
-        CurrentRewardContainer()
+        Children(DummyDataProvider.childList)
+        CurrentRewardContainer("현재 보상", "놀이동산 가기")
+        CurrentRewardContainer("오늘의 미션", "이닦는 사진 찍기")
         Row(modifier = Modifier.fillMaxWidth()) {
-            ChildSetTimeCard(modifier = Modifier.weight(1f))
+            ChildSetTimeCard("Wake Up", "5:00", Modifier.weight(1f))
             Spacer(modifier = Modifier.weight(0.1f))
-            ChildSetTimeCard(Modifier.weight(1f))
+            ChildSetTimeCard("수면 설정하기", "8H", Modifier.weight(1f))
         }
     }
 }

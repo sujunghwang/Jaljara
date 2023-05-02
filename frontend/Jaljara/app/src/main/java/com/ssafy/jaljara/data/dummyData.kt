@@ -1,8 +1,11 @@
 package com.ssafy.jaljara.data
 
+import com.ssafy.jaljara.ui.screen.Children
+
 object DummyDataProvider {
 
     val contentList = List<Content>(200){ Content() }
+    val childList = List<ChildInfo>(3){ ChildInfo() }
 }
 
 data class DummyChildSleepInfo (
