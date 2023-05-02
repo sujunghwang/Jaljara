@@ -134,7 +134,11 @@ fun StarLink(){
                     .padding(10.dp),
                 enabled = getBtnValid
             ) {
-                Text(text = "보상 획득")
+                Text(
+                    text = "보상 획득",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
 
