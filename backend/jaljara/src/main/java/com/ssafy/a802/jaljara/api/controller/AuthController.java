@@ -6,6 +6,7 @@ import com.ssafy.a802.jaljara.api.dto.response.UserLoginResponseDto;
 import com.ssafy.a802.jaljara.api.dto.response.UserResponseDto.SimpleUserInfo;
 import com.ssafy.a802.jaljara.api.service.AuthService;
 import com.ssafy.a802.jaljara.db.entity.User;
+import com.ssafy.a802.jaljara.exception.ExceptionFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.cfg.NotYetImplementedException;
@@ -34,16 +35,16 @@ public class AuthController {
 
     @PostMapping("/parent/signup")
     public ResponseEntity<?> parentSignUp(@RequestBody UserLoginRequestDto userLoginRequestDto) {
-        Optional<User> user = authService.signupWithAnyProvider(userLoginRequestDto);
+        User user = authService.signupWithAnyProvider(userLoginRequestDto).orElseThrow();
 
         return ResponseEntity.ok(new SimpleUserInfo().builder()
-                .userId(user.get().getId())
-                .profileImageUrl(user.get().getProfileImageUrl())
+                .userId(user.getId())
+                .profileImageUrl(user.getProfileImageUrl())
                 .build());
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(@RequestBody TokenRefreshRequestDto tokenRefreshRequestDto) {
-        throw new NotYetImplementedException("Todo: add refresh controller");
+        return ResponseEntity.ok(authService.refreshTokens(tokenRefreshRequestDto));
     }
 }

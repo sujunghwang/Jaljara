@@ -13,5 +13,6 @@ public class UserResponseDto {
     public static class SimpleUserInfo {
         private long userId;
         private String profileImageUrl;
+        private String userType;
     }
 }
