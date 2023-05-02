@@ -1,6 +1,5 @@
 package com.ssafy.a802.jaljara.api.service;
 
-import com.auth0.jwk.InvalidPublicKeyException;
 import com.auth0.jwk.Jwk;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -14,8 +13,10 @@ import com.ssafy.a802.jaljara.api.dto.request.UserLoginRequestDto;
 import com.ssafy.a802.jaljara.api.dto.response.TokenRefreshResponseDto;
 import com.ssafy.a802.jaljara.api.dto.response.UserLoginResponseDto;
 import com.ssafy.a802.jaljara.api.dto.response.UserResponseDto;
+import com.ssafy.a802.jaljara.db.entity.ParentCode;
 import com.ssafy.a802.jaljara.db.entity.User;
 import com.ssafy.a802.jaljara.db.entity.UserType;
+import com.ssafy.a802.jaljara.db.repository.ParentCodeRepository;
 import com.ssafy.a802.jaljara.db.repository.UserRepository;
 import com.ssafy.a802.jaljara.exception.ExceptionFactory;
 import com.ssafy.a802.jaljara.util.JwtUtil;
@@ -28,11 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Collections;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +53,7 @@ public class AuthService {
     }
 
     private final UserRepository userRepository;
+    private final ParentCodeRepository parentCodeRepository;
     private final NetHttpTransport netHttpTransport = new NetHttpTransport();
 
 
@@ -138,14 +137,14 @@ public class AuthService {
                 .build();
     }
 
-    public Optional<User> signupWithAnyProvider(UserLoginRequestDto userLoginRequestDto, UserType userType) {
+    public User signupWithAnyProvider(UserLoginRequestDto userLoginRequestDto, UserType userType) {
         Payload payload = tokenVerifier(userLoginRequestDto.getProvider(), userLoginRequestDto.getToken());
 
         if (payload != null) {
             String sub = payload.getSub();
-            if(!userRepository.findBySub(sub).isPresent())
+            if(userRepository.findBySub(sub).isEmpty())
             {
-                userRepository.save(User.builder()
+                return userRepository.save(User.builder()
                         .name(payload.getName())
                         .email(payload.getEmail())
                         .sub(payload.getSub())
@@ -153,8 +152,6 @@ public class AuthService {
                         .provider(userLoginRequestDto.getProvider().name())
                         .userType(userType)
                         .build());
-
-                return userRepository.findBySub(sub);
             }
 
             throw ExceptionFactory.userAlreadyExists();
@@ -163,8 +160,13 @@ public class AuthService {
         throw ExceptionFactory.openAuthorizationFailed();
     }
 
-    public Optional<User> signupWithAnyProvider(UserLoginRequestDto userLoginRequestDto) {
+    public User signupWithAnyProvider(UserLoginRequestDto userLoginRequestDto) {
         return signupWithAnyProvider(userLoginRequestDto, UserType.PARENTS);
+    }
+
+    public User signupWithAnyProviderAsChild(UserLoginRequestDto userLoginRequestDto, String code) {
+        ParentCode parentCode = parentCodeRepository.findByParentCode(code).orElseThrow(() -> ExceptionFactory.invalidParentCode());
+        return signupWithAnyProvider(userLoginRequestDto, UserType.CHILD);
     }
 
     public TokenRefreshResponseDto refreshTokens(TokenRefreshRequestDto tokenRefreshRequestDto) {
@@ -180,5 +182,11 @@ public class AuthService {
         } catch (Exception e) {
         }
         throw ExceptionFactory.jwtAuthenticateFail();
+    }
+
+    private UserType getUserType(String parentCode) {
+        return parentCode == null || parentCode.equals("")
+                ? UserType.PARENTS
+                : UserType.CHILD;
     }
 }

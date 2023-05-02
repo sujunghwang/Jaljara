@@ -42,6 +42,11 @@ spring:
       maxFileSize: 20MB
       maxRequestSize: 20MB
 
+  redis:
+    host: 172.17.0.1
+    port: 6379
+    password: tXBUXtFK6zjrL3vPcyl8NoKgyTPjZ7Ss
+
 logging.level:
   org.hibernate.SQL: debug
   #org.hibernate.type: trace
