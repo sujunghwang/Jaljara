@@ -36,6 +36,7 @@ import com.himanshoe.kalendar.component.day.config.KalendarDayDefaultColors
 import com.himanshoe.kalendar.component.text.KalendarNormalText
 import com.himanshoe.kalendar.model.KalendarEvent
 import com.himanshoe.kalendar.model.toKalendarDay
+import com.ssafy.jaljara.component.NightForestBackGround
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
 
@@ -222,20 +223,22 @@ fun SleepCalenderScreen(
     var tYear by rememberSaveable{ mutableStateOf(today.year)}
     var tMonth by rememberSaveable{ mutableStateOf(today.month.value)}
 
-    Column() {
-
-        JongSeokCalendar(
-            takeMeToDate = null,
-            kalendarDayColors = KalendarDayDefaultColors.defaultColors(),
-            kalendarThemeColors = KalendarColors.defaultColors(),
-            onChangeMonth = {
-                year, month ->
+    NightForestBackGround {
+        Column() {
+            Text(text = "내 아이 수면 달력", color = Color.White)
+            JongSeokCalendar(
+                takeMeToDate = null,
+                kalendarDayColors = KalendarDayDefaultColors.defaultColors(),
+                kalendarThemeColors = KalendarColors.defaultColors(),
+                onChangeMonth = { year, month ->
                     tYear = year
                     tMonth = month
-            },
-            onClickDay = onClickDay
-        )
-        Text(text = "현재 날짜 $tYear 년 $tMonth 월")
+                },
+                onClickDay = onClickDay,
+                modifier = Modifier.padding(8.dp)
+            )
+            Text(text = "현재 날짜 $tYear 년 $tMonth 월", color = Color.White)
+        }
     }
 }
 

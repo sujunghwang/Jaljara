@@ -124,7 +124,7 @@ fun ParentApp(
                     backStackEntry ->
                 viewModel.setNavShow(false)
                 // 수면 기록 상세 페이지
-                SleepLogDetailScreen(backStackEntry.arguments?.getString("formatDate"))
+                SleepLogDetailScreen(formatDate = backStackEntry.arguments?.getString("formatDate")?:"20990513")
             }
         }
     }
