@@ -3,7 +3,10 @@ package com.ssafy.jaljara.ui.screen
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -12,16 +15,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -100,6 +101,8 @@ fun Children(children: List<ChildInfo>){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Child(childInfo: ChildInfo) {
+    var showDialog by remember { mutableStateOf(false) }
+
     // 이미지 비트맵
     val bitmap : MutableState<Bitmap?> = mutableStateOf(null)
 
@@ -125,6 +128,14 @@ fun Child(childInfo: ChildInfo) {
             modifier = Modifier
                 .padding(top= 5.dp,end = 7.dp)
                 .clip(CircleShape)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            showDialog = true
+                            Log.d("아이등록해제모달 요청","$showDialog")
+                        },
+                    )
+                }
         ) {
             // 비트 맵이 있다면
             bitmap.value?.asImageBitmap()?.let{fetchedBitmap ->
@@ -140,6 +151,38 @@ fun Child(childInfo: ChildInfo) {
             ) // 비트맵이 없다면
         }
         Text(text = childInfo.childName)
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "아이 등록 해제") },
+            text = { Text(text = "아이 등록을 해제하시겠습니까?") },
+            confirmButton = {
+                Text(
+                    text = "확인",
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .clickable {
+                            //아이 삭제 로직 구현
+                            //아이 등록 해제 api call
+                            //=>전체 아이 리스트 api call
+                            showDialog=false
+                        },
+                    color = Color.Red,
+                )
+            },
+            dismissButton = {
+                Text(
+                    text = "취소",
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .clickable {
+                            showDialog = false
+                        },
+                )
+            }
+        )
     }
 }
 
