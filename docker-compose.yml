@@ -7,7 +7,7 @@ services:
       context: ./backend/jaljara/
       dockerfile: dockerfile
     ports:
-      - "8080:80"
+      - "8080:8080"
     stdin_open: true
     tty: true
     networks:
@@ -22,6 +22,18 @@ services:
     networks:
       - default
       - jaljara_net
+
+  envoy:
+    image: envoyproxy/envoy-dev
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      ENVOY_UID: 0
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+      - /etc/letsencrypt/live/jaljara.movebxeax.me/privkey.pem:/etc/letsencrypt/live/jaljara.movebxeax.me/privkey.pem
+      - /etc/letsencrypt/live/jaljara.movebxeax.me/fullchain.pem:/etc/letsencrypt/live/jaljara.movebxeax.me/fullchain.pem
 
 networks:
   jaljara_net:
