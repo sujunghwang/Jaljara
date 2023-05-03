@@ -106,7 +106,7 @@ fun ChildApp(
                 ChildMainView(viewModel)
             }
             composable(route = ChildScreen.별자리.name) {
-                StarLink()
+                StarLink(viewModel)
             }
             composable(route = ChildScreen.Hate.name) {
             }

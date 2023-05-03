@@ -4,6 +4,7 @@ import com.ssafy.jaljara.data.ChildSleepInfo
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 
@@ -18,6 +19,9 @@ private const val BASE_URL =
 interface ChildApiService {
     @GET("/api/childinfos/detail/{childId}")
     suspend fun getChildSleepInfo(@Path("childId") childId : Long) : ChildSleepInfo
+
+    @POST("/api/rewards/{childId}")
+    suspend fun getReward(@Path("childId") childId : Long)
 
     companion object{
         var apiService:ChildApiService? = null
