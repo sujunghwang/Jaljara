@@ -16,7 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -49,6 +52,7 @@ var dummyChildSleepInfo = DummyChildSleepInfo()
 fun ChildMainView(childViewModel: ChildViewModel){
     val scrollState = rememberScrollState()
     var childSleepInfo = childViewModel.childSleepResponse
+    var todayMission = childViewModel.todayMissionResponse
     Box(modifier = Modifier.fillMaxSize()){
         Image(
             painter = painterResource(R.drawable.bg),
@@ -63,8 +67,9 @@ fun ChildMainView(childViewModel: ChildViewModel){
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            childViewModel.getTodayMission(1)
             childViewModel.getChildSleepInfo(1)
-            MissionTodayContainer(childSleepInfo.currentReward)
+            MissionTodayContainer(todayMission.content)
             SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
             RewardStatusContainer(childSleepInfo.streakCount)
             ContentContainer(contents = DummyDataProvider.contentList)
@@ -85,22 +90,9 @@ fun MissionTodayContainer(todayMission: String){
             ),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color.White
+                containerColor = Color(0x20FFFFFF)
             ),
             content = {
-//                Box(modifier = Modifier.height(150.dp)){
-//                    Image(
-//                        painter = painterResource(R.drawable.mission_bg),
-//                        contentDescription = "background",
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier.fillMaxSize()
-//                            .blur(
-//                                radiusX = 3.dp,
-//                                radiusY = 3.dp,
-//                                edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(12.dp))
-//                            )
-//                    )
-//                }
                 reloadMissionButton(
                     modifier = Modifier
                         .align(Alignment.End)
@@ -111,7 +103,7 @@ fun MissionTodayContainer(todayMission: String){
                 )
                 Text(
                     text = "$todayMission",
-                    color = Color.Black,
+                    color = Color.White,
                     modifier = Modifier
                         .padding(bottom = 20.dp)
                         .align(Alignment.CenterHorizontally)
@@ -119,42 +111,6 @@ fun MissionTodayContainer(todayMission: String){
             }
         )
     }
-
-
-////    val imageBrush = ShaderBrush(ImageShader(ImageBitmap.imageResource(id = R.drawable.mission_bg)))
-//
-//    Column() {
-//        Text(text = "오늘의 미션", fontWeight = FontWeight.Bold, color = Color.White)
-//        Card(
-//            modifier = Modifier
-//                .fillMaxWidth(),
-////                .background(imageBrush),
-//            elevation = CardDefaults.cardElevation(
-//                defaultElevation = 10.dp,
-//            ),
-//            shape = RoundedCornerShape(20.dp),
-//            colors = CardDefaults.cardColors(
-//                containerColor = Color.White
-//            ),
-//            content = {
-//                reloadMissionButton(
-//                    modifier = Modifier
-//                                .align(Alignment.End)
-//                        .clickable {
-//                            Log.d("missionReload", "미션 재설정 호출")
-//                            //미션 재설정API 호출
-//                        },
-//                )
-//                Text(
-//                    text = "$todayMission",
-//                    color = Color.Black,
-//                    modifier = Modifier
-//                        .padding(bottom = 20.dp)
-//                                .align(Alignment.CenterHorizontally)
-//                )
-//            }
-//        )
-//    }
 }
 
 @Composable
@@ -163,7 +119,7 @@ fun reloadMissionButton(modifier: Modifier){
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        Text(text = "재설정")
+        Text(text = "재설정", color = Color.White)
         Image(
             painter = painterResource(id = R.drawable.ic_reload),
             contentDescription = null
@@ -177,12 +133,14 @@ fun SetSllepTimeContainer(targetBedTime: String, targetWakeupTime:String) {
     Column() {
         Text(text = "설정된 수면시간", fontWeight = FontWeight.Bold, color = Color.White)
         Card(
+            modifier = Modifier
+                .fillMaxWidth(),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 10.dp,
             ),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color.White,
+                containerColor = Color(0x20FFFFFF)
             ),
             content = {
                 Row(
@@ -209,8 +167,8 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
         Image(painter = img,
             contentDescription = null,
         )
-        Text(text = title)
-        Text(text = setTime)
+        Text(text = title, color = Color.White)
+        Text(text = setTime, color = Color.White)
     }
 }
 
@@ -229,7 +187,7 @@ fun RewardStatusContainer(streakCount:Int) {
             ),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color.White,
+                containerColor = Color(0x20FFFFFF)
             ),
             content = {
                 Row(
@@ -240,6 +198,7 @@ fun RewardStatusContainer(streakCount:Int) {
 //                        modifier = Modifier.size(60.dp, 60.dp)
                     )
                     Text(text = "연속 $remainCnt 번만 성공하면 보상을 획득할 수 있어요!",
+                        color = Color.White,
                         modifier = Modifier
                             .padding(16.dp)
                     )
@@ -290,7 +249,7 @@ fun ContentCard(content: Content) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = Color(0x20FFFFFF)
         ),
         modifier = Modifier
             .padding(end = 3.dp, bottom = 5.dp)

@@ -1,6 +1,7 @@
 package com.ssafy.jaljara.network
 
 import com.ssafy.jaljara.data.ChildSleepInfo
+import com.ssafy.jaljara.data.TodayMission
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -22,6 +23,9 @@ interface ChildApiService {
 
     @POST("/api/rewards/{childId}")
     suspend fun getReward(@Path("childId") childId : Long)
+    
+    @GET("/api/missions/{userId}")
+    suspend fun getTodayMission(@Path("userId") userId : Long) : TodayMission
 
     companion object{
         var apiService:ChildApiService? = null
