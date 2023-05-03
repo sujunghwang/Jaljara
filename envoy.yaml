@@ -22,7 +22,7 @@ static_resources:
             - name: local_service
               domains: ["jaljara.movebxeax.me"]
               routes:
-              - match: { prefix: "/" }
+              - match: { prefix: "/api" }
                 route: { cluster: jaljara_backend }
           http_filters:
           - name: envoy.filters.http.router
@@ -59,7 +59,7 @@ static_resources:
             - name: local_service
               domains: ["jaljara.movebxeax.me"]
               routes:
-              - match: { prefix: "/" }
+              - match: { prefix: "/api" }
                 redirect: { https_redirect: true }
           http_filters:
           - name: envoy.filters.http.router
