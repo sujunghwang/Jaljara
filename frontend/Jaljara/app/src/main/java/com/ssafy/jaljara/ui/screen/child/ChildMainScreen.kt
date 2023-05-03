@@ -28,26 +28,30 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.data.ChildSleepInfo
 import com.ssafy.jaljara.data.Content
 import com.ssafy.jaljara.data.DummyChildSleepInfo
 import com.ssafy.jaljara.data.DummyDataProvider
 import com.ssafy.jaljara.ui.screen.ChildSetTimeCard
 import com.ssafy.jaljara.ui.screen.Children
 import com.ssafy.jaljara.ui.screen.CurrentRewardContainer
+import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 
 var dummyChildSleepInfo = DummyChildSleepInfo()
 
 @Composable
-fun ChildMainView(){
+fun ChildMainView(childViewModel: ChildViewModel){
     val scrollState = rememberScrollState()
+    var childSleepInfo = childViewModel.childSleepResponse
     Box(modifier = Modifier.fillMaxSize()){
         Image(
-            painter = painterResource(R.drawable.mission_bg),
+            painter = painterResource(R.drawable.bg),
             contentDescription = "background",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()
@@ -59,9 +63,10 @@ fun ChildMainView(){
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            MissionTodayContainer(dummyChildSleepInfo.currentReward)
-            SetSllepTimeContainer(dummyChildSleepInfo.targetBedTime,dummyChildSleepInfo.targetWakeupTime)
-            RewardStatusContainer(dummyChildSleepInfo.streakCount)
+            childViewModel.getChildSleepInfo(1)
+            MissionTodayContainer(childSleepInfo.currentReward)
+            SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
+            RewardStatusContainer(childSleepInfo.streakCount)
             ContentContainer(contents = DummyDataProvider.contentList)
         }
     }
@@ -70,19 +75,19 @@ fun ChildMainView(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MissionTodayContainer(todayMission: String){
-//    Column() {
-//        Text(text = "오늘의 미션", fontWeight = FontWeight.Bold, color = Color.White)
-//        Card(
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            elevation = CardDefaults.cardElevation(
-//                defaultElevation = 10.dp,
-//            ),
-//            shape = RoundedCornerShape(12.dp),
-//            colors = CardDefaults.cardColors(
-//                containerColor = Color.White
-//            ),
-//            content = {
+    Column() {
+        Text(text = "오늘의 미션", fontWeight = FontWeight.Bold, color = Color.White)
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 10.dp,
+            ),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            content = {
 //                Box(modifier = Modifier.height(150.dp)){
 //                    Image(
 //                        painter = painterResource(R.drawable.mission_bg),
@@ -96,45 +101,9 @@ fun MissionTodayContainer(todayMission: String){
 //                            )
 //                    )
 //                }
-//                reloadMissionButton(
-//                    modifier = Modifier
-//                        .align(Alignment.End)
-//                        .clickable {
-//                            Log.d("missionReload", "미션 재설정 호출")
-//                            //미션 재설정API 호출
-//                        },
-//                )
-//                Text(
-//                    text = "$todayMission",
-//                    color = Color.Black,
-//                    modifier = Modifier
-//                        .padding(bottom = 20.dp)
-//                        .align(Alignment.CenterHorizontally)
-//                )
-//            }
-//        )
-//    }
-
-
-//    val imageBrush = ShaderBrush(ImageShader(ImageBitmap.imageResource(id = R.drawable.mission_bg)))
-
-    Column() {
-        Text(text = "오늘의 미션", fontWeight = FontWeight.Bold, color = Color.White)
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(),
-//                .background(imageBrush),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 10.dp,
-            ),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            ),
-            content = {
                 reloadMissionButton(
                     modifier = Modifier
-                                .align(Alignment.End)
+                        .align(Alignment.End)
                         .clickable {
                             Log.d("missionReload", "미션 재설정 호출")
                             //미션 재설정API 호출
@@ -145,11 +114,47 @@ fun MissionTodayContainer(todayMission: String){
                     color = Color.Black,
                     modifier = Modifier
                         .padding(bottom = 20.dp)
-                                .align(Alignment.CenterHorizontally)
+                        .align(Alignment.CenterHorizontally)
                 )
             }
         )
     }
+
+
+////    val imageBrush = ShaderBrush(ImageShader(ImageBitmap.imageResource(id = R.drawable.mission_bg)))
+//
+//    Column() {
+//        Text(text = "오늘의 미션", fontWeight = FontWeight.Bold, color = Color.White)
+//        Card(
+//            modifier = Modifier
+//                .fillMaxWidth(),
+////                .background(imageBrush),
+//            elevation = CardDefaults.cardElevation(
+//                defaultElevation = 10.dp,
+//            ),
+//            shape = RoundedCornerShape(20.dp),
+//            colors = CardDefaults.cardColors(
+//                containerColor = Color.White
+//            ),
+//            content = {
+//                reloadMissionButton(
+//                    modifier = Modifier
+//                                .align(Alignment.End)
+//                        .clickable {
+//                            Log.d("missionReload", "미션 재설정 호출")
+//                            //미션 재설정API 호출
+//                        },
+//                )
+//                Text(
+//                    text = "$todayMission",
+//                    color = Color.Black,
+//                    modifier = Modifier
+//                        .padding(bottom = 20.dp)
+//                                .align(Alignment.CenterHorizontally)
+//                )
+//            }
+//        )
+//    }
 }
 
 @Composable
@@ -184,8 +189,10 @@ fun SetSllepTimeContainer(targetBedTime: String, targetWakeupTime:String) {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    SetTimeContainer(painterResource(id = R.drawable.ic_launcher_foreground), "취침시간", "${targetBedTime.substring(0,5)}")
-                    SetTimeContainer(painterResource(id = R.drawable.ic_launcher_foreground), "기상시간", "${targetWakeupTime.substring(0,5)}")
+                    SetTimeContainer(painterResource(id = R.drawable.ic_launcher_foreground), "취침시간",
+                        "${if (targetBedTime!="") targetBedTime.substring(0, 5) else targetBedTime}")
+                    SetTimeContainer(painterResource(id = R.drawable.ic_launcher_foreground), "기상시간",
+                        "${if (targetWakeupTime!="") targetWakeupTime.substring(0, 5) else targetWakeupTime}")
                 }
             }
         )
