@@ -10,7 +10,7 @@ enum class Week(val korean: String) {
     Sunday("일요일");
 }
 
-// 1 ~ 7 사이의 수로 Week enum을 가져오는 함수
+/** 1 ~ 7 사이의 수로 Week enum을 가져오는 함수**/
 fun getWeekBydayOfWeekNumber(dayOfWeekNumber: Int): Week{
     if(dayOfWeekNumber < 1 || dayOfWeekNumber > 7)
         throw java.lang.IllegalArgumentException("1이상 7이하의 수가 아닙니다.")
