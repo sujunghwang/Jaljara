@@ -1,9 +1,9 @@
 package com.ssafy.jaljara.ui.vm
 
-import android.graphics.Movie
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.data.ChildSleepInfo
@@ -41,6 +41,22 @@ class ChildViewModel : ViewModel() {
             }
             catch (e:Exception){
                 errorMessage = e.cause.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
+
+    fun getReward(childId: Long){
+        viewModelScope.launch{
+            val apiService = ChildApiService.getInstance()
+            try{
+                Log.d("보상 획득 API 호출 - childId","$childId")
+                apiService.getReward(childId)
+                val childSleepInfo = apiService.getChildSleepInfo(childId)
+                childSleepResponse = childSleepInfo
+            }
+            catch (e:Exception){
+                errorMessage = e.message.toString()
                 Log.d("errorMessage","$errorMessage")
             }
         }
