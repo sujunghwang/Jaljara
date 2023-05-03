@@ -19,7 +19,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.screen.StarLink
-import com.ssafy.jaljara.ui.vm.ParentViewModel
+import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 
 /**
@@ -72,8 +72,8 @@ fun ParentNavigationBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildApp(
+    viewModel: ChildViewModel = viewModel(),
     modifier: Modifier = Modifier,
-    viewModel: ParentViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -103,6 +103,7 @@ fun ChildApp(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = ChildScreen.Start.name) {
+                ChildMainView(viewModel)
             }
             composable(route = ChildScreen.별자리.name) {
                 StarLink()
