@@ -3,6 +3,9 @@ package com.ssafy.jaljara.ui.screen.parent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 
@@ -12,30 +15,43 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import java.util.*
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.himanshoe.kalendar.color.KalendarThemeColor
-import com.himanshoe.kalendar.component.KalendarHeader
 import com.himanshoe.kalendar.component.day.KalendarDay
 import com.himanshoe.kalendar.component.day.config.KalendarDayColors
-import com.himanshoe.kalendar.component.day.config.KalendarDayDefaultColors
 import com.himanshoe.kalendar.component.text.KalendarNormalText
+import com.himanshoe.kalendar.component.text.KalendarSubTitle
+import com.himanshoe.kalendar.component.text.config.KalendarTextColor
+import com.himanshoe.kalendar.component.text.config.KalendarTextConfig
+import com.himanshoe.kalendar.component.text.config.KalendarTextSize
 import com.himanshoe.kalendar.model.KalendarEvent
 import com.himanshoe.kalendar.model.toKalendarDay
+import com.ssafy.jaljara.R
 import com.ssafy.jaljara.component.NightForestBackGround
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
@@ -102,15 +118,122 @@ internal object KalendarColors {
     )
 }
 
-data class KalendarThemeColor(
-    val backgroundColor: Color,
-    val dayBackgroundColor: Color,
-    val headerTextColor: Color,
-)
 
 
 
-val WeekDays = listOf("M", "T", "W", "T", "F", "S", "S")
+val WeekDays = listOf("Mon", "Tue", "Wen", "Tur", "Fri", "Sat", "Sun")
+
+@Composable
+fun KalendarIconButton(
+    imageVector: ImageVector,
+    modifier: Modifier = Modifier,
+    contentDescription: String? = null,
+    onClick: () -> Unit = {}
+) {
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
+            .wrapContentSize()
+            .clip(CircleShape)
+    ) {
+        Icon(
+            modifier = Modifier,
+            tint = Color.White,
+            imageVector = imageVector,
+            contentDescription = contentDescription
+        )
+    }
+}
+
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun KalendarHeader(
+    modifier: Modifier,
+    month: Month,
+    year: Int,
+    onPreviousClick: () -> Unit = {},
+    onNextClick: () -> Unit = {},
+    arrowShown: Boolean = true,
+    textColor: Color,
+    textSize: KalendarTextSize = KalendarTextSize.SubTitle
+) {
+    val isNext = remember { mutableStateOf(true) }
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(start = 8.dp, bottom = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        AnimatedContent(
+            modifier = Modifier
+                .wrapContentHeight()
+                .wrapContentWidth()
+                .align(Alignment.CenterVertically),
+            targetState = getTitleText(month.name, year),
+            transitionSpec = {
+                addAnimation(isNext = isNext.value).using(
+                    SizeTransform(clip = false)
+                )
+            }
+        ) {
+            KalendarSubTitle(
+                text = it,
+                modifier = Modifier,
+                kalendarTextConfig = KalendarTextConfig(
+                    kalendarTextColor = KalendarTextColor(textColor), kalendarTextSize = textSize
+                )
+            )
+        }
+        if (arrowShown) {
+            Row(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .align(Alignment.CenterVertically),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                KalendarIconButton(
+                    modifier = Modifier.wrapContentSize(),
+                    imageVector = Icons.Default.KeyboardArrowLeft,
+                    contentDescription = "Previous Week",
+                    onClick = {
+                        isNext.value = false
+                        onPreviousClick()
+                    }
+
+                )
+                KalendarIconButton(
+                    modifier = Modifier.wrapContentSize(),
+                    imageVector = Icons.Default.KeyboardArrowRight,
+                    contentDescription = "Next Month",
+                    onClick = {
+                        isNext.value = true
+                        onNextClick()
+                    }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+internal fun addAnimation(duration: Int = 500, isNext: Boolean): ContentTransform {
+    return slideInVertically(animationSpec = tween(durationMillis = duration)) { height -> if (isNext) height else -height } + fadeIn(
+        animationSpec = tween(durationMillis = duration)
+    ) with slideOutVertically(animationSpec = tween(durationMillis = duration)) { height -> if (isNext) -height else height } + fadeOut(
+        animationSpec = tween(durationMillis = duration)
+    )
+}
+
+internal fun getTitleText(monthName: String, year: Int): String {
+    return monthName.lowercase().replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(
+            Locale.getDefault()
+        ) else it.toString()
+    } + " " + year
+}
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -120,7 +243,6 @@ fun JongSeokCalendar(
     onClickDay: (LocalDate) -> Unit = { },
     takeMeToDate: LocalDate?,
     kalendarDayColors: KalendarDayColors,
-    kalendarThemeColors: List<KalendarThemeColor>,
     onChangeMonth: (year: Int, month: Int) -> Unit
 ) {
     val currentDay = takeMeToDate ?: Clock.System.todayIn(TimeZone.currentSystemDefault())
@@ -138,7 +260,8 @@ fun JongSeokCalendar(
     Column(
         modifier = modifier
             .background(
-                color = kalendarThemeColors[currentMonth.value.minus(1)].backgroundColor
+                color = Color(0xFF323741),
+                shape = RoundedCornerShape(8.dp)
             )
             .wrapContentHeight()
             .fillMaxWidth()
@@ -162,7 +285,7 @@ fun JongSeokCalendar(
                 onChangeMonth(year, currentMonth.value)
             },
             year = year,
-            textColor = kalendarThemeColors[currentMonth.value.minus(1)].headerTextColor,
+            textColor = Color.White
         )
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth(),
@@ -170,9 +293,10 @@ fun JongSeokCalendar(
             content = {
                 items(WeekDays) {
                     KalendarNormalText(
+                        modifier = Modifier.padding(bottom = 16.dp),
                         text = it,
                         fontWeight = FontWeight.Normal,
-                        color = kalendarDayColors.textColor,
+                        color = Color.White
                     )
                 }
                 items((getInitialDayOfMonth(firstDayOfMonth)..daysInMonth).toList()) {
@@ -180,6 +304,15 @@ fun JongSeokCalendar(
                         val day = getGeneratedDay(it, currentMonth, year)
                         val isCurrentDay = day == currentDay
                         KalendarDay(
+                            modifier = Modifier
+                                .background(
+                                    color = Color(0xff3B414A)
+                                )
+                                .border(
+                                    width = 2.dp,
+                                    color = Color(0xFF323741),
+                                    shape = RoundedCornerShape(4.dp)
+                                ),
                             kalendarDay = day.toKalendarDay(),
                             kalendarEvents = kalendarEvents,
                             isCurrentDay = isCurrentDay,
@@ -189,8 +322,8 @@ fun JongSeokCalendar(
                             },
                             selectedKalendarDay = selectedKalendarDate.value,
                             kalendarDayColors = kalendarDayColors,
-                            dotColor = kalendarThemeColors[currentMonth.value.minus(1)].headerTextColor,
-                            dayBackgroundColor = kalendarThemeColors[currentMonth.value.minus(1)].dayBackgroundColor,
+                            dotColor = Color.White,
+                            dayBackgroundColor = Color.White
                         )
                     }
                 }
@@ -224,20 +357,41 @@ fun SleepCalenderScreen(
     var tMonth by rememberSaveable{ mutableStateOf(today.month.value)}
 
     NightForestBackGround {
-        Column() {
-            Text(text = "내 아이 수면 달력", color = Color.White)
-            JongSeokCalendar(
-                takeMeToDate = null,
-                kalendarDayColors = KalendarDayDefaultColors.defaultColors(),
-                kalendarThemeColors = KalendarColors.defaultColors(),
-                onChangeMonth = { year, month ->
-                    tYear = year
-                    tMonth = month
-                },
-                onClickDay = onClickDay,
-                modifier = Modifier.padding(8.dp)
-            )
-            Text(text = "현재 날짜 $tYear 년 $tMonth 월", color = Color.White)
+        LazyColumn(modifier = Modifier.fillMaxHeight()){
+            item{
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Spacer(modifier = Modifier.fillParentMaxHeight(0.1f))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillParentMaxHeight(0.2f),
+                        horizontalArrangement = Arrangement.Center,
+                    ){
+                        Image(
+                            painter = painterResource(id = R.drawable.baseline_calendar_month_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(48.dp)
+                                .padding(end = 8.dp)
+                        )
+                        Text(
+                            text = "내 아이 수면 달력", color = Color.White,
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    JongSeokCalendar(
+                        takeMeToDate = null,
+                        kalendarDayColors = KalendarDayColors(Color.White, Color.Black),
+                        onChangeMonth = { year, month ->
+                            tYear = year
+                            tMonth = month
+                        },
+                        onClickDay = onClickDay,
+                        modifier = Modifier.padding(16.dp).height(500.dp)
+                    )
+                }
+            }
         }
     }
 }
