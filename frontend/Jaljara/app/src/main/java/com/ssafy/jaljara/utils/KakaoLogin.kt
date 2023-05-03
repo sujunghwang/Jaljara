@@ -1,4 +1,4 @@
-package com.ssafy.jaljara.ui.utils
+package com.ssafy.jaljara.utils
 
 import android.content.Context
 import android.util.Log
@@ -10,7 +10,7 @@ import com.kakao.sdk.user.UserApiClient
 
 fun kakaoLoginHelper(context : Context) {
     kakaoLoginWorker(context,
-        onTokenIdReceived = { token -> checkTokenIsValid(token, ProviderType.KAKAO) },
+        onTokenIdReceived = { token -> checkTokenIsValid(token, ProviderType.KAKAO, context) },
         onLoginFailed = { error -> Log.e(TAG, error)}
     )
 }

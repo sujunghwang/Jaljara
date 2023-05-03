@@ -8,7 +8,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 
-private const val BASE_URL =
+const val BASE_URL =
     "https://jaljara.movebxeax.me"
 
 //private val retrofit = Retrofit.Builder()
