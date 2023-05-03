@@ -38,7 +38,7 @@ public class ChildInfoController {
 
     @GetMapping("/detail/{childId}")
     @ValidChild
-    public ResponseEntity<?> getChildDetail(@PathVariable Long childId){
+    public ResponseEntity<?> getChildDetail(@PathVariable long childId){
         ChildInformationResponseDto.ChildInfoDetail childDetail = childInformationService.findChildInformationByChildId(childId);
         return new ResponseEntity<>(childDetail, HttpStatus.OK);
     }

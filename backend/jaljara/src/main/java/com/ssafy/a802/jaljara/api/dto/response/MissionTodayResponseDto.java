@@ -26,7 +26,7 @@ public class MissionTodayResponseDto {
 		this.userId = userId;
 		this.missionId = missionId;
 		this.isClear = isClear;
-		this.content = missionType;
+		this.content = content;
 		this.missionType = missionType;
 		this.remainRerollCount = remainRerollCount;
 		this.url = url;
