@@ -23,6 +23,8 @@ import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.screen.ParentMain
 import com.ssafy.jaljara.ui.vm.ParentViewModel
+import kotlinx.datetime.toJavaLocalDate
+import java.time.format.DateTimeFormatter
 
 
 /**
@@ -112,11 +114,12 @@ fun ParentApp(
                 SleepCalenderScreen(onClickDay = {
                     day ->
                     Log.d("캘린더 라우터 클릭", day.toString())
-                    val sb = StringBuilder()
 
-                    // yyyyMMdd format
-                    val yyyyMMdd = sb.append(day.year).append(day.monthNumber).append(day.dayOfMonth)
-                    navController.navigate(ParentScreen.SleepLogDetail.name + "/"+yyyyMMdd)
+                    val fomatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+
+                    val displayDate = day.toJavaLocalDate().format(fomatter)
+
+                    navController.navigate(ParentScreen.SleepLogDetail.name + "/"+displayDate)
                 })
                 navBarSelectedItem = 2
             }
