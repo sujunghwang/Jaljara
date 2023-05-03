@@ -1,7 +1,6 @@
 package com.ssafy.jaljara.ui.screen.parent
 
 import android.os.Build
-import android.widget.TimePicker
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.theme.Navy
-import java.time.LocalTime
+import kotlin.math.roundToInt
 
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalMaterial3Api
@@ -37,19 +36,16 @@ fun SetTimeScreen(){
             modifier = Modifier.fillMaxSize()
         )
 
-        var sliderPosition by remember { mutableStateOf(-360f..360f) }
-        var bedTimeH by remember {
-            mutableStateOf(sliderPosition.start / 60)
-        }
-        var bedTimeM by remember {
-            mutableStateOf(sliderPosition.start % 60)
-        }
-        var wakeupTimeH by remember {
-            mutableStateOf(sliderPosition.endInclusive / 60)
-        }
-        var wakeupTimeM by remember {
-            mutableStateOf(sliderPosition.endInclusive % 60)
-        }
+        var sliderPosition by remember { mutableStateOf(-180f..360f) }
+
+        var bedTime by remember { mutableStateOf(1260) }
+        var wakeupTime by remember { mutableStateOf(360) }
+        var bedTimeH by remember { mutableStateOf(bedTime / 60) }
+        var bedTimeM by remember { mutableStateOf(bedTime % 60) }
+        var wakeupTimeH by remember { mutableStateOf(wakeupTime / 60) }
+        var wakeupTimeM by remember { mutableStateOf(wakeupTime % 60) }
+        var sleepTimeH by remember { mutableStateOf(9) }
+        var sleepTimeM by remember { mutableStateOf(0) }
 
         Column(
             modifier = Modifier
@@ -60,30 +56,57 @@ fun SetTimeScreen(){
         ) {
             Box(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(top = 8.dp)
+                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ){
-                Image(
-                    painter = painterResource(id = R.drawable.clock),
-                    contentDescription = "clock",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(0.8f)
-                )
+                Column() {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "수면 시간 설정",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .weight(5f)
+                                .padding(start = 6.dp)
+                        )
+                    }
+                    RangeSlider(
+                        steps = 143,
+                        values = sliderPosition,
+                        onValueChange = {
+                            var start = it.start
+                            var end = it.endInclusive
+
+                            if(start >= end)
+                                start = end - 10
+
+                            sliderPosition = start..end
+
+                            bedTime = sliderPosition.start.roundToInt()
+                            wakeupTime = sliderPosition.endInclusive.roundToInt()
+
+                            sleepTimeH = (wakeupTime - bedTime) / 60
+                            sleepTimeM = (wakeupTime - bedTime) % 60
+
+                            if(bedTime < 0)
+                                bedTime += 1440
+                            if(wakeupTime < 0)
+                                wakeupTime += 1440
+
+                            bedTimeH = bedTime / 60
+                            bedTimeM = bedTime % 60
+                            wakeupTimeH = wakeupTime / 60
+                            wakeupTimeM = wakeupTime % 60
+                        },
+                        valueRange = -360f..1080f,
+                    )
+                }
             }
-            Column {
-                Text(text = sliderPosition.toString(), color = Color.White)
-                RangeSlider(
-                    modifier = Modifier.semantics { contentDescription = "target sleep time slider" },
-                    steps = 1440,
-                    values = sliderPosition,
-                    onValueChange = { sliderPosition = it },
-                    valueRange = -720f..720f,
-                )
-            }
-            
             Row(
-                modifier = Modifier.padding(bottom = 18.dp)
+                modifier = Modifier.padding(vertical = 24.dp)
             ){
                 Box(
                     modifier = Modifier
@@ -107,7 +130,7 @@ fun SetTimeScreen(){
                             fontSize = 16.sp
                         )
                         Text(
-                            text = "${bedTimeH}:${bedTimeM} ",
+                            text = "%02d:%02d".format(bedTimeH, bedTimeM),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -137,7 +160,7 @@ fun SetTimeScreen(){
                             fontSize = 16.sp
                         )
                         Text(
-                            text = "${wakeupTimeH}:${wakeupTimeM}",
+                            text = "%02d:%02d".format(wakeupTimeH, wakeupTimeM),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -170,10 +193,16 @@ fun SetTimeScreen(){
                             .padding(start = 6.dp)
                     )
                     Text(
-                        text = "8 시간",
+                        text = "${sleepTimeH} 시간",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
+                    if(sleepTimeM != 0)
+                        Text(
+                            text = "%02d 분".format(sleepTimeM),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                 }
             }
             Button(
@@ -186,7 +215,7 @@ fun SetTimeScreen(){
                     contentColor = Color.White),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 18.dp)
+                    .padding(vertical = 24.dp)
             ) {
                 Text(
                     text = "설정 완료",
