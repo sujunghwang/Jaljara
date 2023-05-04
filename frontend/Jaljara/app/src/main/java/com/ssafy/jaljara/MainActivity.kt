@@ -19,9 +19,11 @@ import com.ssafy.jaljara.ui.screen.child.ChildApp
 import com.ssafy.jaljara.ui.screen.child.ChildMainView
 import com.ssafy.jaljara.ui.theme.JaljaraTheme
 import com.ssafy.jaljara.ui.vm.ChildViewModel
+import com.ssafy.jaljara.ui.vm.ParentViewModel
 
 class MainActivity : ComponentActivity() {
     val childViewModel: ChildViewModel by viewModels()
+    val parentViewModel: ParentViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityCompat.requestPermissions(
