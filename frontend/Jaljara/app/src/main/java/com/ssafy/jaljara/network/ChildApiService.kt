@@ -1,12 +1,11 @@
 package com.ssafy.jaljara.network
 
 import com.ssafy.jaljara.data.ChildSleepInfo
+import com.ssafy.jaljara.data.TargetSleepInput
 import com.ssafy.jaljara.data.TodayMission
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 
 const val BASE_URL =
@@ -26,6 +25,9 @@ interface ChildApiService {
     
     @GET("/api/missions/{userId}")
     suspend fun getTodayMission(@Path("userId") userId : Long) : TodayMission
+
+    @PUT("/api/childinfos/sleep")
+    suspend fun setTargetSleepTime(@Body targetSleepInput: TargetSleepInput)
 
     companion object{
         var apiService:ChildApiService? = null
