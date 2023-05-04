@@ -23,7 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.ui.screen.ParentMain
+import com.ssafy.jaljara.ui.screen.ParentMainView
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 import kotlinx.datetime.toJavaLocalDate
 import java.time.format.DateTimeFormatter
@@ -110,7 +110,7 @@ fun ParentApp(
             composable(route = ParentScreen.Start.url) {
                 viewModel.setNavShow(true)
                 // 부모 메인 페이지
-                ParentMain()
+                ParentMainView()
                 navBarSelectedItem = 0
             }
             composable(route = ParentScreen.SetSleepTime.url) {
