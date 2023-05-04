@@ -35,15 +35,19 @@ android {
     }
     buildFeatures {
         compose true
+        // 카메라 사용을 위한 추가
+        viewBinding true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.2.0'
+
     }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
 }
 
 dependencies {
@@ -67,6 +71,25 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
+    // 카메라 사용을 위한 추가
+    // CameraX
+//    def camerax_version = "1.0.1"
+//    implementation "androidx.camera:camera-camera2:$camerax_version"
+//    implementation "androidx.camera:camera-lifecycle:$camerax_version"
+//    implementation "androidx.camera:camera-view:1.0.0-alpha27"
+
+    // Icons
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    // 카메라 사용을 위한 추가
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+
+    implementation("io.github.ujizin:camposer:0.1.0")
+
+    // Coil
+    implementation "io.coil-kt:coil-compose:2.1.0"
+}
     implementation "com.kakao.sdk:v2-user:2.13.0"
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
 
