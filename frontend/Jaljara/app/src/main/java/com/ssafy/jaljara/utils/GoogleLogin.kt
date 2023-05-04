@@ -1,4 +1,4 @@
-package com.ssafy.jaljara.ui.utils
+package com.ssafy.jaljara.utils
 
 import android.app.Activity
 import android.content.Context
@@ -42,7 +42,7 @@ fun googleLoginHelper(context : Context, onClose : () -> Unit) {
     googleLoginWorker(context as Activity,
         state,
         stringResource(id = R.string.google_web_client_id),
-        onTokenIdReceived = {token -> checkTokenIsValid(token, ProviderType.GOOGLE)},
+        onTokenIdReceived = {token -> checkTokenIsValid(token, ProviderType.GOOGLE, context) },
         onDialogDismissed = {
             Log.e(TAG, "Dialog dismissed")
             onClose()
@@ -130,7 +130,7 @@ private fun signIn(
                 .setSupported(true)
                 .setNonce(nonce)
                 .setServerClientId(clientId)
-                .setFilterByAuthorizedAccounts(true)
+                .setFilterByAuthorizedAccounts(false)
                 .build()
         )
         .setAutoSelectEnabled(true)

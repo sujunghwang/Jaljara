@@ -1,13 +1,15 @@
 package com.ssafy.jaljara.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,22 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 @Composable
-fun StarLink(){
+fun StarLink(childViewModel: ChildViewModel){
+    var getBtnValid = false
+    childViewModel.getChildSleepInfo(1)
+    var childSleepInfo = childViewModel.childSleepResponse
 
-    var getBtnValid = true
-    var rewardBtnValid = true
-
-    var streakCnt = rememberSaveable {
-        mutableStateOf(0)
-    }
-//    if(streakCnt == 7)
-//        getBtnValid = true
-
-    var currentReward = "놀이동산 같이 가기"
-    if(currentReward == "")
-        rewardBtnValid = false
+    if(childSleepInfo.streakCount >= 7)
+        getBtnValid = true
 
     var openDialog = rememberSaveable {
         mutableStateOf(false)
@@ -66,15 +62,15 @@ fun StarLink(){
                     fontSize = 40.sp
                 )
             }
-            var starLinkImg = R.drawable.star_link
-            when (streakCnt.value) {
+            var starLinkImg = R.drawable.star_link_7
+            when (childSleepInfo.streakCount) {
                 1 -> starLinkImg = R.drawable.star_link_1
                 2 -> starLinkImg = R.drawable.star_link_2
                 3 -> starLinkImg = R.drawable.star_link_3
                 4 -> starLinkImg = R.drawable.star_link_4
                 5 -> starLinkImg = R.drawable.star_link_5
                 6 -> starLinkImg = R.drawable.star_link_6
-                7 -> starLinkImg = R.drawable.star_link_7
+                0 -> starLinkImg = R.drawable.star_link
             }
             Column(
                 modifier = Modifier
@@ -95,7 +91,7 @@ fun StarLink(){
                         .background(color = Color(0x40BAD6F0), shape = RoundedCornerShape(16.dp))
                 ){
                     Text(
-                        text = "${streakCnt.value} / 7",
+                        text = "${childSleepInfo.streakCount} / 7",
                         color = Color.White,
                         fontSize = 20.sp,
                         modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp)
@@ -111,7 +107,6 @@ fun StarLink(){
                 modifier = Modifier
                     .wrapContentSize()
                     .padding(10.dp),
-                enabled = rewardBtnValid
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.baseline_card_giftcard_24),
@@ -121,7 +116,7 @@ fun StarLink(){
             }
             Button(
                 onClick = {
-                    streakCnt.value = (streakCnt.value + 1) % 8
+                    childViewModel.getReward(1)
                 },
                 contentPadding = PaddingValues(12.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -134,12 +129,19 @@ fun StarLink(){
                     .padding(10.dp),
                 enabled = getBtnValid
             ) {
-                Text(text = "보상 획득")
+                Text(
+                    text = "보상 획득",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
 
         if(openDialog.value){
-            RewardDialog(currentReward) { openDialog.value = false }
+            if(childSleepInfo.currentReward == "")
+                RewardDialog("등록된 보상이 없습니다") { openDialog.value = false }
+            else
+                RewardDialog(childSleepInfo.currentReward) { openDialog.value = false }
         }
     }
 }
@@ -189,5 +191,5 @@ fun RewardDialog(reward: String, onDismiss: () -> Unit) {
 @Composable
 @Preview(showSystemUi = true)
 fun preview(){
-    StarLink()
+    StarLink(childViewModel = ChildViewModel())
 }

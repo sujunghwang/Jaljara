@@ -14,33 +14,45 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.data.ChildSleepInfo
 import com.ssafy.jaljara.data.Content
 import com.ssafy.jaljara.data.DummyChildSleepInfo
 import com.ssafy.jaljara.data.DummyDataProvider
 import com.ssafy.jaljara.ui.screen.ChildSetTimeCard
 import com.ssafy.jaljara.ui.screen.Children
 import com.ssafy.jaljara.ui.screen.CurrentRewardContainer
+import com.ssafy.jaljara.ui.vm.ChildViewModel
+
 
 var dummyChildSleepInfo = DummyChildSleepInfo()
 
 @Composable
-fun ChildMainView(){
+fun ChildMainView(childViewModel: ChildViewModel){
     val scrollState = rememberScrollState()
+    var childSleepInfo = childViewModel.childSleepResponse
+    var todayMission = childViewModel.todayMissionResponse
     Box(modifier = Modifier.fillMaxSize()){
         Image(
             painter = painterResource(R.drawable.bg),
@@ -55,9 +67,11 @@ fun ChildMainView(){
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            MissionTodayContainer(dummyChildSleepInfo.currentReward)
-            SetSllepTimeContainer(dummyChildSleepInfo.targetBedTime,dummyChildSleepInfo.targetWakeupTime)
-            RewardStatusContainer(dummyChildSleepInfo.streakCount)
+            childViewModel.getTodayMission(1)
+            childViewModel.getChildSleepInfo(1)
+            MissionTodayContainer(todayMission.content)
+            SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
+            RewardStatusContainer(childSleepInfo.streakCount)
             ContentContainer(contents = DummyDataProvider.contentList)
         }
     }
@@ -74,35 +88,26 @@ fun MissionTodayContainer(todayMission: String){
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 10.dp,
             ),
-            shape = RoundedCornerShape(20.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color.White
+                containerColor = Color(0x20FFFFFF)
             ),
             content = {
-                Box(){
-                    Image(
-                        painter = painterResource(R.drawable.mission_bg),
-                        contentDescription = "background",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                    reloadMissionButton(
-                        modifier = Modifier
-//                            .align(Alignment.End)
-                            .clickable {
-                                Log.d("missionReload", "미션 재설정 호출")
-                                //미션 재설정API 호출
-                            },
-                    )
-                    Text(text = "$todayMission",
-                        color = Color.White,
-                        modifier = Modifier
-                            .padding(bottom = 20.dp)
-//                            .align(Alignment.CenterHorizontally)
-                    )
-                }
-
-
+                reloadMissionButton(
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .clickable {
+                            Log.d("missionReload", "미션 재설정 호출")
+                            //미션 재설정API 호출
+                        },
+                )
+                Text(
+                    text = "$todayMission",
+                    color = Color.White,
+                    modifier = Modifier
+                        .padding(bottom = 20.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
             }
         )
     }
@@ -114,7 +119,7 @@ fun reloadMissionButton(modifier: Modifier){
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        Text(text = "재설정")
+        Text(text = "재설정", color = Color.White)
         Image(
             painter = painterResource(id = R.drawable.ic_reload),
             contentDescription = null
@@ -128,20 +133,24 @@ fun SetSllepTimeContainer(targetBedTime: String, targetWakeupTime:String) {
     Column() {
         Text(text = "설정된 수면시간", fontWeight = FontWeight.Bold, color = Color.White)
         Card(
+            modifier = Modifier
+                .fillMaxWidth(),
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 10.dp,
             ),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color.White,
+                containerColor = Color(0x20FFFFFF)
             ),
             content = {
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    SetTimeContainer(painterResource(id = R.drawable.ic_launcher_foreground), "취침시간", "${targetBedTime.substring(0,5)}")
-                    SetTimeContainer(painterResource(id = R.drawable.ic_launcher_foreground), "기상시간", "${targetWakeupTime.substring(0,5)}")
+                    SetTimeContainer(painterResource(id = R.drawable.ic_launcher_foreground), "취침시간",
+                        "${if (targetBedTime!="") targetBedTime.substring(0, 5) else targetBedTime}")
+                    SetTimeContainer(painterResource(id = R.drawable.ic_launcher_foreground), "기상시간",
+                        "${if (targetWakeupTime!="") targetWakeupTime.substring(0, 5) else targetWakeupTime}")
                 }
             }
         )
@@ -158,8 +167,8 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
         Image(painter = img,
             contentDescription = null,
         )
-        Text(text = title)
-        Text(text = setTime)
+        Text(text = title, color = Color.White)
+        Text(text = setTime, color = Color.White)
     }
 }
 
@@ -178,7 +187,7 @@ fun RewardStatusContainer(streakCount:Int) {
             ),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color.White,
+                containerColor = Color(0x20FFFFFF)
             ),
             content = {
                 Row(
@@ -189,6 +198,7 @@ fun RewardStatusContainer(streakCount:Int) {
 //                        modifier = Modifier.size(60.dp, 60.dp)
                     )
                     Text(text = "연속 $remainCnt 번만 성공하면 보상을 획득할 수 있어요!",
+                        color = Color.White,
                         modifier = Modifier
                             .padding(16.dp)
                     )
@@ -239,7 +249,7 @@ fun ContentCard(content: Content) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = Color(0x20FFFFFF)
         ),
         modifier = Modifier
             .padding(end = 3.dp, bottom = 5.dp)

@@ -16,3 +16,16 @@ data class ChildSleepInfo (
 ){
     constructor() : this(0,"",0,"","")
 }
+
+data class TodayMission(
+    val missionTodayId: Long,
+    val userId: Long,
+    val missionId: Long,
+    val content: String,
+    val missionType: String,
+    val remainRerollCount: Int,
+    val url: String?,
+    val isClear: Boolean
+){
+    constructor() : this(0,0,0,"","",0,"",false)
+}

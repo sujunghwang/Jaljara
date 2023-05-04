@@ -5,4 +5,7 @@
     <string name="main">홈</string>
     <string name="time_setting">목표수면</string>
     <string name="calendar">수면달력</string>
+    <string name="star_link">별자리</string>
+    <string name="contents">탐험</string>
+    <string name="coupon">보물상자</string>
 </resources>
