@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.data.ChildSleepInfo
 import com.ssafy.jaljara.data.ParentUiState
+import com.ssafy.jaljara.data.TodayMission
 import com.ssafy.jaljara.network.ChildApiService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,9 +29,9 @@ class ChildViewModel : ViewModel() {
         }
     }
 
-    var childSleepResponse: ChildSleepInfo by mutableStateOf(ChildSleepInfo())
     var errorMessage: String by mutableStateOf("")
 
+    var childSleepResponse: ChildSleepInfo by mutableStateOf(ChildSleepInfo())
     fun getChildSleepInfo(childId: Long){
         viewModelScope.launch{
             val apiService = ChildApiService.getInstance()
@@ -57,6 +58,21 @@ class ChildViewModel : ViewModel() {
             }
             catch (e:Exception){
                 errorMessage = e.message.toString()
+            }
+        }
+    }
+    
+    var todayMissionResponse: TodayMission by mutableStateOf(TodayMission())
+    fun getTodayMission(childId: Long){
+        viewModelScope.launch{
+            val apiService = ChildApiService.getInstance()
+            try{
+                Log.d("오늘의 미션 조회 API 호출 - childId","$childId")
+                val todayMission = apiService.getTodayMission(childId)
+                todayMissionResponse = todayMission
+            }
+            catch (e:Exception){
+                errorMessage = e.cause.toString()
                 Log.d("errorMessage","$errorMessage")
             }
         }
