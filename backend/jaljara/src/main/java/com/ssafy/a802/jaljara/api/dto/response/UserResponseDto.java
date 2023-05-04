@@ -14,5 +14,6 @@ public class UserResponseDto {
         private long userId;
         private String name;
         private String profileImageUrl;
+        private String userType;
     }
 }
