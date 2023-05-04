@@ -83,8 +83,8 @@ fun ParentNavigationBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ParentApp(
-    modifier: Modifier = Modifier,
     viewModel: ParentViewModel = viewModel(),
+    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
 
@@ -110,7 +110,7 @@ fun ParentApp(
             composable(route = ParentScreen.Start.url) {
                 viewModel.setNavShow(true)
                 // 부모 메인 페이지
-                ParentMainView()
+                ParentMainView(viewModel)
                 navBarSelectedItem = 0
             }
             composable(route = ParentScreen.SetSleepTime.url) {

@@ -39,13 +39,21 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.ChildInfo
+import com.ssafy.jaljara.data.ChildSleepInfo
 import com.ssafy.jaljara.data.DummyDataProvider
 import com.ssafy.jaljara.ui.screen.child.*
+import com.ssafy.jaljara.ui.vm.ChildViewModel
+import com.ssafy.jaljara.ui.vm.ParentViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @Composable
-fun ParentMainView(){
+fun ParentMainView(parentViewModel: ParentViewModel){
     val scrollState = rememberScrollState()
+    var childSleepInfo = parentViewModel.childSleepResponse
+    var todayMission = parentViewModel.todayMissionResponse
+
 //    val imageLoader = ImageLoader.Builder(LocalContext.current)
 //        .components {
 //            if (SDK_INT >= 28) {
@@ -69,17 +77,31 @@ fun ParentMainView(){
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+            parentViewModel.getTodayMission(1)
+            parentViewModel.getChildSleepInfo(1)
             Children(DummyDataProvider.childList)
-            CurrentRewardContainer(painterResource(R.drawable.current_reward),"현재 보상", "놀이동산 가기")
-            CurrentRewardContainer(painterResource(id = R.drawable.today_mission),"오늘의 미션", "이닦는 사진 찍기")
+            CurrentRewardContainer(painterResource(R.drawable.current_reward),"현재 보상", childSleepInfo.currentReward)
+            CurrentRewardContainer(painterResource(id = R.drawable.today_mission),"오늘의 미션", todayMission.content)
             Row(modifier = Modifier.fillMaxWidth()) {
-                ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up", "5:00", Modifier.weight(1f))
+                ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up",
+                    "${if (childSleepInfo.targetWakeupTime!="") childSleepInfo.targetWakeupTime.substring(0, 5) else childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
                 Spacer(modifier = Modifier.weight(0.1f))
-                ChildSetTimeCard(painterResource(id = R.drawable.baseline_king_bed_24),"수면 설정하기", "8H", Modifier.weight(1f))
+                ChildSetTimeCard(painterResource(id = R.drawable.baseline_king_bed_24),"수면 설정하기",
+                    "8H", Modifier.weight(1f))
             }
         }
     }
 }
+
+fun CalSleepGoal(childInfo: ChildSleepInfo):String{
+    val mFormat = SimpleDateFormat("HH:mm:ss")
+    val bedTime = mFormat.format(childInfo.targetBedTime)
+    val wakeupTime = mFormat.format(childInfo.targetWakeupTime)
+
+    return bedTime
+}
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -204,8 +226,6 @@ fun Child(childInfo: ChildInfo) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrentRewardContainer(img : Painter, title:String, content: String) {
-    var reward by remember { mutableStateOf(content) }
-
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -227,7 +247,7 @@ fun CurrentRewardContainer(img : Painter, title:String, content: String) {
                 )
                 Column() {
                     Text(text = title, color = Color.White)
-                    Text(text = "$reward", fontSize = 20.sp, color = Color.White)
+                    Text(text = "$content", fontSize = 20.sp, color = Color.White)
                 }
             }
         }
@@ -237,9 +257,6 @@ fun CurrentRewardContainer(img : Painter, title:String, content: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modifier = Modifier) {
-
-    var time by remember { mutableStateOf(content) }
-
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp,
@@ -255,7 +272,7 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "$time", fontSize = 20.sp, color = Color.White)
+                Text(text = "$content", fontSize = 20.sp, color = Color.White)
                 Text(text = title, color = Color.White)
                 Image(painter = img,
                     contentDescription = null,
@@ -269,24 +286,24 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
     )
 }
 
-//@Composable
-//fun GifComponent() {
-//    val imageLoader = ImageLoader.Builder(LocalContext.current)
-//        .components {
-//            if (SDK_INT >= 28) {
-//                add(ImageDecoderDecoder.Factory())
-//            } else {
-//                add(GifDecoder.Factory())
-//            }
-//        }
-//        .build()
-//
-//    Image(
-//        painter = rememberAsyncImagePainter(R.drawable.reward_2, imageLoader),
-//        contentDescription = null,
-////        modifier = Modifier.fillMaxSize()
-//    )
-//}
+@Composable
+fun GifComponent() {
+    val imageLoader = ImageLoader.Builder(LocalContext.current)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }
+        .build()
+
+    Image(
+        painter = rememberAsyncImagePainter(R.drawable.reward_2, imageLoader),
+        contentDescription = null,
+//        modifier = Modifier.fillMaxSize()
+    )
+}
 
 //@Preview
 //@Composable
