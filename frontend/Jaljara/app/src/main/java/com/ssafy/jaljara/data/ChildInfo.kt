@@ -23,7 +23,7 @@ data class TodayMission(
     val content: String,
     val missionType: String,
     val remainRerollCount: Int,
-    val url: String,
+    val url: String?,
     val isClear: Boolean
 ){
     constructor() : this(0,0,0,"","",0,"",false)
