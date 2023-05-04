@@ -16,8 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.ssafy.jaljara.data.todayMission
-import com.ssafy.jaljara.data.todayMission2
+import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.ImageCaptureResult
 import com.ujizin.camposer.state.rememberCameraState
@@ -26,7 +25,7 @@ import java.io.FileOutputStream
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun ChildMission(){
+fun ChildMission(childViewModel :ChildViewModel){
     Column(
         Modifier
             .fillMaxHeight()
@@ -34,8 +33,10 @@ fun ChildMission(){
         verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        val mission = todayMission
-        Text(text = mission.missionContent)
+        val mission = childViewModel.todayMissionResponse
+        childViewModel.getTodayMission(1)
+
+        Text(text = mission.content)
         if (mission.missionType=="IMAGE"){
             Box(){
                 CameraUI(Modifier)
