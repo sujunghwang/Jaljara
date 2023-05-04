@@ -147,9 +147,9 @@ fun SetSllepTimeContainer(targetBedTime: String, targetWakeupTime:String) {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    SetTimeContainer(painterResource(id = R.drawable.baseline_king_bed_24), "취침시간",
+                    SetTimeContainer(painterResource(id = R.drawable.bed_time), "취침시간",
                         "${if (targetBedTime!="") targetBedTime.substring(0, 5) else targetBedTime}")
-                    SetTimeContainer(painterResource(id = R.drawable.baseline_alarm_24), "기상시간",
+                    SetTimeContainer(painterResource(id = R.drawable.wake_up), "기상시간",
                         "${if (targetWakeupTime!="") targetWakeupTime.substring(0, 5) else targetWakeupTime}")
                 }
             }
@@ -166,7 +166,7 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
     ) {
         Image(painter = img,
             contentDescription = null,
-            modifier = Modifier.size(120.dp, 100.dp).padding(20.dp)
+            modifier = Modifier.size(100.dp, 100.dp).padding(11.dp)
         )
         Text(text = title, color = Color.White)
         Text(text = setTime, color = Color.White)
@@ -194,9 +194,9 @@ fun RewardStatusContainer(streakCount:Int) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(painter = painterResource(id = R.drawable.baseline_card_giftcard_24),
+                    Image(painter = painterResource(id = R.drawable.reward),
                         contentDescription = null,
-                        modifier = Modifier.size(95.dp,100.dp).padding(5.dp)
+                        modifier = Modifier.size(95.dp,100.dp).padding(start=5.dp)
                     )
                     Text(text = "연속 $remainCnt 번만 성공하면 보상을 획득할 수 있어요!",
                         color = Color.White,
