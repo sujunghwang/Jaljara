@@ -12,7 +12,7 @@ public class UserResponseDto {
     @Builder
     public static class SimpleUserInfo {
         private long userId;
+        private String name;
         private String profileImageUrl;
-        private String userType;
     }
 }
