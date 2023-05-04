@@ -6,9 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafy.jaljara.data.ChildSleepInfo
-import com.ssafy.jaljara.data.ParentUiState
-import com.ssafy.jaljara.data.TodayMission
+import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.network.ChildApiService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -73,6 +71,39 @@ class ChildViewModel : ViewModel() {
             }
             catch (e:Exception){
                 errorMessage = e.cause.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
+
+    var usedCouponResponse: List<UsedCoupon> by mutableStateOf(listOf())
+    fun getUsedCoupon(childId: Long){
+        viewModelScope.launch{
+            val apiService = ChildApiService.getInstance()
+            try{
+                Log.d("사용한 쿠폰 리스트 조회 API 호출 - childId","$childId")
+                val usedCoupon = apiService.getUsedCoupon(childId)
+                usedCouponResponse = usedCoupon
+            }
+            catch (e:Exception){
+                errorMessage = e.message.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
+
+
+    var notUsedCouponResponse: List<NotUsedCoupon> by mutableStateOf(listOf())
+    fun getNotUsedCoupon(childId: Long){
+        viewModelScope.launch{
+            val apiService = ChildApiService.getInstance()
+            try{
+                Log.d("사용하지 않은 쿠폰 리스트 조회 API 호출 - childId","$childId")
+                val notUsedCoupon = apiService.getNotUsedCoupon(childId)
+                notUsedCouponResponse = notUsedCoupon
+            }
+            catch (e:Exception){
+                errorMessage = e.message.toString()
                 Log.d("errorMessage","$errorMessage")
             }
         }

@@ -1,7 +1,9 @@
 package com.ssafy.jaljara.network
 
 import com.ssafy.jaljara.data.ChildSleepInfo
+import com.ssafy.jaljara.data.NotUsedCoupon
 import com.ssafy.jaljara.data.TodayMission
+import com.ssafy.jaljara.data.UsedCoupon
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -27,6 +29,12 @@ interface ChildApiService {
     @GET("/api/missions/{userId}")
     suspend fun getTodayMission(@Path("userId") userId : Long) : TodayMission
 
+    @GET("/api/rewards/used/{childId}")
+    suspend fun getUsedCoupon(@Path("childId") childId : Long) : List<UsedCoupon>
+
+    @GET("/api/rewards/{childId}")
+    suspend fun getNotUsedCoupon(@Path("childId") childId : Long) : List<NotUsedCoupon>
+
     companion object{
         var apiService:ChildApiService? = null
         fun getInstance() : ChildApiService {
@@ -39,6 +47,7 @@ interface ChildApiService {
             return apiService!!
         }
     }
+
 }
 
 //object ChildApi {
