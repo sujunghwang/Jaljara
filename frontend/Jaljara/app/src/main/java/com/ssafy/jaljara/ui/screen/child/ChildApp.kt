@@ -1,5 +1,7 @@
 package com.ssafy.jaljara.ui.screen.child
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -67,6 +69,7 @@ fun ChildNavigationBar(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildApp(
@@ -106,6 +109,7 @@ fun ChildApp(
             }
             composable(route = ChildScreen.Coupon.url) {
                 // 쿠폰 함수
+                CouponScreen(viewModel)
             }
         }
     }

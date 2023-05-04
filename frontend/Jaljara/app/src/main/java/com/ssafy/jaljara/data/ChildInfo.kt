@@ -1,6 +1,5 @@
 package com.ssafy.jaljara.data
 
-
 data class ChildInfo(
     val id : Int,
     val pictureUrl : String
@@ -28,3 +27,19 @@ data class TodayMission(
 ){
     constructor() : this(0,0,0,"","",0,"",false)
 }
+
+data class UsedCoupon(
+    val rewardId: Int,
+    val userId: Int,
+    val content: String,
+    val getTime: String?,
+    val usedTime: String?,
+)
+
+data class NotUsedCoupon(
+    val rewardId: Int,
+    val userId: Int,
+    val content: String,
+    val getTime: String?,
+    val usedTime: String?,
+)

@@ -4,7 +4,9 @@ package com.ssafy.jaljara.ui.screen.child
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +19,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -25,9 +29,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.data.notUsedCoupons
-import com.ssafy.jaljara.data.usedCoupons
 import com.ssafy.jaljara.ui.screen.parent.*
+import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 
 
@@ -65,6 +68,7 @@ fun ChildCouponNav(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CouponScreen(
+    childViewModel : ChildViewModel,
     modifier: Modifier = Modifier,
     viewModel: ParentViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
@@ -94,15 +98,31 @@ fun CouponScreen(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = CouponStatus.Coupon.name) {
+                Image(
+                    painter = painterResource(R.drawable.bg),
+                    contentDescription = "background",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxSize()
+                )
                 LazyColumn() {
-                    items(notUsedCoupons){
+                    val coupons = childViewModel.notUsedCouponResponse
+                    childViewModel.getNotUsedCoupon(1)
+                    items(coupons){
                         NotUsedCoupon(coupon = it)
                     }
                 }
             }
             composable(route = CouponStatus.UsedCoupon.name) {
+                Image(
+                    painter = painterResource(R.drawable.bg),
+                    contentDescription = "background",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxSize()
+                )
                 LazyColumn() {
-                    items(usedCoupons){
+                    val coupons = childViewModel.usedCouponResponse
+                    childViewModel.getUsedCoupon(1)
+                    items(coupons){
                         UsedCoupon(coupon = it)
                     }
                 }
