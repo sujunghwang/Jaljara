@@ -7,10 +7,12 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,27 +35,35 @@ import java.time.format.DateTimeFormatter
  * 공통 bar가 사용됩니다.
  * */
 
-enum class ParentScreen(@StringRes val title : Int) {
-    Start(title = R.string.main),
-    SetSleepTime(title = R.string.time_setting),
-    SleepCalendar(title = R.string.calendar),
-    SleepLogDetail(title = 3)
+enum class ParentScreen(@StringRes val title : Int,  val url: String) {
+    Start(title = R.string.main, "/main"),
+    SetSleepTime(title = R.string.time_setting, "/set_sleep"),
+    SleepCalendar(title = R.string.calendar, "/calendar"),
+    SleepLogDetail(title = 3, "/sleep_detail")
 }
 
+data class NavigationInfo(val route: ParentScreen, val icon: ImageVector)
 @Composable
 fun ParentNavigationBar(
-    items : List<ParentScreen> = listOf(ParentScreen.Start,ParentScreen.SetSleepTime,ParentScreen.SleepCalendar),
+
+    /** 원하는 아이콘을 찾아서 넣으세요 **/
+    items : List<NavigationInfo> = listOf(
+        NavigationInfo(ParentScreen.Start, Icons.Filled.Star),
+        NavigationInfo(ParentScreen.SetSleepTime, Icons.Filled.Star),
+        NavigationInfo(ParentScreen.SleepCalendar, Icons.Filled.Star),
+    ),
     navController : NavController,
     selectedItem : Int,
+    onChangeNavIdx: (Int) -> Unit = {},
 ) {
     NavigationBar {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                icon = { Icon(Icons.Filled.Favorite, contentDescription = item.name) },
-                label = { Text(stringResource(id = item.title)) },
+                icon = { Icon(item.icon, contentDescription = item.route.name) },
+                label = { Text(stringResource(id = item.route.title)) },
                 selected = selectedItem == index,
                 onClick = {
-                    navController.navigate(item.name){
+                    navController.navigate(item.route.url){
                         /* 새로 렌더링 되는게 아니라
                          이전 상태 저장*/
                         popUpTo(navController.graph.findStartDestination().id) {
@@ -62,6 +72,7 @@ fun ParentNavigationBar(
                         launchSingleTop = true
                         restoreState = true
                     }
+                    onChangeNavIdx(index)
                 }
             )
         }
@@ -93,22 +104,22 @@ fun ParentApp(
 
         NavHost(
             navController = navController,
-            startDestination = ParentScreen.Start.name,
+            startDestination = ParentScreen.Start.url,
             modifier = modifier.padding(innerPadding)
         ) {
-            composable(route = ParentScreen.Start.name) {
+            composable(route = ParentScreen.Start.url) {
                 viewModel.setNavShow(true)
                 // 부모 메인 페이지
                 ParentMain()
                 navBarSelectedItem = 0
             }
-            composable(route = ParentScreen.SetSleepTime.name) {
+            composable(route = ParentScreen.SetSleepTime.url) {
                 viewModel.setNavShow(true)
                 // 목표 수면시간 설정
                 SetTimeScreen()
                 navBarSelectedItem = 1
             }
-            composable(route = ParentScreen.SleepCalendar.name) {
+            composable(route = ParentScreen.SleepCalendar.url) {
                 viewModel.setNavShow(true)
                 // 내 아이 수면 달력
                 SleepCalenderScreen(onClickDay = {
@@ -119,11 +130,11 @@ fun ParentApp(
 
                     val displayDate = day.toJavaLocalDate().format(fomatter)
 
-                    navController.navigate(ParentScreen.SleepLogDetail.name + "/"+displayDate)
+                    navController.navigate(ParentScreen.SleepLogDetail.url + "/"+displayDate)
                 })
                 navBarSelectedItem = 2
             }
-            composable(route = ParentScreen.SleepLogDetail.name + "/{formatDate}") {
+            composable(route = ParentScreen.SleepLogDetail.url + "/{formatDate}") {
                     backStackEntry ->
                 viewModel.setNavShow(false)
                 // 수면 기록 상세 페이지
