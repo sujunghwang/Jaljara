@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 
-const val BASE_URL =
+private const val BASE_URL =
     "https://jaljara.movebxeax.me"
 
 //private val retrofit = Retrofit.Builder()

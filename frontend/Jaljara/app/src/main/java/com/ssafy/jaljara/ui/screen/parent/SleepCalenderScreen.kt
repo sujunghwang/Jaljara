@@ -41,6 +41,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.himanshoe.kalendar.color.KalendarThemeColor
 import com.himanshoe.kalendar.component.day.KalendarDay
 import com.himanshoe.kalendar.component.day.config.KalendarDayColors
@@ -53,6 +54,8 @@ import com.himanshoe.kalendar.model.KalendarEvent
 import com.himanshoe.kalendar.model.toKalendarDay
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.component.NightForestBackGround
+import com.ssafy.jaljara.ui.component.LoadingComponent
+import com.ssafy.jaljara.ui.vm.CalendarViewModel
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
 
@@ -243,7 +246,8 @@ fun JongSeokCalendar(
     onClickDay: (LocalDate) -> Unit = { },
     takeMeToDate: LocalDate?,
     kalendarDayColors: KalendarDayColors,
-    onChangeMonth: (year: Int, month: Int) -> Unit
+    onChangeMonth: (year: Int, month: Int) -> Unit,
+    sleepLogSimple: List<Int> = listOf()
 ) {
     val currentDay = takeMeToDate ?: Clock.System.todayIn(TimeZone.currentSystemDefault())
 
@@ -256,6 +260,8 @@ fun JongSeokCalendar(
     val startDayOfMonth = "${year}-$monthValue-01".toLocalDate()
     val firstDayOfMonth = startDayOfMonth.dayOfWeek
     val selectedKalendarDate = remember { mutableStateOf(currentDay) }
+
+    Log.d("슬립로그 되냐?", sleepLogSimple.toString())
 
     Column(
         modifier = modifier
@@ -287,6 +293,9 @@ fun JongSeokCalendar(
             year = year,
             textColor = Color.White
         )
+        val simpleLogSize = sleepLogSimple.size
+        var idx = 0
+
         LazyVerticalGrid(
             modifier = Modifier.fillMaxWidth(),
             columns = GridCells.Fixed(7),
@@ -299,32 +308,60 @@ fun JongSeokCalendar(
                         color = Color.White
                     )
                 }
+
                 items((getInitialDayOfMonth(firstDayOfMonth)..daysInMonth).toList()) {
                     if (it > 0) {
                         val day = getGeneratedDay(it, currentMonth, year)
                         val isCurrentDay = day == currentDay
-                        KalendarDay(
-                            modifier = Modifier
-                                .background(
-                                    color = Color(0xff3B414A)
+
+                        var isSleepLog = false
+
+                        // 배열의 범위를 벗어나지 않았을 때
+                        if(idx < simpleLogSize) {
+                            if (sleepLogSimple[idx] < day.dayOfMonth) {
+                                idx++
+                            } else if (sleepLogSimple[idx] == day.dayOfMonth){
+                                isSleepLog = true
+                                Log.d("슬립로그임 ㅋㅋ", "$idx, ${sleepLogSimple[idx]}, ${day.dayOfMonth}")
+                                idx++
+                            }
+                        }
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            KalendarDay(
+                                modifier = Modifier
+                                    .background(
+                                        color = Color(0xff3B414A)
+                                    )
+                                    .border(
+                                        width = 2.dp,
+                                        color = Color(0xFF323741),
+                                        shape = RoundedCornerShape(4.dp)
+                                    )
+                                ,
+                                kalendarDay = day.toKalendarDay(),
+                                kalendarEvents = kalendarEvents,
+                                isCurrentDay = isCurrentDay,
+                                onCurrentDayClick = { kalendarDay, events ->
+                                    selectedKalendarDate.value = kalendarDay.localDate
+                                    if(isSleepLog) onClickDay(kalendarDay.localDate)
+                                },
+                                selectedKalendarDay = selectedKalendarDate.value,
+                                kalendarDayColors = kalendarDayColors,
+                                dotColor = Color.White,
+                                dayBackgroundColor = Color.White
+                            )
+
+                            if(isSleepLog){
+                                Box(
+                                    modifier = Modifier
+                                        .size(10.dp)
+                                        .background(
+                                            color = Color.Yellow,
+                                            shape = CircleShape
+                                        ).align(Alignment.BottomCenter)
                                 )
-                                .border(
-                                    width = 2.dp,
-                                    color = Color(0xFF323741),
-                                    shape = RoundedCornerShape(4.dp)
-                                ),
-                            kalendarDay = day.toKalendarDay(),
-                            kalendarEvents = kalendarEvents,
-                            isCurrentDay = isCurrentDay,
-                            onCurrentDayClick = { kalendarDay, events ->
-                                selectedKalendarDate.value = kalendarDay.localDate
-                                onClickDay(kalendarDay.localDate)
-                            },
-                            selectedKalendarDay = selectedKalendarDate.value,
-                            kalendarDayColors = kalendarDayColors,
-                            dotColor = Color.White,
-                            dayBackgroundColor = Color.White
-                        )
+                            }
+                        }
                     }
                 }
             }
@@ -343,11 +380,12 @@ private fun getGeneratedDay(day: Int, currentMonth: Month, currentYear: Int): Lo
 }
 
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SleepCalenderScreen(
     // 아이의 pk
-    childId : Int? = null,
+    childId : Long = 1,
     onClickDay : (LocalDate) -> Unit
 ){
 
@@ -355,6 +393,13 @@ fun SleepCalenderScreen(
 
     var tYear by rememberSaveable{ mutableStateOf(today.year)}
     var tMonth by rememberSaveable{ mutableStateOf(today.month.value)}
+
+
+    val calendarViewModel : CalendarViewModel = viewModel()
+
+    var simpleSleepLog by rememberSaveable{ mutableStateOf(listOf<Int>())}
+
+    calendarViewModel.getSimpleSleepLog(childId, convert2yyyyMM(tYear, tMonth))
 
     NightForestBackGround {
         LazyColumn(modifier = Modifier.fillMaxHeight()){
@@ -380,27 +425,47 @@ fun SleepCalenderScreen(
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    JongSeokCalendar(
-                        takeMeToDate = null,
-                        kalendarDayColors = KalendarDayColors(Color.White, Color.Black),
-                        onChangeMonth = { year, month ->
-                            tYear = year
-                            tMonth = month
-                        },
-                        onClickDay = onClickDay,
-                        modifier = Modifier.padding(16.dp).height(500.dp)
-                    )
+
+                    LoadingComponent<List<Int>>(
+                        uiState = calendarViewModel.calendarUiState,
+                        onSuccessHandler = {
+                            simpleSleepLog = it
+                        }
+                    ){
+                        JongSeokCalendar(
+                            takeMeToDate = null,
+                            kalendarDayColors = KalendarDayColors(Color.White, Color.Black),
+                            onChangeMonth = { year, month ->
+                                tYear = year
+                                tMonth = month
+                            },
+                            onClickDay = onClickDay,
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .height(500.dp),
+                            sleepLogSimple = simpleSleepLog
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+private fun convert2yyyyMM(year: Int, month: Int): String{
+    val sb = StringBuilder()
+    sb.append(year)
+    if(month < 10) sb.append(0)
+    sb.append(month)
+
+    return sb.toString()
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showSystemUi = true)
 fun prevcal(){
-    SleepCalenderScreen(null){
+    SleepCalenderScreen(1){
         day -> Log.d("클릭 날짜", day.toString())
     }
 }

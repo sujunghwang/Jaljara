@@ -1,6 +1,5 @@
 package com.ssafy.jaljara.network
 
-import com.ssafy.jaljara.data.UserInfo
 import com.ssafy.jaljara.data.UserLoginRequestDto
 import com.ssafy.jaljara.data.UserLoginResponseDto
 import com.ssafy.jaljara.data.UserSignupResponseDto
@@ -8,6 +7,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
+
+private const val BASE_URL =
+    "https://jaljara.movebxeax.me"
 
 interface UserApiService {
     @POST("/api/auth/login")
