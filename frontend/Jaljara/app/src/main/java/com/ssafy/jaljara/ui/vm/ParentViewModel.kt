@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.data.ChildSleepInfo
 import com.ssafy.jaljara.data.ParentUiState
 import com.ssafy.jaljara.data.TodayMission
+import com.ssafy.jaljara.data.TargetSleepInput
 import com.ssafy.jaljara.network.ChildApiService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -55,6 +56,21 @@ class ParentViewModel : ViewModel() {
                 Log.d("오늘의 미션 조회 API 호출 - childId","$childId")
                 val todayMission = apiService.getTodayMission(childId)
                 todayMissionResponse = todayMission
+            }
+            catch (e:Exception){
+                errorMessage = e.cause.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
+
+
+    fun setTargetSleepTime(childId: Long, targetBedTime: String, targetWakeupTime: String){
+        viewModelScope.launch{
+            val apiService = ChildApiService.getInstance()
+            try{
+                Log.d("목표 수면 시간 설정 API 호출","$childId, $targetBedTime, $targetWakeupTime")
+                apiService.setTargetSleepTime(TargetSleepInput(childId, targetBedTime, targetWakeupTime))
             }
             catch (e:Exception){
                 errorMessage = e.cause.toString()

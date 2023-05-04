@@ -6,7 +6,6 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -93,6 +92,8 @@ fun ParentApp(
 
     val uiState by viewModel.uiState.collectAsState()
 
+    viewModel.getChildSleepInfo(1)
+
     Scaffold(
         bottomBar = {
             if(uiState.showNavigation){ParentNavigationBar(
@@ -116,7 +117,7 @@ fun ParentApp(
             composable(route = ParentScreen.SetSleepTime.url) {
                 viewModel.setNavShow(true)
                 // 목표 수면시간 설정
-                SetTimeScreen()
+                SetTimeScreen(viewModel)
                 navBarSelectedItem = 1
             }
             composable(route = ParentScreen.SleepCalendar.url) {
