@@ -11,11 +11,13 @@ class ParentViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(ParentUiState())
     val uiState: StateFlow<ParentUiState> = _uiState.asStateFlow()
 
-    fun setNavIdx(navIdx: Int) {
+    fun setNavShow(isShow : Boolean) {
         _uiState.update { currentState ->
             currentState.copy(
-               selectedNavIdx = navIdx
+               showNavigation = isShow
             )
         }
     }
+
+
 }
