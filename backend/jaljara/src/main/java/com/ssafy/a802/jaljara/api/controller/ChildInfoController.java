@@ -32,7 +32,7 @@ public class ChildInfoController {
     public ResponseEntity<?> getChildList(@PathVariable long parentId){
         List<UserResponseDto.SimpleUserInfo> childList = childInformationService.findChildListByParentId(parentId);
         if(childList.size() == 0)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(childList, HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(childList, HttpStatus.OK);
     }
 
