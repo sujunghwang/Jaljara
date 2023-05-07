@@ -1,6 +1,7 @@
 package com.ssafy.jaljara.data
 
-import com.ssafy.jaljara.utils.ProviderType
+import com.google.gson.annotations.SerializedName
+import com.ssafy.jaljara.utils.TokenHandler.ProviderType
 
 enum class UserType {
     PARENTS,
@@ -8,8 +9,11 @@ enum class UserType {
 }
 
 data class UserInfo(
+    @SerializedName("userId")
     val userId: String,
+    @SerializedName("profileImageUrl")
     val profileImageUrl: String,
+    @SerializedName("userType")
     val userType: UserType
 )
 
@@ -31,7 +35,10 @@ data class UserSignupResponseDto(
 )
 
 data class UserInfoWithTokens(
-    val userInfo: UserInfo,
+    @SerializedName("accessToken")
     val accessToken: String,
-    val refreshToken: String
+    @SerializedName("refreshToken")
+    val refreshToken: String,
+    @SerializedName("userInfo")
+    val userInfo: UserInfo
 )

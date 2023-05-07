@@ -4,16 +4,30 @@ import android.content.Context
 import android.util.Log
 import com.ssafy.jaljara.ui.vm.LandingViewModel
 
-enum class ProviderType {
-    GOOGLE,
-    KAKAO
-}
+class TokenHandler private constructor() {
+    enum class ProviderType {
+        GOOGLE,
+        KAKAO
+    }
 
-fun checkTokenIsValid(token : String, providerType: ProviderType, context: Context) {
-    Log.e("TokenValidChecker", token);
-    LandingViewModel(context).loginWithExternalToken(token = token, provider = providerType)
-}
 
-fun signupWithToken(token : String, providerType: ProviderType, context: Context) {
-    LandingViewModel(context).signupWithExternalToken(token = token, provider = providerType)
+    companion object {
+        private var instance : TokenHandler? = null
+        fun getInstance(): TokenHandler {
+            return instance ?: synchronized(this) {
+                instance ?: TokenHandler().also {
+                    instance = it
+                }
+            }
+        }
+    }
+
+    fun checkTokenIsValid(token : String, providerType: ProviderType, viewModel: LandingViewModel) {
+        Log.e("TokenValidChecker", token)
+        viewModel.loginWithExternalToken(token = token, provider = providerType)
+    }
+
+    fun signupWithToken(token : String, providerType: ProviderType, viewModel: LandingViewModel) {
+        viewModel.signupWithExternalToken(token = token, provider = providerType)
+    }
 }

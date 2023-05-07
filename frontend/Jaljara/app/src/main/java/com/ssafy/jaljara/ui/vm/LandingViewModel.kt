@@ -9,28 +9,54 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafy.jaljara.data.UserInfo
-import com.ssafy.jaljara.data.UserInfoWithTokens
-import com.ssafy.jaljara.data.UserLoginRequestDto
-import com.ssafy.jaljara.data.UserLoginResponseDto
+import com.google.gson.reflect.TypeToken
+import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.network.UserApiService
 import com.ssafy.jaljara.utils.PreferenceUtil
-import com.ssafy.jaljara.utils.ProviderType
+import com.ssafy.jaljara.utils.TokenHandler
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LandingViewModel(context: Context) : ViewModel() {
-    val apiService = UserApiService.getInstance()
-    var preferenceUtil : PreferenceUtil<UserInfoWithTokens> = PreferenceUtil(context, "user")
+data class LandingViewModelState(
+    var isLoggedIn : Boolean = false,
+    var userType : UserType? = null
+)
 
-    fun loginWithExternalToken(token : String, provider : ProviderType){
+class LandingViewModel(application: Application) : AndroidViewModel(application) {
+    private val context = getApplication<Application>().applicationContext
+    private val apiService = UserApiService.getInstance()
+    private var preferenceUtil = PreferenceUtil<UserInfoWithTokens>(context, "user")
+
+    private val _uiState = MutableStateFlow(LandingUiState())
+    val uiState: StateFlow<LandingUiState> = _uiState.asStateFlow()
+
+    fun setUserLoggedIn(_isLoggedIn : Boolean, _userType : UserType) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                isLoggedIn = _isLoggedIn,
+                userType = _userType,
+                isTokenAvailable = true
+            )
+        }
+    }
+
+    fun loginWithExternalToken(token : String, provider : TokenHandler.ProviderType){
 
         viewModelScope.launch {
             try {
                 val userLoginRequestDto = UserLoginRequestDto(token = token, provider = provider)
                 val response = apiService.loginWithExternalToken(userLoginRequestDto)
-                val userInfoWithTokens : UserInfoWithTokens = UserInfoWithTokens(accessToken = response.accessToken, refreshToken = response.refreshToken, userInfo = response.userInfo)
+                val userInfoWithTokens = UserInfoWithTokens(accessToken = response.accessToken, refreshToken = response.refreshToken, userInfo = response.userInfo)
 
-                preferenceUtil.setObject("UserInfoWithTokens", userInfoWithTokens);
+                preferenceUtil.setValue("UserInfoWithTokens", userInfoWithTokens);
+
+                val test = preferenceUtil.getValue("UserInfoWithTokens", null, object : TypeToken<UserInfoWithTokens>() {})
+
+                setUserLoggedIn(true, userInfoWithTokens.userInfo.userType)
+                Log.e("LandingViewModel:login", uiState.value.isLoggedIn.toString());
             } catch (e: Exception) {
                 Log.e("LandingViewModel:login", e.localizedMessage);
 
@@ -40,7 +66,7 @@ class LandingViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun signupWithExternalToken(token : String, provider : ProviderType){
+    fun signupWithExternalToken(token : String, provider : TokenHandler.ProviderType){
 
         viewModelScope.launch {
             try {
