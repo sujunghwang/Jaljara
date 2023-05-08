@@ -342,7 +342,6 @@ fun JongSeokCalendar(
                                 kalendarEvents = kalendarEvents,
                                 isCurrentDay = isCurrentDay,
                                 onCurrentDayClick = { kalendarDay, events ->
-                                    selectedKalendarDate.value = kalendarDay.localDate
                                     if(isSleepLog) onClickDay(kalendarDay.localDate)
                                 },
                                 selectedKalendarDay = selectedKalendarDate.value,
