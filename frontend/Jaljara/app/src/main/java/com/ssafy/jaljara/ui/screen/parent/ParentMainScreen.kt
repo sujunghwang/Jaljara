@@ -51,7 +51,10 @@ import java.util.*
 
 
 @Composable
-fun ParentMainView(parentViewModel: ParentViewModel){
+fun ParentMainView(parentViewModel: ParentViewModel,
+                   onClickMissionParent: () -> Unit,
+                   onClickSetTime: () -> Unit
+){
     val scrollState = rememberScrollState()
     var childSleepInfo = parentViewModel.childSleepResponse
     var todayMission = parentViewModel.todayMissionResponse
@@ -76,13 +79,16 @@ fun ParentMainView(parentViewModel: ParentViewModel){
 //            CurrentRewardContainer(painterResource(R.drawable.current_reward),"현재 보상", childSleepInfo.currentReward)
 //            CurrentRewardContainer(painterResource(id = R.drawable.today_mission),"오늘의 미션", todayMission.content)
             CurrentRewardContainer(R.drawable.current_reward_2,"현재 보상", childSleepInfo.currentReward)
-            CurrentRewardContainer(R.drawable.reward_2,"오늘의 미션", todayMission.content)
+            CurrentRewardContainer(R.drawable.reward_2,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
             Row(modifier = Modifier.fillMaxWidth()) {
                 ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up",
                     "${if (childSleepInfo.targetWakeupTime!="") childSleepInfo.targetWakeupTime.substring(0, 5) else childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
                 Spacer(modifier = Modifier.weight(0.1f))
-                ChildSetTimeCard(painterResource(id = R.drawable.baseline_king_bed_24),"수면 설정하기",
-                    "8H", Modifier.weight(1f))
+                ChildSetTimeCard(
+                    modifier = Modifier.weight(1f).clickable{onClickSetTime()},
+                    img = painterResource(id = R.drawable.baseline_king_bed_24),
+                    title = "수면 설정하기",
+                    content = "8H")
             }
         }
     }
@@ -104,9 +110,6 @@ fun Children(children: List<ChildInfo>){
     Card(
         modifier = Modifier
             .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp,
-        ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0x20FFFFFF)
@@ -220,13 +223,10 @@ fun Child(childInfo: ChildInfo) {
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
 @Composable
-fun CurrentRewardContainer(img : Int, title:String, content: String) {
+fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: Modifier = Modifier) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp,
-        ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0x20FFFFFF)
@@ -255,11 +255,9 @@ fun CurrentRewardContainer(img : Int, title:String, content: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modifier = Modifier) {
+fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modifier = Modifier,
+) {
     Card(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp,
-        ),
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
