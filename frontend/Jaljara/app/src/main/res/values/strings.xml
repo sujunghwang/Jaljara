@@ -9,4 +9,6 @@
     <string name="contents">탐험</string>
     <string name="coupon">보물상자</string>
     <string name="mission">미션</string>
+    <string name="title_activity_contents">Contents</string>
+    <string name="title_activity_contents_detail">ContentsDetail</string>
 </resources>
