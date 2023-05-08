@@ -7,10 +7,11 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.ssafy.jaljara.ui.vm.LandingViewModel
 
-fun kakaoLoginHelper(context : Context) {
+fun kakaoLoginHelper(context : Context, viewModel: LandingViewModel) {
     kakaoLoginWorker(context,
-        onTokenIdReceived = { token -> checkTokenIsValid(token, ProviderType.KAKAO, context) },
+        onTokenIdReceived = { token -> TokenHandler.getInstance().checkTokenIsValid(token, TokenHandler.ProviderType.KAKAO, viewModel) },
         onLoginFailed = { error -> Log.e(TAG, error)}
     )
 }

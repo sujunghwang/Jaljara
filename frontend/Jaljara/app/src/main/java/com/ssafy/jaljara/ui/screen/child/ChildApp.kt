@@ -71,7 +71,7 @@ fun ChildNavigationBar(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.S)
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildApp(
@@ -118,6 +118,7 @@ fun ChildApp(
             }
             composable(route = ChildScreen.Coupon.url) {
                 // 쿠폰 함수
+                CouponScreen(viewModel)
             }
             composable(route = ChildScreen.Mission.url) {
                 // 미션 함수

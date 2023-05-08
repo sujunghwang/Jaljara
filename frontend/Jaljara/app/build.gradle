@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.10'
 }
 
 android {
@@ -89,6 +90,7 @@ dependencies {
 
     // Coil
     implementation "io.coil-kt:coil-compose:2.1.0"
+    implementation("io.coil-kt:coil-gif:2.2.2")
 
     implementation "com.kakao.sdk:v2-user:2.13.0"
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
@@ -103,4 +105,5 @@ dependencies {
 
     // glide
     implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation 'com.github.bumptech.glide:compose:1.0.0-alpha.1'
 }

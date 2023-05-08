@@ -1,9 +1,6 @@
 package com.ssafy.jaljara.ui.screen.child
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -17,12 +14,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.NotUsedCoupon
-import java.time.LocalDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,7 +27,8 @@ fun NotUsedCoupon(coupon: NotUsedCoupon, modifier: Modifier = Modifier) {
         modifier = modifier.padding(8.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp
-        )
+        ),
+        colors = CardDefaults.cardColors(Color.White)
     ) {
         Row(
             modifier = Modifier
@@ -61,14 +57,19 @@ fun NotUsedCoupon(coupon: NotUsedCoupon, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun NotUsedCouponContent(content: String, getTime: LocalDate, modifier: Modifier = Modifier){
+fun NotUsedCouponContent(content: String, getTime: String?, modifier: Modifier = Modifier){
     Text(
         text = content,
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp
     )
-    Text(
-        text = getTime.toString(),
-        modifier = modifier.padding(top = 8.dp)
-    )
+    Row(modifier = modifier.padding(top = 8.dp)) {
+        Text(
+            text = "발급일 : "
+        )
+        Text(
+            text = getTime?.split("T")?.get(0) ?:"null 값입니다."
+        )
+    }
+
 }

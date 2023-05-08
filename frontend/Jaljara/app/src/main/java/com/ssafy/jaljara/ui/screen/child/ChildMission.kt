@@ -6,16 +6,25 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.ImageCaptureResult
@@ -26,6 +35,14 @@ import java.io.FileOutputStream
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun ChildMission(childViewModel :ChildViewModel){
+    var prevInfo by rememberSaveable { mutableStateOf(false) }
+    var path by rememberSaveable { mutableStateOf("") }
+    Image(
+        painter = painterResource(R.drawable.bg),
+        contentDescription = "background",
+        contentScale = ContentScale.FillBounds,
+        modifier = Modifier.fillMaxSize()
+    )
     Column(
         Modifier
             .fillMaxHeight()
@@ -36,12 +53,74 @@ fun ChildMission(childViewModel :ChildViewModel){
         val mission = childViewModel.todayMissionResponse
         childViewModel.getTodayMission(1)
 
-        Text(text = mission.content)
+        Text(text = mission.content, color = Color.White)
         if (mission.missionType=="IMAGE"){
             Box(){
-                CameraUI(Modifier)
+                if(prevInfo){
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(path)
+                            .crossfade(true)
+                            .build(),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                            .fillMaxHeight(0.8f)
+                    )
+                } else {
+                    //                CameraUI(Modifier)
+                    val cameraState = rememberCameraState()
+                    val context = LocalContext.current
+
+                    CameraPreview(
+                        cameraState = cameraState,
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                            .fillMaxHeight(0.8f)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .fillMaxHeight(0.8f),
+                            verticalArrangement = Arrangement.Bottom,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            OutlinedButton(
+                                onClick = {
+                                    val file = context.createNewFile("jpg")
+                                    cameraState.takePicture(file) { result ->
+                                        // Result는 사진이 성공적으로 저장되었는지 여부를 알려줌
+                                        if (result is ImageCaptureResult.Success) { // result.savedUri might be useful to you
+                                            Toast.makeText(context, "사진찍기 성공!", Toast.LENGTH_LONG).show()
+                                            Log.d("파일명", file.absolutePath)
+                                            path = file.absolutePath
+                                            prevInfo = true
+                                        } else{
+                                            Toast.makeText(context, "사진찍기 실패..", Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+                                },
+                                shape = CircleShape,
+                                elevation = ButtonDefaults.buttonElevation(8.dp),
+                                colors = ButtonDefaults.buttonColors(Color.White),
+                                modifier = Modifier
+                                    .size(50.dp, 60.dp)
+                                    .padding(bottom = 10.dp)
+                            ) {  }
+                        }
+
+                    }
+                }
             }
-            ChildMissionButtons("사진찍기")
+            Row() {
+                Button(onClick = { prevInfo = false }) {
+                    Text("사진찍기", color = Color.Red)
+                }
+                Spacer(modifier = Modifier.padding(20.dp))
+                Button(onClick = { /*TODO*/ }) {
+                    Text("완료", color = Color.Green)
+                }
+            }
         } else {
             Box(){
                 RecordUI(Modifier)
@@ -73,54 +152,6 @@ private fun Context.createNewFile(type:String) = File(
     createNewFile()
 }
 
-@Composable
-fun CameraUI(modifier: Modifier) {
-    val cameraState = rememberCameraState()
-    val context = LocalContext.current
-
-    CameraPreview(
-        cameraState = cameraState,
-        modifier = Modifier
-            .fillMaxWidth(0.7f)
-            .fillMaxHeight(0.8f)
-    ) {
-        var path by rememberSaveable { mutableStateOf("") }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .fillMaxHeight(0.8f),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Button(
-                onClick = {
-                    val file = context.createNewFile("jpg")
-                    cameraState.takePicture(file) { result ->
-                        // Result는 사진이 성공적으로 저장되었는지 여부를 알려줌
-                        if (result is ImageCaptureResult.Success) { // result.savedUri might be useful to you
-                            Toast.makeText(context, "사진찍기 성공!", Toast.LENGTH_LONG).show()
-                            Log.d("파일명", file.absolutePath)
-                            path = file.absolutePath
-                        } else{
-                            Toast.makeText(context, "사진찍기 실패..", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
-            ) {  Text("사진찍기") }
-        }
-//        AsyncImage(
-//            model = ImageRequest.Builder(LocalContext.current)
-//                .data(path)
-//                .crossfade(true)
-//                .build(),
-////            placeholder = painterResource(R.drawable.rabbit),
-//            contentDescription = null,
-////            contentScale = ContentScale.Crop,
-////            modifier = Modifier.clip(CircleShape)
-//        )
-    }
-
-}
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable

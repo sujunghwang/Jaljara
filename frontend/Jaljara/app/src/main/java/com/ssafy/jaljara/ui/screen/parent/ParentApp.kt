@@ -6,7 +6,6 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,7 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.ui.screen.ParentMain
+import com.ssafy.jaljara.ui.screen.ParentMainView
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 import kotlinx.datetime.toJavaLocalDate
 import java.time.format.DateTimeFormatter
@@ -83,8 +82,8 @@ fun ParentNavigationBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ParentApp(
-    modifier: Modifier = Modifier,
     viewModel: ParentViewModel = viewModel(),
+    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
 
@@ -92,6 +91,8 @@ fun ParentApp(
     var navBarSelectedItem by rememberSaveable { mutableStateOf(0) }
 
     val uiState by viewModel.uiState.collectAsState()
+
+    viewModel.getChildSleepInfo(1)
 
     Scaffold(
         bottomBar = {
@@ -110,13 +111,13 @@ fun ParentApp(
             composable(route = ParentScreen.Start.url) {
                 viewModel.setNavShow(true)
                 // 부모 메인 페이지
-                ParentMain()
+                ParentMainView(viewModel)
                 navBarSelectedItem = 0
             }
             composable(route = ParentScreen.SetSleepTime.url) {
                 viewModel.setNavShow(true)
                 // 목표 수면시간 설정
-                SetTimeScreen()
+                SetTimeScreen(viewModel)
                 navBarSelectedItem = 1
             }
             composable(route = ParentScreen.SleepCalendar.url) {

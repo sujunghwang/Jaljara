@@ -1,6 +1,7 @@
 package com.ssafy.jaljara.ui.screen.parent
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,20 +15,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.theme.Navy
+import com.ssafy.jaljara.ui.vm.ParentViewModel
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalMaterial3Api
 @Composable
-fun SetTimeScreen(){
+fun SetTimeScreen(viewModel : ParentViewModel){
+    var sliderPosition by remember { mutableStateOf(-180f..360f) }
+    var bedTime by remember {
+        mutableStateOf(LocalTime.of(21,0))
+    }
+    var wakeupTime by remember {
+        mutableStateOf(LocalTime.of(6,0))
+    }
+    var sleepTime by remember {
+        mutableStateOf(LocalTime.of(9, 0))
+    }
+
+    LaunchedEffect(Unit){
+
+        bedTime = LocalTime.parse(viewModel.childSleepResponse.targetBedTime, DateTimeFormatter.ofPattern("HH:mm:ss"))
+        wakeupTime = LocalTime.parse(viewModel.childSleepResponse.targetWakeupTime, DateTimeFormatter.ofPattern("HH:mm:ss"))
+
+        Log.d("베드타임", bedTime.toString())
+        Log.d("웨이크업타임", wakeupTime.toString())
+
+        var bedTimeInt = bedTime.hour * 60 + bedTime.minute
+        var wakeupTimeInt = wakeupTime.hour * 60 + wakeupTime.minute
+        if(bedTimeInt > wakeupTimeInt)
+            bedTimeInt -= 1440
+
+        sliderPosition = bedTimeInt.toFloat()..wakeupTimeInt.toFloat()
+        sleepTime = LocalTime.of((wakeupTimeInt - bedTimeInt) / 60, (wakeupTimeInt - bedTimeInt) % 60)
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.bg),
@@ -35,17 +65,6 @@ fun SetTimeScreen(){
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()
         )
-
-        var sliderPosition by remember { mutableStateOf(-180f..360f) }
-
-        var bedTime by remember { mutableStateOf(1260) }
-        var wakeupTime by remember { mutableStateOf(360) }
-        var bedTimeH by remember { mutableStateOf(bedTime / 60) }
-        var bedTimeM by remember { mutableStateOf(bedTime % 60) }
-        var wakeupTimeH by remember { mutableStateOf(wakeupTime / 60) }
-        var wakeupTimeM by remember { mutableStateOf(wakeupTime % 60) }
-        var sleepTimeH by remember { mutableStateOf(9) }
-        var sleepTimeM by remember { mutableStateOf(0) }
 
         Column(
             modifier = Modifier
@@ -85,21 +104,18 @@ fun SetTimeScreen(){
 
                             sliderPosition = start..end
 
-                            bedTime = sliderPosition.start.roundToInt()
-                            wakeupTime = sliderPosition.endInclusive.roundToInt()
+                            var bedTimeInt = sliderPosition.start.roundToInt()
+                            var wakeupTimeInt = sliderPosition.endInclusive.roundToInt()
 
-                            sleepTimeH = (wakeupTime - bedTime) / 60
-                            sleepTimeM = (wakeupTime - bedTime) % 60
+                            sleepTime = LocalTime.of((wakeupTimeInt - bedTimeInt) / 60, (wakeupTimeInt - bedTimeInt) % 60)
 
-                            if(bedTime < 0)
-                                bedTime += 1440
-                            if(wakeupTime < 0)
-                                wakeupTime += 1440
+                            if(bedTimeInt < 0)
+                                bedTimeInt += 1440
+                            if(wakeupTimeInt < 0)
+                                wakeupTimeInt += 1440
 
-                            bedTimeH = bedTime / 60
-                            bedTimeM = bedTime % 60
-                            wakeupTimeH = wakeupTime / 60
-                            wakeupTimeM = wakeupTime % 60
+                            bedTime = LocalTime.of(bedTimeInt / 60, bedTimeInt % 60)
+                            wakeupTime = LocalTime.of(wakeupTimeInt / 60, wakeupTimeInt % 60)
                         },
                         valueRange = -360f..1080f,
                     )
@@ -130,7 +146,7 @@ fun SetTimeScreen(){
                             fontSize = 16.sp
                         )
                         Text(
-                            text = "%02d:%02d".format(bedTimeH, bedTimeM),
+                            text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm")),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -160,7 +176,7 @@ fun SetTimeScreen(){
                             fontSize = 16.sp
                         )
                         Text(
-                            text = "%02d:%02d".format(wakeupTimeH, wakeupTimeM),
+                            text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm")),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -193,13 +209,13 @@ fun SetTimeScreen(){
                             .padding(start = 6.dp)
                     )
                     Text(
-                        text = "${sleepTimeH} 시간",
+                        text = "${sleepTime.hour}시간",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
-                    if(sleepTimeM != 0)
+                    if(sleepTime.minute != 0)
                         Text(
-                            text = "%02d 분".format(sleepTimeM),
+                            text = " %02d분".format(sleepTime.minute),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -207,7 +223,8 @@ fun SetTimeScreen(){
             }
             Button(
                 onClick = {
-
+                    viewModel.setTargetSleepTime(1, bedTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")), wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+                    viewModel.getChildSleepInfo(1)
                 },
                 contentPadding = PaddingValues(12.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -232,5 +249,5 @@ fun SetTimeScreen(){
 @ExperimentalMaterial3Api
 @Preview(showSystemUi = true)
 fun preview_(){
-    SetTimeScreen()
+    SetTimeScreen(ParentViewModel())
 }
