@@ -12,7 +12,10 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
+
+import com.ssafy.jaljara.utils.TokenHandler
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.ui.vm.LandingViewModel
 
 private val TAG = "GoogleLogin"
 
@@ -35,14 +38,14 @@ private fun rememberOneTapSignInState(): OneTapSignInState {
 }
 
 @Composable
-fun googleLoginHelper(context : Context, onClose : () -> Unit) {
+fun googleLoginHelper(context : Context, viewModel: LandingViewModel, onClose : () -> Unit) {
     val state = rememberOneTapSignInState()
     state.open();
 
     googleLoginWorker(context as Activity,
         state,
         stringResource(id = R.string.google_web_client_id),
-        onTokenIdReceived = {token -> checkTokenIsValid(token, ProviderType.GOOGLE, context) },
+        onTokenIdReceived = {token -> TokenHandler.getInstance().checkTokenIsValid(token, TokenHandler.ProviderType.GOOGLE, viewModel) },
         onDialogDismissed = {
             Log.e(TAG, "Dialog dismissed")
             onClose()
