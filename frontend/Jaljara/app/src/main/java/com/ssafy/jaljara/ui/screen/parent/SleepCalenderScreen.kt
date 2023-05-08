@@ -40,8 +40,11 @@ import com.himanshoe.kalendar.component.text.config.KalendarTextSize
 import com.himanshoe.kalendar.model.KalendarEvent
 import com.himanshoe.kalendar.model.toKalendarDay
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.ui.component.LoadingComponent
+import com.ssafy.jaljara.ui.component.ErrorScreen
+import com.ssafy.jaljara.ui.component.LoadingScreen
+import com.ssafy.jaljara.ui.theme.JaljaraTheme
 import com.ssafy.jaljara.ui.vm.CalendarViewModel
+import com.ssafy.jaljara.utils.UiState
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
 import java.util.*
@@ -279,7 +282,8 @@ fun JongSeokCalendar(
                                         .background(
                                             color = Color.Yellow,
                                             shape = CircleShape
-                                        ).align(Alignment.BottomCenter)
+                                        )
+                                        .align(Alignment.BottomCenter)
                                 )
                             }
                         }
@@ -318,9 +322,9 @@ fun SleepCalenderScreen(
 
     val calendarViewModel : CalendarViewModel = viewModel()
 
-    var simpleSleepLog by rememberSaveable{ mutableStateOf(listOf<Int>())}
-
     calendarViewModel.getSimpleSleepLog(childId, convert2yyyyMM(tYear, tMonth))
+
+    val calendarState = calendarViewModel.calendarUiState
 
     LazyColumn(modifier = Modifier.fillMaxHeight()){
         item{
@@ -345,25 +349,24 @@ fun SleepCalenderScreen(
                     )
                 }
 
-                LoadingComponent<List<Int>>(
-                    uiState = calendarViewModel.calendarUiState,
-                    onSuccessHandler = {
-                        simpleSleepLog = it
+                when{
+                    calendarState is UiState.Loading -> LoadingScreen()
+                    calendarState is UiState.Success ->{
+                        JongSeokCalendar(
+                            takeMeToDate = null,
+                            kalendarDayColors = KalendarDayColors(Color.White, Color.Black),
+                            onChangeMonth = { year, month ->
+                                tYear = year
+                                tMonth = month
+                            },
+                            onClickDay = onClickDay,
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .height(500.dp),
+                            sleepLogSimple = calendarState.data
+                        )
                     }
-                ){
-                    JongSeokCalendar(
-                        takeMeToDate = null,
-                        kalendarDayColors = KalendarDayColors(Color.White, Color.Black),
-                        onChangeMonth = { year, month ->
-                            tYear = year
-                            tMonth = month
-                        },
-                        onClickDay = onClickDay,
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .height(500.dp),
-                        sleepLogSimple = simpleSleepLog
-                    )
+                    calendarState is UiState.Error -> ErrorScreen()
                 }
             }
         }
@@ -384,7 +387,9 @@ private fun convert2yyyyMM(year: Int, month: Int): String{
 @Composable
 @Preview(showSystemUi = true)
 fun prevcal(){
-    SleepCalenderScreen(1){
-        day -> Log.d("클릭 날짜", day.toString())
+    JaljaraTheme{
+        SleepCalenderScreen(1){
+                day -> Log.d("클릭 날짜", day.toString())
+        }
     }
 }
