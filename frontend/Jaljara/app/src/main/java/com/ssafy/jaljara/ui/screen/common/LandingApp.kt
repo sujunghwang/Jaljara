@@ -3,25 +3,56 @@ package com.ssafy.jaljara.ui.screen.common
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.gson.reflect.TypeToken
 import com.kakao.sdk.common.KakaoSdk
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.component.NightForestBackGround
 import com.ssafy.jaljara.data.UserInfoWithTokens
 import com.ssafy.jaljara.data.UserType
 import com.ssafy.jaljara.ui.screen.child.ChildApp
 import com.ssafy.jaljara.ui.screen.parent.ParentApp
 import com.ssafy.jaljara.utils.PreferenceUtil
 
+enum class LandingScreens(val url: String){
+    Landing(url = "/landing"),
+    Signup(url = "/signup"),
+    Login(url = "/login")
+}
+
 @Composable
 fun LandingApp(
-    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController()
 ) {
     initialize()
+
+    NavHost(navController = navController,
+        startDestination = LandingScreens.Landing.url,) {
+        composable(route = LandingScreens.Landing.url) {
+            NightForestBackGround {
+                LandingScreen(navigate = { navController.navigate(it) })
+            }
+        }
+        composable(route = LandingScreens.Signup.url) {
+            NightForestBackGround {
+                SignupScreen(navigate = { navController.navigate(it) })
+            }
+        }
+        composable(route = LandingScreens.Login.url) {
+            NightForestBackGround {
+                LoginScreen(navigate = { navController.navigate(it) })
+            }
+        }
+    }
 }
 
 @SuppressLint("NewApi")
@@ -43,7 +74,6 @@ private fun initialize() {
             }
         }
         else -> {
-            LandingScreen()
             // 로그인 안된 경우
             initalizeKakaoAuthentication()
             initalizeGoogleAuthentication()
@@ -58,7 +88,7 @@ private fun initalizeKakaoAuthentication(context: Context = LocalContext.current
 
 @Composable
 private fun initalizeGoogleAuthentication() {
-    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+    GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
         .build()
 }
