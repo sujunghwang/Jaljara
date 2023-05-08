@@ -63,7 +63,7 @@ public class MissionService {
 
 	// cron "초 분 시 일 월 년"
 	@Transactional
-	@Scheduled(cron = "00 00 00 * * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
 	public void addMissionTodayChildren() {
 		List<User> allByUserType = userRepository.findAllByUserType(UserType.CHILD);
 		for (User user : allByUserType) {
@@ -241,6 +241,13 @@ public class MissionService {
 
 		//String to Date
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-		return missionRepositoryImpl.findMissionLogWithMissionAttachment(userId, formatter.parse(missionDate));
+
+		//해당 날짜에 미션 기록이 있는지 확인
+		if (!missionLogRepository.existsByUserIdAndMissionDate(userId, formatter.parse(missionDate)))
+			throw new CustomException(HttpStatus.NO_CONTENT,
+				"해당 날짜에 수면기록이 존재하지 않습니다. userId: " + userId + ", date: " + formatter.parse(missionDate));
+		else {
+			return missionRepositoryImpl.findMissionLogWithMissionAttachment(userId, formatter.parse(missionDate));
+		}
 	}
 }
