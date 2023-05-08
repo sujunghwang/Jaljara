@@ -77,8 +77,6 @@ fun ParentMainView(parentViewModel: ParentViewModel,
                     content = "8H")
             }
         }
-    }
-
 }
 
 fun CalSleepGoal(childInfo: ChildSleepInfo):String{
