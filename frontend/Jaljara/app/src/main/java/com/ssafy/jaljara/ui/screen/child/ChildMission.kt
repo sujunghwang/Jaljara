@@ -37,12 +37,6 @@ import java.io.FileOutputStream
 fun ChildMission(childViewModel :ChildViewModel){
     var prevInfo by rememberSaveable { mutableStateOf(false) }
     var path by rememberSaveable { mutableStateOf("") }
-    Image(
-        painter = painterResource(R.drawable.bg),
-        contentDescription = "background",
-        contentScale = ContentScale.FillBounds,
-        modifier = Modifier.fillMaxSize()
-    )
     Column(
         Modifier
             .fillMaxHeight()
