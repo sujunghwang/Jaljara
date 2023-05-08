@@ -43,6 +43,7 @@ import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.component.LoadingComponent
 import com.ssafy.jaljara.ui.vm.CalendarViewModel
 import kotlinx.datetime.*
+import kotlinx.datetime.TimeZone
 import java.util.*
 
 val WeekDays = listOf("Mon", "Tue", "Wen", "Tur", "Fri", "Sat", "Sun")
