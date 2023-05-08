@@ -23,8 +23,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.screen.ParentMainView
+import com.ssafy.jaljara.ui.screen.child.ChildScreen
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 import kotlinx.datetime.toJavaLocalDate
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
@@ -38,7 +40,8 @@ enum class ParentScreen(@StringRes val title : Int,  val url: String) {
     Start(title = R.string.main, "/main"),
     SetSleepTime(title = R.string.time_setting, "/set_sleep"),
     SleepCalendar(title = R.string.calendar, "/calendar"),
-    SleepLogDetail(title = 3, "/sleep_detail")
+    SleepLogDetail(title = 3, "/sleep_detail"),
+
 }
 
 data class NavigationInfo(val route: ParentScreen, val icon: ImageVector)
@@ -62,15 +65,7 @@ fun ParentNavigationBar(
                 label = { Text(stringResource(id = item.route.title), style = MaterialTheme.typography.titleSmall) },
                 selected = selectedItem == index,
                 onClick = {
-                    navController.navigate(item.route.url){
-                        /* 새로 렌더링 되는게 아니라
-                         이전 상태 저장*/
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
+                    navController.navigate(item.route.url)
                     onChangeNavIdx(index)
                 }
             )
@@ -111,7 +106,17 @@ fun ParentApp(
             composable(route = ParentScreen.Start.url) {
                 viewModel.setNavShow(true)
                 // 부모 메인 페이지
-                ParentMainView(viewModel)
+                ParentMainView(viewModel,
+                    onClickMissionParent = {
+                        val fomatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+                        val displayDate = LocalDate.now().format(fomatter)
+
+                        navController.navigate(ParentScreen.SleepLogDetail.url+ "/"+displayDate)
+                    },
+                    onClickSetTime ={
+                        navController.navigate(ParentScreen.SetSleepTime.url)
+                    }
+                )
                 navBarSelectedItem = 0
             }
             composable(route = ParentScreen.SetSleepTime.url) {
