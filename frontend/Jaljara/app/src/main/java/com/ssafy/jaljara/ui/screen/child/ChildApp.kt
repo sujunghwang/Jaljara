@@ -1,5 +1,7 @@
 package com.ssafy.jaljara.ui.screen.child
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -20,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.screen.StarLink
+import com.ssafy.jaljara.ui.screen.parent.ParentScreen
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 
@@ -33,7 +36,8 @@ enum class ChildScreen(@StringRes val title: Int, val url: String) {
     Start(title = R.string.main, "/main"),
     StarLink(title = R.string.star_link, "/starlink"),
     Contents(title = R.string.contents, "/contents"),
-    Coupon(title = R.string.coupon, "/coupons")
+    Coupon(title = R.string.coupon, "/coupons"),
+    Mission(title = R.string.mission, "/mission")
 }
 
 
@@ -67,6 +71,7 @@ fun ChildNavigationBar(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChildApp(
@@ -96,7 +101,14 @@ fun ChildApp(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = ChildScreen.Start.url) {
-                ChildMainView(viewModel)
+                ChildMainView(viewModel,
+                    onClickMission = {
+                        navController.navigate(ChildScreen.Mission.url)
+                    },
+                    onClickCoupon ={
+                        navController.navigate(ChildScreen.Coupon.url)
+                    }
+                )
             }
             composable(route = ChildScreen.StarLink.url) {
                 StarLink(viewModel)
@@ -107,10 +119,15 @@ fun ChildApp(
             composable(route = ChildScreen.Coupon.url) {
                 // 쿠폰 함수
             }
+            composable(route = ChildScreen.Mission.url) {
+                // 미션 함수
+                ChildMission(viewModel)
+            }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true)
 fun preview(){

@@ -49,7 +49,10 @@ import com.ssafy.jaljara.ui.vm.ChildViewModel
 var dummyChildSleepInfo = DummyChildSleepInfo()
 
 @Composable
-fun ChildMainView(childViewModel: ChildViewModel){
+fun ChildMainView(childViewModel: ChildViewModel,
+                  onClickMission: () -> Unit,
+                  onClickCoupon: () -> Unit
+){
     val scrollState = rememberScrollState()
     var childSleepInfo = childViewModel.childSleepResponse
     var todayMission = childViewModel.todayMissionResponse
@@ -69,9 +72,9 @@ fun ChildMainView(childViewModel: ChildViewModel){
         ) {
             childViewModel.getTodayMission(1)
             childViewModel.getChildSleepInfo(1)
-            MissionTodayContainer(todayMission.content)
+            MissionTodayContainer(todayMission.content, onClickMission)
             SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
-            RewardStatusContainer(childSleepInfo.streakCount)
+            RewardStatusContainer(childSleepInfo.streakCount,onClickCoupon)
             ContentContainer(contents = DummyDataProvider.contentList)
         }
     }
@@ -79,19 +82,21 @@ fun ChildMainView(childViewModel: ChildViewModel){
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MissionTodayContainer(todayMission: String){
+fun MissionTodayContainer(todayMission: String,
+                          onClickMission: () -> Unit = {}
+){
     Column() {
         Text(text = "오늘의 미션", fontWeight = FontWeight.Bold, color = Color.White)
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 10.dp,
-            ),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color(0x20FFFFFF)
             ),
+            onClick = {
+                      onClickMission()
+            },
             content = {
                 reloadMissionButton(
                     modifier = Modifier
@@ -135,9 +140,6 @@ fun SetSllepTimeContainer(targetBedTime: String, targetWakeupTime:String) {
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 10.dp,
-            ),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color(0x20FFFFFF)
@@ -175,7 +177,7 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RewardStatusContainer(streakCount:Int) {
+fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
     var remainCnt by remember { mutableStateOf(7-streakCount) }
 
     Column() {
@@ -183,13 +185,13 @@ fun RewardStatusContainer(streakCount:Int) {
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 10.dp,
-            ),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color(0x20FFFFFF)
             ),
+            onClick = {
+                onClickCoupon()
+            },
             content = {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -288,12 +290,16 @@ fun ChildMainScreenView() {
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            MissionTodayContainer(dummyChildSleepInfo.currentReward)
+            MissionTodayContainer(dummyChildSleepInfo.currentReward, onClickMission = {
+                Log.d("미션페이지로 이동", "click")
+            })
             SetSllepTimeContainer(
                 dummyChildSleepInfo.targetBedTime,
                 dummyChildSleepInfo.targetWakeupTime
             )
-            RewardStatusContainer(dummyChildSleepInfo.streakCount)
+            RewardStatusContainer(dummyChildSleepInfo.streakCount,onClickCoupon = {
+                Log.d("쿠폰페이지로 이동", "click")
+            })
             ContentContainer(contents = DummyDataProvider.contentList)
         }
     }
