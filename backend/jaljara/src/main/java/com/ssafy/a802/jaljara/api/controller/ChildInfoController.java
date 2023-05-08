@@ -31,14 +31,12 @@ public class ChildInfoController {
     @ValidParent
     public ResponseEntity<?> getChildList(@PathVariable long parentId){
         List<UserResponseDto.SimpleUserInfo> childList = childInformationService.findChildListByParentId(parentId);
-        if(childList.size() == 0)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(childList, HttpStatus.OK);
     }
 
     @GetMapping("/detail/{childId}")
     @ValidChild
-    public ResponseEntity<?> getChildDetail(@PathVariable Long childId){
+    public ResponseEntity<?> getChildDetail(@PathVariable long childId){
         ChildInformationResponseDto.ChildInfoDetail childDetail = childInformationService.findChildInformationByChildId(childId);
         return new ResponseEntity<>(childDetail, HttpStatus.OK);
     }

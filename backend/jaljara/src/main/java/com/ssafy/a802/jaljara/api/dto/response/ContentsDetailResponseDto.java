@@ -12,11 +12,21 @@ public class ContentsDetailResponseDto {
 
 	private ContentType contentType;
 
-	private String url;
+	private String title;
 
-	public ContentsDetailResponseDto(Long contentsId, ContentType contentType, String url) {
+	private String description;
+
+	private String thumbnailImageUrl;
+
+	private String youtubeUrl;
+
+	public ContentsDetailResponseDto(Long contentsId, ContentType contentType, String title, String description,
+		String thumbnailImageUrl, String youtubeUrl) {
 		this.contentsId = contentsId;
 		this.contentType = contentType;
-		this.url = url;
+		this.title = title;
+		this.description = description;
+		this.thumbnailImageUrl = thumbnailImageUrl;
+		this.youtubeUrl = youtubeUrl;
 	}
 }

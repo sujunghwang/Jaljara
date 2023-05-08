@@ -31,8 +31,6 @@ public class SleepLogController {
     @ValidChild
     public ResponseEntity<?> getDayHasLogList(@PathVariable long childId, @PathVariable String date) throws ParseException {
         List<Integer> dayHasLogList = sleepLogService.findSleepLogByMonth(childId, date);
-        if(dayHasLogList.size() == 0)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(dayHasLogList, HttpStatus.OK);
     }
 

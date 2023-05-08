@@ -18,5 +18,11 @@ public class Contents {
 	@Enumerated(EnumType.STRING)
 	private ContentType contentType;
 
-	private String url;
+	private String title;
+
+	private String description;
+
+	private String youtubeUrl;
+
+	private String thumbnailImageUrl;
 }

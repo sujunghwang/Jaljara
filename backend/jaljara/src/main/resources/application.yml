@@ -7,6 +7,11 @@ server:
       charset: utf-8
       enabled: true
 
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-type: PKCS12
+    key-store-password: 7zCcNo6EzBSvIoe4DESDNfo6I0LIDCjm
+
 spring:
   datasource:
     #    ec2 db
@@ -41,6 +46,11 @@ spring:
     multipart:
       maxFileSize: 20MB
       maxRequestSize: 20MB
+
+  redis:
+    host: 172.17.0.1
+    port: 6379
+    password: tXBUXtFK6zjrL3vPcyl8NoKgyTPjZ7Ss
 
 logging.level:
   org.hibernate.SQL: debug

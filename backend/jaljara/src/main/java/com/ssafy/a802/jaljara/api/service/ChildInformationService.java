@@ -38,6 +38,7 @@ public class ChildInformationService {
         for(ChildInformation childInformation : childInformations){
             simpleChildInfoList.add(UserResponseDto.SimpleUserInfo.builder()
                     .userId(childInformation.getChildId())
+                    .name(childInformation.getChild().getName())
                     .profileImageUrl(childInformation.getChild().getProfileImageUrl())
                     .build());
         }

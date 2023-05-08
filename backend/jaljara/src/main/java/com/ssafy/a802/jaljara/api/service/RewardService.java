@@ -28,13 +28,17 @@ public class RewardService {
         if(childInformation.getCurrentReward().equals(""))
             throw new CustomException(HttpStatus.NOT_FOUND, "등록된 보상이 없습니다.");
 
+        //보상 획득 조건에 충족하지 않는 경우
+        if(childInformation.getStreakCount() < 7)
+            throw new CustomException(HttpStatus.CONFLICT, "바른 수면 횟수가 부족합니다.");
+
         rewardRepository.save(Reward.builder()
                 .userId(childId)
                 .content(childInformation.getCurrentReward())
                 .build());
         childInformationRepository.save(childInformation.toBuilder()
                 .currentReward("")
-                .streakCount(0)
+                .streakCount(childInformation.getStreakCount() - 7)
                 .build());
     }
 

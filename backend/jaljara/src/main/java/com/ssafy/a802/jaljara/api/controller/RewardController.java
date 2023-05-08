@@ -27,8 +27,6 @@ public class RewardController {
     @ValidChild
     public ResponseEntity<?> getUsableRewardList(@PathVariable long userId){
         List<RewardResponseDto.RewardUsable> rewards = rewardService.findUsableRewardListByUserId(userId);
-        if(rewards.size() == 0)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(rewards, HttpStatus.OK);
     }
 
@@ -36,8 +34,6 @@ public class RewardController {
     @ValidChild
     public ResponseEntity<?> getUsedRewardList(@PathVariable long userId){
         List<RewardResponseDto.RewardUsed> rewards = rewardService.findUsedRewardListByUserId(userId);
-        if(rewards.size() == 0)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(rewards, HttpStatus.OK);
     }
 
