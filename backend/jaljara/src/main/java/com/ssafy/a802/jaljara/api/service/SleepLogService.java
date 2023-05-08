@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -102,8 +103,8 @@ public class SleepLogService {
 
         return SleepLogResponseDto.SleepLogDetail.builder()
                 .userId(childId)
-                .bedTime(sleepLog.getBedTime())
-                .wakeupTime(sleepLog.getWakeupTime())
+                .bedTime(sleepLog.getBedTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
+                .wakeupTime(sleepLog.getWakeupTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
                 .date(sleepLog.getDate())
                 .sleepRate(sleepLog.getSleepRate()).build();
     }

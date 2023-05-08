@@ -16,7 +16,7 @@ public class ChildInformationResponseDto {
         private long childId;
         private String currentReward;
         private int streakCount;
-        private Time targetBedTime;
-        private Time targetWakeupTime;
+        private String targetBedTime;
+        private String targetWakeupTime;
     }
 }
