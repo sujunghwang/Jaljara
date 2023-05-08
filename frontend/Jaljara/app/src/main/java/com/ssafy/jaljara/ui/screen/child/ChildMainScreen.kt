@@ -257,9 +257,37 @@ fun ContentCard(soundContent: SoundContent) {
 @Preview(showBackground = true)
 @Composable
 fun ChildMainScreenView() {
-    ChildMainView(
-        childViewModel = viewModel(),
-        onClickCoupon = {},
-        onClickMission = {}
-    )
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(20.dp)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        MissionTodayContainer(dummyChildSleepInfo.currentReward)
+        SetSllepTimeContainer(
+            dummyChildSleepInfo.targetBedTime,
+            dummyChildSleepInfo.targetWakeupTime
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(20.dp)
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            MissionTodayContainer(dummyChildSleepInfo.currentReward, onClickMission = {
+                Log.d("미션페이지로 이동", "click")
+            })
+            SetSllepTimeContainer(
+                dummyChildSleepInfo.targetBedTime,
+                dummyChildSleepInfo.targetWakeupTime
+            )
+            RewardStatusContainer(dummyChildSleepInfo.streakCount,onClickCoupon = {
+                Log.d("쿠폰페이지로 이동", "click")
+            })
+            ContentContainer(contents = DummyDataProvider.contentList)
+        }
+    }
 }
