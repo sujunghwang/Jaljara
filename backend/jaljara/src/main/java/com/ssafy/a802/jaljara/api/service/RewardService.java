@@ -44,7 +44,7 @@ public class RewardService {
 
     public List<RewardResponseDto.RewardUsable> findUsableRewardListByUserId(long childId){
         //사용전인 보상 리스트를 Dto에 담아서 return
-        List<Reward> rewards = rewardRepository.findAllByUserIdAndIsUsed(childId, false);
+        List<Reward> rewards = rewardRepository.findAllByUserIdAndIsUsedOrderByUpdatedAtDesc(childId, false);
         List<RewardResponseDto.RewardUsable> usableRewards = new ArrayList<>();
         for(Reward reward : rewards){
             usableRewards.add(RewardResponseDto.RewardUsable.builder()
@@ -60,7 +60,7 @@ public class RewardService {
 
     public List<RewardResponseDto.RewardUsed> findUsedRewardListByUserId(long childId){
         //사용한 보상 리스트를 Dto에 담아서 return
-        List<Reward> rewards = rewardRepository.findAllByUserIdAndIsUsed(childId, true);
+        List<Reward> rewards = rewardRepository.findAllByUserIdAndIsUsedOrderByUpdatedAtDesc(childId, true);
         List<RewardResponseDto.RewardUsed> usedRewards = new ArrayList<>();
         for(Reward reward : rewards){
             usedRewards.add(RewardResponseDto.RewardUsed.builder()
