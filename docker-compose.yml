@@ -7,7 +7,11 @@ services:
       context: ./backend/jaljara/
       dockerfile: dockerfile
     ports:
+<<<<<<< docker-compose.yml
       - "8080:8080"
+=======
+      - "80:8080"
+>>>>>>> docker-compose.yml
     stdin_open: true
     tty: true
     networks:
