@@ -1,3 +1,5 @@
+package com.ssafy.jaljara.data
+
 data class SoundContent(
     val contentsId: Long = 1,
     val contentType: String = "SOUND",

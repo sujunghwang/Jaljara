@@ -51,7 +51,7 @@ fun ChildMainView(childViewModel: ChildViewModel,
         MissionTodayContainer(todayMission.content)
         SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
         RewardStatusContainer(childSleepInfo.streakCount)
-        ContentContainer(contents = DummyDataProvider.contentList)
+        ContentContainer(soundContents = DummyDataProvider.contentSoundList)
     }
 }
 
@@ -279,10 +279,8 @@ fun ChildMainScreenView() {
                 dummyChildSleepInfo.targetBedTime,
                 dummyChildSleepInfo.targetWakeupTime
             )
-            RewardStatusContainer(dummyChildSleepInfo.streakCount,onClickCoupon = {
-                Log.d("쿠폰페이지로 이동", "click")
-            })
-            ContentContainer(contents = DummyDataProvider.contentList)
+            RewardStatusContainer(dummyChildSleepInfo.streakCount)
+            ContentContainer(soundContents = DummyDataProvider.contentSoundList)
         }
     }
 }
