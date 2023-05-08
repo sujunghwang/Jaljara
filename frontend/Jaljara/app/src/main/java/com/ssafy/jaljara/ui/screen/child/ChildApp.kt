@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.screen.StarLink
+import com.ssafy.jaljara.ui.screen.parent.ParentScreen
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 
@@ -35,7 +36,8 @@ enum class ChildScreen(@StringRes val title: Int, val url: String) {
     Start(title = R.string.main, "/main"),
     StarLink(title = R.string.star_link, "/starlink"),
     Contents(title = R.string.contents, "/contents"),
-    Coupon(title = R.string.coupon, "/coupons")
+    Coupon(title = R.string.coupon, "/coupons"),
+    Mission(title = R.string.mission, "/mission")
 }
 
 
@@ -99,7 +101,14 @@ fun ChildApp(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = ChildScreen.Start.url) {
-                ChildMainView(viewModel)
+                ChildMainView(viewModel,
+                    onClickMission = {
+                        navController.navigate(ChildScreen.Mission.url)
+                    },
+                    onClickCoupon ={
+                        navController.navigate(ChildScreen.Coupon.url)
+                    }
+                )
             }
             composable(route = ChildScreen.StarLink.url) {
                 StarLink(viewModel)
@@ -111,10 +120,15 @@ fun ChildApp(
                 // 쿠폰 함수
                 CouponScreen(viewModel)
             }
+            composable(route = ChildScreen.Mission.url) {
+                // 미션 함수
+                ChildMission(viewModel)
+            }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 @Preview(showSystemUi = true)
 fun preview(){
