@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ssafy.jaljara.R
@@ -38,12 +39,12 @@ fun ErrorScreen(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize()
     ) {
-        Text("로딩 실패.")
+        Text("로딩 실패.", color = Color.White)
     }
 }
 
 @Composable
-fun <T> LoadingComponent(modifier: Modifier = Modifier, uiState: UiState,
+fun <T> LoadingComponent(modifier: Modifier = Modifier, uiState: UiState<T>,
                      loading: @Composable ()->Unit = {LoadingScreen(modifier)},
                      error: @Composable ()->Unit = {ErrorScreen(modifier)},
                      onSuccessHandler: (T) -> Unit = {},
@@ -51,9 +52,9 @@ fun <T> LoadingComponent(modifier: Modifier = Modifier, uiState: UiState,
 ){
     when (uiState) {
         is UiState.Loading -> loading()
-        is UiState.Success<*> -> {
+        is UiState.Success -> {
             content()
-            onSuccessHandler(uiState.data as T)
+            onSuccessHandler(uiState.data)
         }
         is UiState.Error -> error()
     }

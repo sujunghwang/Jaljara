@@ -1,6 +1,7 @@
 package com.ssafy.jaljara.ui.screen.parent
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
@@ -26,14 +27,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.jaljara.R
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ssafy.jaljara.ui.enumType.getWeekBydayOfWeekNumber
 import kotlinx.datetime.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
+import com.ssafy.jaljara.component.NightForestBackGround
+import com.ssafy.jaljara.data.MissionLog
+import com.ssafy.jaljara.data.SleepLog
+import com.ssafy.jaljara.ui.component.LoadingScreen
+import com.ssafy.jaljara.ui.vm.MissionDetailLogViewModel
+import com.ssafy.jaljara.utils.UiState
 
 @Composable
 fun SleepTimeCircleClock(modifier: Modifier = Modifier){
@@ -107,7 +115,7 @@ fun showButton(
 }
 
 @Composable
-fun MissionLogDeatail(modifier: Modifier = Modifier){
+fun MissionLogImageDeatail(modifier: Modifier = Modifier){
     Image(
         modifier = modifier,
         painter = painterResource(R.drawable.ic_launcher_foreground),
@@ -116,7 +124,12 @@ fun MissionLogDeatail(modifier: Modifier = Modifier){
 }
 
 @Composable
-fun MissionLog(modifier: Modifier = Modifier,expanded: Boolean ,onClickButton: () -> Unit, detailHeight: Dp){
+fun MissionLog(
+    modifier: Modifier = Modifier,
+    expanded: Boolean ,
+    onClickButton: () -> Unit,
+    innerMission: @Composable () -> Unit
+){
     Column(modifier = modifier
         .fillMaxWidth()
         .padding(8.dp)
@@ -143,13 +156,15 @@ fun MissionLog(modifier: Modifier = Modifier,expanded: Boolean ,onClickButton: (
                 onClick = onClickButton,
             )
         }
-        if(expanded)
-            MissionLogDeatail(modifier = Modifier.height(detailHeight))
+        if(expanded) innerMission()
     }
 }
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SleepLogDetailScreen(formatDate : String =  "20230502"){
+fun SleepLogDetailScreen(
+    childId : Long = 1,
+    formatDate : String =  "20230502"
+){
 
     // api 호출 코드 필요
 
@@ -165,92 +180,150 @@ fun SleepLogDetailScreen(formatDate : String =  "20230502"){
 
     var expanded by rememberSaveable{ mutableStateOf(false) }
 
-    BoxWithConstraints {
-        val pageSize = this.maxHeight
-        Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-        ) {
-            Text(
-                text = "$displayDate ${getWeekBydayOfWeekNumber(dayOfWeekNumber).korean}",
-                modifier = Modifier
-                    .fillMaxHeight(0.1f)
-                    .padding(16.dp),
-                textAlign = TextAlign.Center,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Row() {
+    val missionDetailLogViewModel : MissionDetailLogViewModel = viewModel()
+
+    missionDetailLogViewModel.getMissionLog(childId, formatDate)
+    missionDetailLogViewModel.getDetailSleepLog(childId, formatDate)
+
+    var sleepLog by remember{ mutableStateOf(
+        SleepLog(
+            userId = 1,
+            date = "-",
+            bedTime = "-",
+            wakeupTime = "-",
+            sleepRate = 0.0
+        )
+    ) }
+
+    var missionLog by remember{ mutableStateOf(
+        MissionLog(
+            missionLogId = -1,
+            userId = childId,
+            missionDate = displayDate,
+            missionType = "IMAGE",
+            content = "양치 하기",
+            url = null,
+            isSuccess = false
+        )
+    ) }
+
+    NightForestBackGround {
+        // 둘 다 로딩 중일 때
+        if(missionDetailLogViewModel.detailSleepLogUiState is UiState.Loading
+            &&missionDetailLogViewModel.missionLogUiState is UiState.Loading){
+            LoadingScreen()
+        }else{
+
+            // Sleep Log api가 정상적으로 호출 됐을 때
+            if(missionDetailLogViewModel.detailSleepLogUiState is UiState.Success)
+                sleepLog = (missionDetailLogViewModel.detailSleepLogUiState as UiState.Success<SleepLog>).data
+
+            if(missionDetailLogViewModel.missionLogUiState is UiState.Success)
+                missionLog = (missionDetailLogViewModel.missionLogUiState as UiState.Success<MissionLog>).data
+
+            BoxWithConstraints {
+                val pageSize = this.maxHeight
                 Column(
                     modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
                 ) {
-                    Text(text = "수면시간", style = MaterialTheme.typography.titleSmall)
-                    SleepTimeCircleClock(
+                    Text(
+                        text = "$displayDate ${getWeekBydayOfWeekNumber(dayOfWeekNumber).korean}",
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp)
-                            .height(pageSize/4)
+                            .fillMaxHeight(0.1f)
+                            .padding(16.dp),
+                        textAlign = TextAlign.Center,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold
                     )
-                }
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp).height(pageSize/4)
-                ) {
-                    SettingTime(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        draw = R.drawable.baseline_king_bed_24,
-                        description = "취침시간",
-                        time = "22:10"
-                    )
-                    SettingTime(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        draw = R.drawable.baseline_alarm_24,
-                        description = "기상시간",
-                        time = "07:40"
-                    )
-                }
-            }
-            Row() {
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(16.dp)
-                ) {
-                    Text(text = "수면달성도", style = MaterialTheme.typography.titleSmall)
-                    ArtBox(
-                        modifier = Modifier
-                            .fillMaxSize().height(pageSize/4)
-                    ) { modifier ->
-                        Text(text = "93%", modifier = modifier)
+                    Row() {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(8.dp)
+                        ) {
+                            Text(text = "수면시간", style = MaterialTheme.typography.titleSmall)
+                            SleepTimeCircleClock(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(8.dp)
+                                    .height(pageSize / 4)
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(8.dp)
+                                .height(pageSize / 4)
+                        ) {
+                            SettingTime(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                                draw = R.drawable.baseline_king_bed_24,
+                                description = "취침시간",
+                                time = sleepLog.bedTime
+                            )
+                            SettingTime(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
+                                draw = R.drawable.baseline_alarm_24,
+                                description = "기상시간",
+                                time = sleepLog.wakeupTime
+                            )
+                        }
+                    }
+                    Row() {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(16.dp)
+                        ) {
+                            Text(text = "수면달성도")
+                            ArtBox(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .height(pageSize / 4)
+                            ) { modifier ->
+                                Text(
+                                    text = "${(sleepLog.sleepRate*100).toInt().toString()}%",
+                                    modifier = modifier,
+                                    fontSize = 64.sp
+                                )
+                            }
+                        }
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(16.dp)
+                        ) {
+                            Text(text = "미션달성")
+                            ArtBox(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .height(pageSize / 4)
+                            ) { modifier ->
+                                if(missionLog.isSuccess){
+                                    Text(text = "COMPLETE!", modifier = modifier)
+                                }else{
+                                    Text(text = "NOT YET..", modifier = modifier)
+                                }
+                            }
+                        }
+                    }
+                    MissionLog(
+                        expanded = expanded,
+                        onClickButton = {
+                            expanded = !expanded
+                        },
+                    ){
+                        if(missionLog.missionType == "IMAGE")MissionLogImageDeatail(modifier = Modifier.height(pageSize/2))
+                        else if(missionLog.missionType == "RECORD") Text(text = "레코드", modifier = Modifier.height(pageSize/2))
                     }
                 }
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(16.dp)
-                ) {
-                    Text(text = "미션달성", style = MaterialTheme.typography.titleSmall)
-                    ArtBox(
-                        modifier = Modifier
-                            .fillMaxSize().height(pageSize/4)
-                    ) { modifier ->
-                        Text(text = "COMPLETE!", modifier = modifier)
-                    }
-                }
             }
-            MissionLog(
-                expanded = expanded,
-                onClickButton = {
-                    expanded = !expanded
-                },
-                detailHeight = pageSize/2
-            )
         }
     }
 
@@ -259,5 +332,5 @@ fun SleepLogDetailScreen(formatDate : String =  "20230502"){
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun sleepDetailPreview(){
-    SleepLogDetailScreen("20230502")
+    SleepLogDetailScreen(1,"20230426")
 }

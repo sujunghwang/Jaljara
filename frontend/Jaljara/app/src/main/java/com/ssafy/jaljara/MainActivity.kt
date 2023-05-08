@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.ssafy.jaljara.ui.screen.child.ChildApp
+import com.ssafy.jaljara.ui.screen.parent.ParentApp
 import com.ssafy.jaljara.ui.theme.JaljaraTheme
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ssafy.jaljara.ui.vm.ParentViewModel
@@ -26,8 +27,8 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             JaljaraTheme {
-                ChildApp(childViewModel)
-//                ParentApp(parentViewModel)
+//                ChildApp(childViewModel)
+                ParentApp(parentViewModel)
             }
         }
     }
