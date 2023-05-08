@@ -13,14 +13,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.ui.theme.Navy
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -67,7 +63,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
     ) {
         Box(
             modifier = Modifier
-                .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                .background(color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(16.dp))
                 .fillMaxWidth()
                 .padding(16.dp)
         ){
@@ -77,8 +73,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                 ) {
                     Text(
                         text = "수면 시간 설정",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier
                             .weight(5f)
                             .padding(start = 6.dp)
@@ -87,6 +82,10 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                 RangeSlider(
                     steps = 143,
                     values = sliderPosition,
+                    colors = SliderDefaults.colors(
+                        thumbColor = Color.White,
+                        activeTickColor = Color.Blue
+                    ),
                     onValueChange = {
                         var start = it.start
                         var end = it.endInclusive
@@ -118,7 +117,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
         ){
             Box(
                 modifier = Modifier
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(16.dp))
                     .weight(1f)
                     .padding(8.dp)
             ){
@@ -130,24 +129,21 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                         painter = painterResource(id = R.drawable.baseline_king_bed_24),
                         contentDescription = "bed",
                         modifier = Modifier
-                            .background(color = Navy, shape = CircleShape)
+                            .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
                             .padding(8.dp)
                     )
                     Text(
-                        text = "취침 시간",
-                        fontSize = 16.sp
+                        text = "취침 시간", style = MaterialTheme.typography.titleSmall
                     )
                     Text(
-                        text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
                     )
                 }
             }
             Spacer(modifier = Modifier.size(12.dp))
             Box(
                 modifier = Modifier
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .background(color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(16.dp))
                     .weight(1f)
                     .padding(8.dp)
             ){
@@ -160,24 +156,21 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                         painter = painterResource(id = R.drawable.baseline_alarm_24),
                         contentDescription = "alarm",
                         modifier = Modifier
-                            .background(color = Navy, shape = CircleShape)
+                            .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
                             .padding(8.dp)
                     )
                     Text(
-                        text = "기상 시간",
-                        fontSize = 16.sp
+                        text = "기상 시간", style = MaterialTheme.typography.titleSmall
                     )
                     Text(
-                        text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm"))
                     )
                 }
             }
         }
         Box(
             modifier = Modifier
-                .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                .background(color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(16.dp))
                 .fillMaxWidth()
                 .padding(16.dp)
         ){
@@ -189,27 +182,22 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                     contentDescription = "check",
                     modifier = Modifier
                         .size(32.dp)
-                        .background(color = Navy, shape = CircleShape)
+                        .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
                         .padding(8.dp)
                 )
                 Text(
                     text = "목표 수면 시간",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier
                         .weight(5f)
                         .padding(start = 6.dp)
                 )
                 Text(
-                    text = "${sleepTime.hour}시간",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    text = "${sleepTime.hour}시간", style = MaterialTheme.typography.titleSmall
                 )
                 if(sleepTime.minute != 0)
                     Text(
-                        text = " %02d분".format(sleepTime.minute),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        text = " %02d분".format(sleepTime.minute), style = MaterialTheme.typography.titleSmall
                     )
             }
         }
@@ -220,16 +208,14 @@ fun SetTimeScreen(viewModel : ParentViewModel){
             },
             contentPadding = PaddingValues(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Blue,
-                contentColor = Color.White),
+                containerColor = MaterialTheme.colorScheme.secondary),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 24.dp)
         ) {
             Text(
                 text = "설정 완료",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.titleSmall
             )
         }
     }

@@ -28,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -96,7 +95,7 @@ fun Children(children: List<ChildInfo>){
         ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0x20FFFFFF)
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         content = {
             LazyRow(
@@ -168,7 +167,7 @@ fun Child(childInfo: ChildInfo) {
                 contentDescription = null,
             ) // 비트맵이 없다면
         }
-        Text(text = childInfo.childName, color = Color.White)
+        Text(text = childInfo.childName, style = MaterialTheme.typography.titleSmall)
     }
 
     if (showDialog) {
@@ -216,7 +215,7 @@ fun CurrentRewardContainer(img : Int, title:String, content: String) {
         ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0x20FFFFFF)
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         content = {
             Row(
@@ -232,8 +231,8 @@ fun CurrentRewardContainer(img : Int, title:String, content: String) {
 //                        .padding(15.dp)
 //                )
                 Column() {
-                    Text(text = title, color = Color.White)
-                    Text(text = "$content", fontSize = 20.sp, color = Color.White)
+                    Text(text = title, style = MaterialTheme.typography.titleSmall)
+                    Text(text = "$content")
                 }
             }
         }
@@ -250,7 +249,7 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0x20FFFFFF)
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         content = {
             Column(
@@ -258,8 +257,8 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "$content", fontSize = 20.sp, color = Color.White)
-                Text(text = title, color = Color.White)
+                Text(text = "$content", style = MaterialTheme.typography.titleSmall)
+                Text(text = title)
                 Image(painter = img,
                     contentDescription = null,
                     modifier = Modifier

@@ -5,18 +5,10 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.ssafy.jaljara.ui.screen.child.ChildApp
-import com.ssafy.jaljara.ui.screen.child.ChildMainView
 import com.ssafy.jaljara.ui.theme.JaljaraTheme
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ssafy.jaljara.ui.vm.ParentViewModel
@@ -35,6 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             JaljaraTheme {
                 ChildApp(childViewModel)
+//                ParentApp(parentViewModel)
             }
         }
     }

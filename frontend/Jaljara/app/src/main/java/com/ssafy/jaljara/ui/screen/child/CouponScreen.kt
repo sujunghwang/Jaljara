@@ -4,8 +4,6 @@ package com.ssafy.jaljara.ui.screen.child
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,8 +13,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -47,7 +43,7 @@ fun ChildCouponNav(
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(Icons.Filled.Favorite, contentDescription = item.name) },
-                label = { Text(item.name) },
+                label = { Text(item.name, style = MaterialTheme.typography.titleSmall) },
                 selected = selectedItem == index,
                 onClick = {
                     navController.navigate(item.name)

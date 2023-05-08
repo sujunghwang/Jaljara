@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.Glide
@@ -63,13 +62,13 @@ fun MissionTodayContainer(todayMission: String,
                           onClickMission: () -> Unit = {}
 ){
     Column() {
-        Text(text = "오늘의 미션", fontWeight = FontWeight.Bold, color = Color.White)
+        Text(text = "오늘의 미션", style = MaterialTheme.typography.titleSmall)
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0x20FFFFFF)
+                containerColor = MaterialTheme.colorScheme.tertiary
             ),
             onClick = {
                       onClickMission()
@@ -85,7 +84,6 @@ fun MissionTodayContainer(todayMission: String,
                 )
                 Text(
                     text = "$todayMission",
-                    color = Color.White,
                     modifier = Modifier
                         .padding(bottom = 20.dp)
                         .align(Alignment.CenterHorizontally)
@@ -101,7 +99,7 @@ fun reloadMissionButton(modifier: Modifier){
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        Text(text = "재설정", color = Color.White)
+        Text(text = "재설정")
         Image(
             painter = painterResource(id = R.drawable.ic_reload),
             contentDescription = null
@@ -113,13 +111,13 @@ fun reloadMissionButton(modifier: Modifier){
 @Composable
 fun SetSllepTimeContainer(targetBedTime: String, targetWakeupTime:String) {
     Column() {
-        Text(text = "설정된 수면시간", fontWeight = FontWeight.Bold, color = Color.White)
+        Text(text = "설정된 수면시간", style = MaterialTheme.typography.titleSmall)
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0x20FFFFFF)
+                containerColor = MaterialTheme.colorScheme.tertiary
             ),
             content = {
                 Row(
@@ -147,8 +145,8 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
             contentDescription = null,
             modifier = Modifier.size(100.dp, 100.dp).padding(11.dp)
         )
-        Text(text = title, color = Color.White)
-        Text(text = setTime, color = Color.White)
+        Text(text = title)
+        Text(text = setTime)
     }
 }
 
@@ -158,13 +156,13 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
     var remainCnt by remember { mutableStateOf(7-streakCount) }
 
     Column() {
-        Text(text = "보상 획득 현황", fontWeight = FontWeight.Bold, color = Color.White)
+        Text(text = "보상 획득 현황", style = MaterialTheme.typography.titleSmall)
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0x20FFFFFF)
+                containerColor = MaterialTheme.colorScheme.tertiary
             ),
             onClick = {
                 onClickCoupon()
@@ -178,7 +176,6 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
                         modifier = Modifier.size(95.dp,100.dp).padding(start=5.dp)
                     )
                     Text(text = "연속 $remainCnt 번만 성공하면 보상을 획득할 수 있어요!",
-                        color = Color.White,
                         modifier = Modifier
                             .padding(16.dp)
                     )
@@ -192,7 +189,7 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
 @Composable
 fun ContentContainer(contents: List<Content>) {
     Column() {
-        Text(text = "컨텐츠 바로가기", fontWeight = FontWeight.Bold, color = Color.White)
+        Text(text = "컨텐츠 바로가기", style = MaterialTheme.typography.titleSmall)
         Column() {
             LazyRow() {
                 items(contents){ ContentCard(it) }
@@ -229,7 +226,7 @@ fun ContentCard(content: Content) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0x20FFFFFF)
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         modifier = Modifier
             .padding(end = 3.dp, bottom = 5.dp)
