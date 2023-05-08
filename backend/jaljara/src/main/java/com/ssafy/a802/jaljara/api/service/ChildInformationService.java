@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +56,8 @@ public class ChildInformationService {
                 .childId(childId)
                 .currentReward(childInformation.getCurrentReward())
                 .streakCount(childInformation.getStreakCount())
-                .targetBedTime(childInformation.getTargetBedTime())
-                .targetWakeupTime(childInformation.getTargetWakeupTime())
+                .targetBedTime(childInformation.getTargetBedTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
+                .targetWakeupTime(childInformation.getTargetWakeupTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")))
                 .build();
     }
 
