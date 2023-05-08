@@ -43,6 +43,14 @@ class LandingViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun setScreenState(_state : Screen) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                screenState = _state
+            )
+        }
+    }
+
     fun loginWithExternalToken(token : String, provider : TokenHandler.ProviderType){
 
         viewModelScope.launch {
