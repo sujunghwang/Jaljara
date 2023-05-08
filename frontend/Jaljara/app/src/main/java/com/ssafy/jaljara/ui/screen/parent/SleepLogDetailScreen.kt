@@ -178,7 +178,7 @@ fun SleepLogDetailScreen(
 
     val displayDate = date.format(fomatter)
 
-    var expanded by rememberSaveable{ mutableStateOf(false) }
+    var expanded by remember{ mutableStateOf(false) }
 
     val missionDetailLogViewModel : MissionDetailLogViewModel = viewModel()
 
