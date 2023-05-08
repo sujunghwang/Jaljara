@@ -39,8 +39,8 @@ fun SetTimeScreen(viewModel : ParentViewModel){
 
     LaunchedEffect(Unit){
 
-        bedTime = LocalTime.parse(viewModel.childSleepResponse.targetBedTime, DateTimeFormatter.ofPattern("HH:mm:ss"))
-        wakeupTime = LocalTime.parse(viewModel.childSleepResponse.targetWakeupTime, DateTimeFormatter.ofPattern("HH:mm:ss"))
+        bedTime = LocalTime.parse(viewModel.childSleepResponse.targetBedTime, DateTimeFormatter.ofPattern("HH:mm"))
+        wakeupTime = LocalTime.parse(viewModel.childSleepResponse.targetWakeupTime, DateTimeFormatter.ofPattern("HH:mm"))
 
         Log.d("베드타임", bedTime.toString())
         Log.d("웨이크업타임", wakeupTime.toString())
