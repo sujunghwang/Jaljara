@@ -3,7 +3,6 @@ package com.ssafy.jaljara.ui.screen
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Build.VERSION.SDK_INT
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,11 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.ImageLoader
-import coil.compose.rememberAsyncImagePainter
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -44,7 +38,6 @@ import com.ssafy.jaljara.data.ChildInfo
 import com.ssafy.jaljara.data.ChildSleepInfo
 import com.ssafy.jaljara.data.DummyDataProvider
 import com.ssafy.jaljara.ui.screen.child.*
-import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,36 +49,29 @@ fun ParentMainView(parentViewModel: ParentViewModel){
     var childSleepInfo = parentViewModel.childSleepResponse
     var todayMission = parentViewModel.todayMissionResponse
 
-    Box(modifier = Modifier.fillMaxSize()){
-        Image(
-            painter = painterResource(R.drawable.bg),
-            contentDescription = "background",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxSize()
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(20.dp)
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            parentViewModel.getTodayMission(1)
-            parentViewModel.getChildSleepInfo(1)
-            Children(DummyDataProvider.childList)
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(20.dp)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        parentViewModel.getTodayMission(1)
+        parentViewModel.getChildSleepInfo(1)
+        Children(DummyDataProvider.childList)
 //            CurrentRewardContainer(painterResource(R.drawable.current_reward),"현재 보상", childSleepInfo.currentReward)
 //            CurrentRewardContainer(painterResource(id = R.drawable.today_mission),"오늘의 미션", todayMission.content)
-            CurrentRewardContainer(R.drawable.current_reward_2,"현재 보상", childSleepInfo.currentReward)
-            CurrentRewardContainer(R.drawable.reward_2,"오늘의 미션", todayMission.content)
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up",
-                    "${if (childSleepInfo.targetWakeupTime!="") childSleepInfo.targetWakeupTime.substring(0, 5) else childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
-                Spacer(modifier = Modifier.weight(0.1f))
-                ChildSetTimeCard(painterResource(id = R.drawable.baseline_king_bed_24),"수면 설정하기",
-                    "8H", Modifier.weight(1f))
-            }
+        CurrentRewardContainer(R.drawable.current_reward_2,"현재 보상", childSleepInfo.currentReward)
+        CurrentRewardContainer(R.drawable.reward_2,"오늘의 미션", todayMission.content)
+        Row(modifier = Modifier.fillMaxWidth()) {
+            ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up",
+                "${if (childSleepInfo.targetWakeupTime!="") childSleepInfo.targetWakeupTime.substring(0, 5) else childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.1f))
+            ChildSetTimeCard(painterResource(id = R.drawable.baseline_king_bed_24),"수면 설정하기",
+                "8H", Modifier.weight(1f))
         }
     }
+
 }
 
 fun CalSleepGoal(childInfo: ChildSleepInfo):String{
@@ -109,7 +95,7 @@ fun Children(children: List<ChildInfo>){
         ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0x20FFFFFF)
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         content = {
             LazyRow(
@@ -181,7 +167,7 @@ fun Child(childInfo: ChildInfo) {
                 contentDescription = null,
             ) // 비트맵이 없다면
         }
-        Text(text = childInfo.childName, color = Color.White)
+        Text(text = childInfo.childName, style = MaterialTheme.typography.titleSmall)
     }
 
     if (showDialog) {
@@ -229,7 +215,7 @@ fun CurrentRewardContainer(img : Int, title:String, content: String) {
         ),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0x20FFFFFF)
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         content = {
             Row(
@@ -245,8 +231,8 @@ fun CurrentRewardContainer(img : Int, title:String, content: String) {
 //                        .padding(15.dp)
 //                )
                 Column() {
-                    Text(text = title, color = Color.White)
-                    Text(text = "$content", fontSize = 20.sp, color = Color.White)
+                    Text(text = title, style = MaterialTheme.typography.titleSmall)
+                    Text(text = "$content")
                 }
             }
         }
@@ -263,7 +249,7 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0x20FFFFFF)
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         content = {
             Column(
@@ -271,8 +257,8 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "$content", fontSize = 20.sp, color = Color.White)
-                Text(text = title, color = Color.White)
+                Text(text = "$content", style = MaterialTheme.typography.titleSmall)
+                Text(text = title)
                 Image(painter = img,
                     contentDescription = null,
                     modifier = Modifier
@@ -290,30 +276,23 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
 fun ParentMainScreenView() {
     val scrollState = rememberScrollState()
 
-    Box(modifier = Modifier.fillMaxSize()){
-        Image(
-            painter = painterResource(R.drawable.bg),
-            contentDescription = "background",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxSize()
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(20.dp)
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Children(DummyDataProvider.childList)
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(20.dp)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Children(DummyDataProvider.childList)
 //            CurrentRewardContainer(painterResource(R.drawable.current_reward),"현재 보상", "놀이동산 가기")
 //            CurrentRewardContainer(painterResource(id = R.drawable.today_mission),"오늘의 미션", "이닦는 사진 찍기")
-            CurrentRewardContainer(R.drawable.current_reward_2,"현재 보상", "놀이동산 가기")
-            CurrentRewardContainer(R.drawable.reward_2,"오늘의 미션", "이닦는 사진 찍기")
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up", "5:00", Modifier.weight(1f))
-                Spacer(modifier = Modifier.weight(0.1f))
-                ChildSetTimeCard(painterResource(id = R.drawable.baseline_king_bed_24),"수면 설정하기", "8H", Modifier.weight(1f))
-            }
+        CurrentRewardContainer(R.drawable.current_reward_2,"현재 보상", "놀이동산 가기")
+        CurrentRewardContainer(R.drawable.reward_2,"오늘의 미션", "이닦는 사진 찍기")
+        Row(modifier = Modifier.fillMaxWidth()) {
+            ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up", "5:00", Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.1f))
+            ChildSetTimeCard(painterResource(id = R.drawable.baseline_king_bed_24),"수면 설정하기", "8H", Modifier.weight(1f))
         }
     }
+
 }

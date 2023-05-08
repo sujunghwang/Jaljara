@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -28,13 +29,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.enumType.getWeekBydayOfWeekNumber
 import kotlinx.datetime.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
-import com.ssafy.jaljara.R
-import com.ssafy.jaljara.component.NightForestBackGround
 
 @Composable
 fun SleepTimeCircleClock(modifier: Modifier = Modifier){
@@ -56,7 +55,7 @@ fun SleepTimeCircleClock(modifier: Modifier = Modifier){
 }
 
 @Composable
-fun SettingTime(modifier: Modifier = Modifier, @DrawableRes draw: Int, description: String, time: String, textColor: Color){
+fun SettingTime(modifier: Modifier = Modifier, @DrawableRes draw: Int, description: String, time: String){
     Row(modifier = modifier){
         Image(
             modifier = Modifier
@@ -72,8 +71,8 @@ fun SettingTime(modifier: Modifier = Modifier, @DrawableRes draw: Int, descripti
                 .weight(0.7f)
                 .padding(8.dp)
         ) {
-            Text(text = description, color = textColor)
-            Text(text = time, color = textColor, textAlign = TextAlign.Center)
+            Text(text = description, style = MaterialTheme.typography.titleSmall)
+            Text(text = time, textAlign = TextAlign.Center)
         }
     }
 }
@@ -86,7 +85,7 @@ fun ArtBox(modifier: Modifier = Modifier, boxContent: @Composable (Modifier) -> 
             shape = RoundedCornerShape(2.dp),
             color = Color.White
         )
-        .background(color = Color(0x40CCCCCC))
+        .background(color = MaterialTheme.colorScheme.tertiary)
     )
     {
         boxContent(Modifier.align(Alignment.Center))
@@ -121,7 +120,7 @@ fun MissionLog(modifier: Modifier = Modifier,expanded: Boolean ,onClickButton: (
     Column(modifier = modifier
         .fillMaxWidth()
         .padding(8.dp)
-        .background(color = Color(0x40FFFFFF), shape = RoundedCornerShape(16.dp))
+        .background(color = MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(16.dp))
         .animateContentSize(
             animationSpec = spring(
                 dampingRatio = Spring.DampingRatioMediumBouncy,
@@ -136,7 +135,7 @@ fun MissionLog(modifier: Modifier = Modifier,expanded: Boolean ,onClickButton: (
             horizontalArrangement = Arrangement.Start
         ){
             if(!expanded)
-                Text(text = "미션기록", modifier = Modifier
+                Text(text = "미션기록", style = MaterialTheme.typography.titleSmall, modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp))
             else Spacer(modifier = Modifier.weight(1f))
@@ -165,102 +164,96 @@ fun SleepLogDetailScreen(formatDate : String =  "20230502"){
     val displayDate = date.format(fomatter)
 
     var expanded by rememberSaveable{ mutableStateOf(false) }
-    
-    val commonColor = Color.White
 
-    NightForestBackGround {
-        BoxWithConstraints {
-            val pageSize = this.maxHeight
-            Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-            ) {
-                Text(
-                    text = "$displayDate ${getWeekBydayOfWeekNumber(dayOfWeekNumber).korean}",
-                    color = commonColor,
+    BoxWithConstraints {
+        val pageSize = this.maxHeight
+        Column(
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        ) {
+            Text(
+                text = "$displayDate ${getWeekBydayOfWeekNumber(dayOfWeekNumber).korean}",
+                modifier = Modifier
+                    .fillMaxHeight(0.1f)
+                    .padding(16.dp),
+                textAlign = TextAlign.Center,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Row() {
+                Column(
                     modifier = Modifier
-                        .fillMaxHeight(0.1f)
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Row() {
-                    Column(
+                        .weight(1f)
+                        .padding(8.dp)
+                ) {
+                    Text(text = "수면시간", style = MaterialTheme.typography.titleSmall)
+                    SleepTimeCircleClock(
                         modifier = Modifier
-                            .weight(1f)
+                            .fillMaxSize()
                             .padding(8.dp)
-                    ) {
-                        Text(text = "수면시간", color = commonColor)
-                        SleepTimeCircleClock(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp)
-                                .height(pageSize/4)
-                        )
-                    }
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp).height(pageSize/4)
-                    ) {
-                        SettingTime(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            draw = R.drawable.baseline_king_bed_24,
-                            description = "취침시간",
-                            time = "22:10",
-                            textColor = commonColor
-                        )
-                        SettingTime(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            draw = R.drawable.baseline_alarm_24,
-                            description = "기상시간",
-                            time = "07:40",
-                            textColor = commonColor
-                        )
-                    }
+                            .height(pageSize/4)
+                    )
                 }
-                Row() {
-                    Column(
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp).height(pageSize/4)
+                ) {
+                    SettingTime(
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(16.dp)
-                    ) {
-                        Text(text = "수면달성도", color = commonColor)
-                        ArtBox(
-                            modifier = Modifier
-                                .fillMaxSize().height(pageSize/4)
-                        ) { modifier ->
-                            Text(text = "93%", modifier = modifier, color = commonColor)
-                        }
-                    }
-                    Column(
+                            .fillMaxWidth()
+                            .weight(1f),
+                        draw = R.drawable.baseline_king_bed_24,
+                        description = "취침시간",
+                        time = "22:10"
+                    )
+                    SettingTime(
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(16.dp)
-                    ) {
-                        Text(text = "미션달성", color = commonColor)
-                        ArtBox(
-                            modifier = Modifier
-                                .fillMaxSize().height(pageSize/4)
-                        ) { modifier ->
-                            Text(text = "COMPLETE!", modifier = modifier, color = commonColor)
-                        }
-                    }
+                            .fillMaxWidth()
+                            .weight(1f),
+                        draw = R.drawable.baseline_alarm_24,
+                        description = "기상시간",
+                        time = "07:40"
+                    )
                 }
-                MissionLog(
-                    expanded = expanded,
-                    onClickButton = {
-                        expanded = !expanded
-                    },
-                    detailHeight = pageSize/2
-                )
             }
+            Row() {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp)
+                ) {
+                    Text(text = "수면달성도", style = MaterialTheme.typography.titleSmall)
+                    ArtBox(
+                        modifier = Modifier
+                            .fillMaxSize().height(pageSize/4)
+                    ) { modifier ->
+                        Text(text = "93%", modifier = modifier)
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp)
+                ) {
+                    Text(text = "미션달성", style = MaterialTheme.typography.titleSmall)
+                    ArtBox(
+                        modifier = Modifier
+                            .fillMaxSize().height(pageSize/4)
+                    ) { modifier ->
+                        Text(text = "COMPLETE!", modifier = modifier)
+                    }
+                }
+            }
+            MissionLog(
+                expanded = expanded,
+                onClickButton = {
+                    expanded = !expanded
+                },
+                detailHeight = pageSize/2
+            )
         }
     }
+
 }
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

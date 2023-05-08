@@ -3,19 +3,14 @@ package com.ssafy.jaljara.ui.screen.child
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.NotUsedCoupon
 
@@ -60,15 +55,12 @@ fun NotUsedCoupon(coupon: NotUsedCoupon, modifier: Modifier = Modifier) {
 fun NotUsedCouponContent(content: String, getTime: String?, modifier: Modifier = Modifier){
     Text(
         text = content,
-        fontWeight = FontWeight.Bold,
-        fontSize = 20.sp
+        style = MaterialTheme.typography.titleMedium
     )
     Row(modifier = modifier.padding(top = 8.dp)) {
         Text(
-            text = "발급일 : "
-        )
-        Text(
-            text = getTime?.split("T")?.get(0) ?:"null 값입니다."
+            text = "발급일 : " + getTime?.split("T")?.get(0) ?:"null 값입니다.",
+            style = MaterialTheme.typography.bodySmall
         )
     }
 

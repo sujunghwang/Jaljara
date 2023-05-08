@@ -59,7 +59,7 @@ fun ParentNavigationBar(
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = item.route.name) },
-                label = { Text(stringResource(id = item.route.title)) },
+                label = { Text(stringResource(id = item.route.title), style = MaterialTheme.typography.titleSmall) },
                 selected = selectedItem == index,
                 onClick = {
                     navController.navigate(item.route.url){
