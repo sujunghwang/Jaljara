@@ -1,13 +1,9 @@
 package com.ssafy.jaljara.ui.screen.child
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +24,7 @@ fun UsedCoupon(coupon: UsedCoupon, modifier: Modifier = Modifier){
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp
         ),
-        colors = CardDefaults.cardColors(Color.White)
+        colors = CardDefaults.cardColors(Color.White),
     ) {
         Row(
             modifier = Modifier
@@ -53,10 +49,8 @@ fun UsedCoupon(coupon: UsedCoupon, modifier: Modifier = Modifier){
                 NotUsedCouponContent(coupon.content, coupon.getTime)
                 Row(modifier = modifier.padding(top = 8.dp)) {
                     Text(
-                        text = "사용일 : "
-                    )
-                    Text(
-                        text = coupon.usedTime?.split("T")?.get(0) ?:""
+                        text = "사용일 : " + coupon.usedTime?.split("T")?.get(0) ?:"",
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
 

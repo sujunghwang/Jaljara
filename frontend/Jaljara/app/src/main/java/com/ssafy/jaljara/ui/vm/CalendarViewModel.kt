@@ -12,7 +12,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class CalendarViewModel : ViewModel() {
-    var calendarUiState: UiState by mutableStateOf(UiState.Loading)
+    var calendarUiState: UiState<List<Int>> by mutableStateOf(UiState.Loading)
         private set
 
     fun getSimpleSleepLog(childId : Long, date : String){
@@ -22,13 +22,13 @@ class CalendarViewModel : ViewModel() {
                 UiState.Success(simpleSleepLog)
             }catch (e: IOException) {
                 e.printStackTrace()
-                UiState.Error
+                UiState.Error("아이오 익셉션")
             } catch (e: HttpException) {
                 e.printStackTrace()
-                UiState.Error
+                UiState.Error("404나 400 같은거")
             } catch (e: Exception){
                 e.printStackTrace()
-                UiState.Error
+                UiState.Error("알 수 없는 이유입니다.")
             }
         }
     }

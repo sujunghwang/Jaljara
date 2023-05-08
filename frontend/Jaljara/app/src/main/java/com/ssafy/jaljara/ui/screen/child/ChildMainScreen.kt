@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.End
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,35 +13,20 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.data.ChildSleepInfo
 import com.ssafy.jaljara.data.Content
 import com.ssafy.jaljara.data.DummyChildSleepInfo
 import com.ssafy.jaljara.data.DummyDataProvider
-import com.ssafy.jaljara.ui.screen.ChildSetTimeCard
-import com.ssafy.jaljara.ui.screen.Children
-import com.ssafy.jaljara.ui.screen.CurrentRewardContainer
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 
@@ -56,27 +40,19 @@ fun ChildMainView(childViewModel: ChildViewModel,
     val scrollState = rememberScrollState()
     var childSleepInfo = childViewModel.childSleepResponse
     var todayMission = childViewModel.todayMissionResponse
-    Box(modifier = Modifier.fillMaxSize()){
-        Image(
-            painter = painterResource(R.drawable.bg),
-            contentDescription = "background",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxSize()
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(20.dp)
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            childViewModel.getTodayMission(1)
-            childViewModel.getChildSleepInfo(1)
-            MissionTodayContainer(todayMission.content, onClickMission)
-            SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
-            RewardStatusContainer(childSleepInfo.streakCount,onClickCoupon)
-            ContentContainer(contents = DummyDataProvider.contentList)
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(20.dp)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        childViewModel.getTodayMission(1)
+        childViewModel.getChildSleepInfo(1)
+        MissionTodayContainer(todayMission.content)
+        SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
+        RewardStatusContainer(childSleepInfo.streakCount)
+        ContentContainer(contents = DummyDataProvider.contentList)
     }
 }
 
@@ -86,13 +62,13 @@ fun MissionTodayContainer(todayMission: String,
                           onClickMission: () -> Unit = {}
 ){
     Column() {
-        Text(text = "오늘의 미션", fontWeight = FontWeight.Bold, color = Color.White)
+        Text(text = "오늘의 미션", style = MaterialTheme.typography.titleSmall)
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0x20FFFFFF)
+                containerColor = MaterialTheme.colorScheme.tertiary
             ),
             onClick = {
                       onClickMission()
@@ -108,7 +84,6 @@ fun MissionTodayContainer(todayMission: String,
                 )
                 Text(
                     text = "$todayMission",
-                    color = Color.White,
                     modifier = Modifier
                         .padding(bottom = 20.dp)
                         .align(Alignment.CenterHorizontally)
@@ -124,7 +99,7 @@ fun reloadMissionButton(modifier: Modifier){
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        Text(text = "재설정", color = Color.White)
+        Text(text = "재설정")
         Image(
             painter = painterResource(id = R.drawable.ic_reload),
             contentDescription = null
@@ -136,13 +111,13 @@ fun reloadMissionButton(modifier: Modifier){
 @Composable
 fun SetSllepTimeContainer(targetBedTime: String, targetWakeupTime:String) {
     Column() {
-        Text(text = "설정된 수면시간", fontWeight = FontWeight.Bold, color = Color.White)
+        Text(text = "설정된 수면시간", style = MaterialTheme.typography.titleSmall)
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0x20FFFFFF)
+                containerColor = MaterialTheme.colorScheme.tertiary
             ),
             content = {
                 Row(
@@ -170,8 +145,8 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
             contentDescription = null,
             modifier = Modifier.size(100.dp, 100.dp).padding(11.dp)
         )
-        Text(text = title, color = Color.White)
-        Text(text = setTime, color = Color.White)
+        Text(text = title)
+        Text(text = setTime)
     }
 }
 
@@ -181,13 +156,13 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
     var remainCnt by remember { mutableStateOf(7-streakCount) }
 
     Column() {
-        Text(text = "보상 획득 현황", fontWeight = FontWeight.Bold, color = Color.White)
+        Text(text = "보상 획득 현황", style = MaterialTheme.typography.titleSmall)
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0x20FFFFFF)
+                containerColor = MaterialTheme.colorScheme.tertiary
             ),
             onClick = {
                 onClickCoupon()
@@ -201,7 +176,6 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
                         modifier = Modifier.size(95.dp,100.dp).padding(start=5.dp)
                     )
                     Text(text = "연속 $remainCnt 번만 성공하면 보상을 획득할 수 있어요!",
-                        color = Color.White,
                         modifier = Modifier
                             .padding(16.dp)
                     )
@@ -215,7 +189,7 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
 @Composable
 fun ContentContainer(contents: List<Content>) {
     Column() {
-        Text(text = "컨텐츠 바로가기", fontWeight = FontWeight.Bold, color = Color.White)
+        Text(text = "컨텐츠 바로가기", style = MaterialTheme.typography.titleSmall)
         Column() {
             LazyRow() {
                 items(contents){ ContentCard(it) }
@@ -252,7 +226,7 @@ fun ContentCard(content: Content) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0x20FFFFFF)
+            containerColor = MaterialTheme.colorScheme.tertiary
         ),
         modifier = Modifier
             .padding(end = 3.dp, bottom = 5.dp)
@@ -276,12 +250,17 @@ fun ContentCard(content: Content) {
 @Composable
 fun ChildMainScreenView() {
     val scrollState = rememberScrollState()
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(R.drawable.bg),
-            contentDescription = "background",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxSize()
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(20.dp)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        MissionTodayContainer(dummyChildSleepInfo.currentReward)
+        SetSllepTimeContainer(
+            dummyChildSleepInfo.targetBedTime,
+            dummyChildSleepInfo.targetWakeupTime
         )
         Column(
             modifier = Modifier
