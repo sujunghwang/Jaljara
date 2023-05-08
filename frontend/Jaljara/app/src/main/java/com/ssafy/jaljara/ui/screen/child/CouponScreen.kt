@@ -5,20 +5,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -98,12 +94,6 @@ fun CouponScreen(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = CouponStatus.Coupon.name) {
-                Image(
-                    painter = painterResource(R.drawable.bg),
-                    contentDescription = "background",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxSize()
-                )
                 LazyColumn() {
                     val coupons = childViewModel.notUsedCouponResponse
                     childViewModel.getNotUsedCoupon(1)
@@ -113,12 +103,6 @@ fun CouponScreen(
                 }
             }
             composable(route = CouponStatus.UsedCoupon.name) {
-                Image(
-                    painter = painterResource(R.drawable.bg),
-                    contentDescription = "background",
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxSize()
-                )
                 LazyColumn() {
                     val coupons = childViewModel.usedCouponResponse
                     childViewModel.getUsedCoupon(1)

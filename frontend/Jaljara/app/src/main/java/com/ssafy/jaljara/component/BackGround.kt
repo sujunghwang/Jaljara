@@ -13,7 +13,7 @@ import com.ssafy.jaljara.R
 fun NightForestBackGround(innerContent :@Composable () -> Unit){
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.bg),
+            painter = painterResource(R.drawable.night_forest_bg),
             contentDescription = "background",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.fillMaxSize()

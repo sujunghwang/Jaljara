@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement.End
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,35 +13,21 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.data.ChildSleepInfo
 import com.ssafy.jaljara.data.Content
 import com.ssafy.jaljara.data.DummyChildSleepInfo
 import com.ssafy.jaljara.data.DummyDataProvider
-import com.ssafy.jaljara.ui.screen.ChildSetTimeCard
-import com.ssafy.jaljara.ui.screen.Children
-import com.ssafy.jaljara.ui.screen.CurrentRewardContainer
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 
@@ -56,27 +41,19 @@ fun ChildMainView(childViewModel: ChildViewModel,
     val scrollState = rememberScrollState()
     var childSleepInfo = childViewModel.childSleepResponse
     var todayMission = childViewModel.todayMissionResponse
-    Box(modifier = Modifier.fillMaxSize()){
-        Image(
-            painter = painterResource(R.drawable.bg),
-            contentDescription = "background",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxSize()
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(20.dp)
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            childViewModel.getTodayMission(1)
-            childViewModel.getChildSleepInfo(1)
-            MissionTodayContainer(todayMission.content, onClickMission)
-            SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
-            RewardStatusContainer(childSleepInfo.streakCount,onClickCoupon)
-            ContentContainer(contents = DummyDataProvider.contentList)
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(20.dp)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        childViewModel.getTodayMission(1)
+        childViewModel.getChildSleepInfo(1)
+        MissionTodayContainer(todayMission.content)
+        SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
+        RewardStatusContainer(childSleepInfo.streakCount)
+        ContentContainer(contents = DummyDataProvider.contentList)
     }
 }
 
@@ -276,12 +253,17 @@ fun ContentCard(content: Content) {
 @Composable
 fun ChildMainScreenView() {
     val scrollState = rememberScrollState()
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(R.drawable.bg),
-            contentDescription = "background",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxSize()
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(20.dp)
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        MissionTodayContainer(dummyChildSleepInfo.currentReward)
+        SetSllepTimeContainer(
+            dummyChildSleepInfo.targetBedTime,
+            dummyChildSleepInfo.targetWakeupTime
         )
         Column(
             modifier = Modifier

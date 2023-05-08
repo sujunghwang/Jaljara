@@ -58,188 +58,179 @@ fun SetTimeScreen(viewModel : ParentViewModel){
         sleepTime = LocalTime.of((wakeupTimeInt - bedTimeInt) / 60, (wakeupTimeInt - bedTimeInt) % 60)
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(R.drawable.bg),
-            contentDescription = "background",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-            Box(
-                modifier = Modifier
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ){
-                Column() {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "수면 시간 설정",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier
-                                .weight(5f)
-                                .padding(start = 6.dp)
-                        )
-                    }
-                    RangeSlider(
-                        steps = 143,
-                        values = sliderPosition,
-                        onValueChange = {
-                            var start = it.start
-                            var end = it.endInclusive
-
-                            if(start >= end)
-                                start = end - 10
-
-                            sliderPosition = start..end
-
-                            var bedTimeInt = sliderPosition.start.roundToInt()
-                            var wakeupTimeInt = sliderPosition.endInclusive.roundToInt()
-
-                            sleepTime = LocalTime.of((wakeupTimeInt - bedTimeInt) / 60, (wakeupTimeInt - bedTimeInt) % 60)
-
-                            if(bedTimeInt < 0)
-                                bedTimeInt += 1440
-                            if(wakeupTimeInt < 0)
-                                wakeupTimeInt += 1440
-
-                            bedTime = LocalTime.of(bedTimeInt / 60, bedTimeInt % 60)
-                            wakeupTime = LocalTime.of(wakeupTimeInt / 60, wakeupTimeInt % 60)
-                        },
-                        valueRange = -360f..1080f,
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier.padding(vertical = 24.dp)
-            ){
-                Box(
-                    modifier = Modifier
-                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
-                        .weight(1f)
-                        .padding(8.dp)
-                ){
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.baseline_king_bed_24),
-                            contentDescription = "bed",
-                            modifier = Modifier
-                                .background(color = Navy, shape = CircleShape)
-                                .padding(8.dp)
-                        )
-                        Text(
-                            text = "취침 시간",
-                            fontSize = 16.sp
-                        )
-                        Text(
-                            text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.size(12.dp))
-                Box(
-                    modifier = Modifier
-                        .background(color = Color.White, shape = RoundedCornerShape(16.dp))
-                        .weight(1f)
-                        .padding(8.dp)
-                ){
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-
-                        Image(
-                            painter = painterResource(id = R.drawable.baseline_alarm_24),
-                            contentDescription = "alarm",
-                            modifier = Modifier
-                                .background(color = Navy, shape = CircleShape)
-                                .padding(8.dp)
-                        )
-                        Text(
-                            text = "기상 시간",
-                            fontSize = 16.sp
-                        )
-                        Text(
-                            text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ){
+                .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                .fillMaxWidth()
+                .padding(16.dp)
+        ){
+            Column() {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.baseline_check_24),
-                        contentDescription = "check",
-                        modifier = Modifier
-                            .size(32.dp)
-                            .background(color = Navy, shape = CircleShape)
-                            .padding(8.dp)
-                    )
                     Text(
-                        text = "목표 수면 시간",
+                        text = "수면 시간 설정",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .weight(5f)
                             .padding(start = 6.dp)
                     )
+                }
+                RangeSlider(
+                    steps = 143,
+                    values = sliderPosition,
+                    onValueChange = {
+                        var start = it.start
+                        var end = it.endInclusive
+
+                        if(start >= end)
+                            start = end - 10
+
+                        sliderPosition = start..end
+
+                        var bedTimeInt = sliderPosition.start.roundToInt()
+                        var wakeupTimeInt = sliderPosition.endInclusive.roundToInt()
+
+                        sleepTime = LocalTime.of((wakeupTimeInt - bedTimeInt) / 60, (wakeupTimeInt - bedTimeInt) % 60)
+
+                        if(bedTimeInt < 0)
+                            bedTimeInt += 1440
+                        if(wakeupTimeInt < 0)
+                            wakeupTimeInt += 1440
+
+                        bedTime = LocalTime.of(bedTimeInt / 60, bedTimeInt % 60)
+                        wakeupTime = LocalTime.of(wakeupTimeInt / 60, wakeupTimeInt % 60)
+                    },
+                    valueRange = -360f..1080f,
+                )
+            }
+        }
+        Row(
+            modifier = Modifier.padding(vertical = 24.dp)
+        ){
+            Box(
+                modifier = Modifier
+                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .weight(1f)
+                    .padding(8.dp)
+            ){
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.baseline_king_bed_24),
+                        contentDescription = "bed",
+                        modifier = Modifier
+                            .background(color = Navy, shape = CircleShape)
+                            .padding(8.dp)
+                    )
                     Text(
-                        text = "${sleepTime.hour}시간",
+                        text = "취침 시간",
+                        fontSize = 16.sp
+                    )
+                    Text(
+                        text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm")),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
-                    if(sleepTime.minute != 0)
-                        Text(
-                            text = " %02d분".format(sleepTime.minute),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
                 }
             }
-            Button(
-                onClick = {
-                    viewModel.setTargetSleepTime(1, bedTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")), wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
-                    viewModel.getChildSleepInfo(1)
-                },
-                contentPadding = PaddingValues(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Blue,
-                    contentColor = Color.White),
+            Spacer(modifier = Modifier.size(12.dp))
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp)
+                    .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                    .weight(1f)
+                    .padding(8.dp)
+            ){
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    Image(
+                        painter = painterResource(id = R.drawable.baseline_alarm_24),
+                        contentDescription = "alarm",
+                        modifier = Modifier
+                            .background(color = Navy, shape = CircleShape)
+                            .padding(8.dp)
+                    )
+                    Text(
+                        text = "기상 시간",
+                        fontSize = 16.sp
+                    )
+                    Text(
+                        text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+        Box(
+            modifier = Modifier
+                .background(color = Color.White, shape = RoundedCornerShape(16.dp))
+                .fillMaxWidth()
+                .padding(16.dp)
+        ){
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Image(
+                    painter = painterResource(id = R.drawable.baseline_check_24),
+                    contentDescription = "check",
+                    modifier = Modifier
+                        .size(32.dp)
+                        .background(color = Navy, shape = CircleShape)
+                        .padding(8.dp)
+                )
                 Text(
-                    text = "설정 완료",
-                    fontSize = 16.sp,
+                    text = "목표 수면 시간",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .weight(5f)
+                        .padding(start = 6.dp)
+                )
+                Text(
+                    text = "${sleepTime.hour}시간",
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Bold
                 )
+                if(sleepTime.minute != 0)
+                    Text(
+                        text = " %02d분".format(sleepTime.minute),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
             }
+        }
+        Button(
+            onClick = {
+                viewModel.setTargetSleepTime(1, bedTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")), wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+                viewModel.getChildSleepInfo(1)
+            },
+            contentPadding = PaddingValues(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Blue,
+                contentColor = Color.White),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp)
+        ) {
+            Text(
+                text = "설정 완료",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

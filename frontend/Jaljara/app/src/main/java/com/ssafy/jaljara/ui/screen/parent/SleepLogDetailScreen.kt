@@ -168,99 +168,98 @@ fun SleepLogDetailScreen(formatDate : String =  "20230502"){
     
     val commonColor = Color.White
 
-    NightForestBackGround {
-        BoxWithConstraints {
-            val pageSize = this.maxHeight
-            Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-            ) {
-                Text(
-                    text = "$displayDate ${getWeekBydayOfWeekNumber(dayOfWeekNumber).korean}",
-                    color = commonColor,
+    BoxWithConstraints {
+        val pageSize = this.maxHeight
+        Column(
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        ) {
+            Text(
+                text = "$displayDate ${getWeekBydayOfWeekNumber(dayOfWeekNumber).korean}",
+                color = commonColor,
+                modifier = Modifier
+                    .fillMaxHeight(0.1f)
+                    .padding(16.dp),
+                textAlign = TextAlign.Center,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Row() {
+                Column(
                     modifier = Modifier
-                        .fillMaxHeight(0.1f)
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Row() {
-                    Column(
+                        .weight(1f)
+                        .padding(8.dp)
+                ) {
+                    Text(text = "수면시간", color = commonColor)
+                    SleepTimeCircleClock(
                         modifier = Modifier
-                            .weight(1f)
+                            .fillMaxSize()
                             .padding(8.dp)
-                    ) {
-                        Text(text = "수면시간", color = commonColor)
-                        SleepTimeCircleClock(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp)
-                                .height(pageSize/4)
-                        )
-                    }
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp).height(pageSize/4)
-                    ) {
-                        SettingTime(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            draw = R.drawable.baseline_king_bed_24,
-                            description = "취침시간",
-                            time = "22:10",
-                            textColor = commonColor
-                        )
-                        SettingTime(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
-                            draw = R.drawable.baseline_alarm_24,
-                            description = "기상시간",
-                            time = "07:40",
-                            textColor = commonColor
-                        )
-                    }
+                            .height(pageSize/4)
+                    )
                 }
-                Row() {
-                    Column(
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp).height(pageSize/4)
+                ) {
+                    SettingTime(
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(16.dp)
-                    ) {
-                        Text(text = "수면달성도", color = commonColor)
-                        ArtBox(
-                            modifier = Modifier
-                                .fillMaxSize().height(pageSize/4)
-                        ) { modifier ->
-                            Text(text = "93%", modifier = modifier, color = commonColor)
-                        }
-                    }
-                    Column(
+                            .fillMaxWidth()
+                            .weight(1f),
+                        draw = R.drawable.baseline_king_bed_24,
+                        description = "취침시간",
+                        time = "22:10",
+                        textColor = commonColor
+                    )
+                    SettingTime(
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(16.dp)
-                    ) {
-                        Text(text = "미션달성", color = commonColor)
-                        ArtBox(
-                            modifier = Modifier
-                                .fillMaxSize().height(pageSize/4)
-                        ) { modifier ->
-                            Text(text = "COMPLETE!", modifier = modifier, color = commonColor)
-                        }
-                    }
+                            .fillMaxWidth()
+                            .weight(1f),
+                        draw = R.drawable.baseline_alarm_24,
+                        description = "기상시간",
+                        time = "07:40",
+                        textColor = commonColor
+                    )
                 }
-                MissionLog(
-                    expanded = expanded,
-                    onClickButton = {
-                        expanded = !expanded
-                    },
-                    detailHeight = pageSize/2
-                )
             }
+            Row() {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp)
+                ) {
+                    Text(text = "수면달성도", color = commonColor)
+                    ArtBox(
+                        modifier = Modifier
+                            .fillMaxSize().height(pageSize/4)
+                    ) { modifier ->
+                        Text(text = "93%", modifier = modifier, color = commonColor)
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp)
+                ) {
+                    Text(text = "미션달성", color = commonColor)
+                    ArtBox(
+                        modifier = Modifier
+                            .fillMaxSize().height(pageSize/4)
+                    ) { modifier ->
+                        Text(text = "COMPLETE!", modifier = modifier, color = commonColor)
+                    }
+                }
+            }
+            MissionLog(
+                expanded = expanded,
+                onClickButton = {
+                    expanded = !expanded
+                },
+                detailHeight = pageSize/2
+            )
         }
     }
+
 }
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

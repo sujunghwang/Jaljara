@@ -400,55 +400,54 @@ fun SleepCalenderScreen(
 
     calendarViewModel.getSimpleSleepLog(childId, convert2yyyyMM(tYear, tMonth))
 
-    NightForestBackGround {
-        LazyColumn(modifier = Modifier.fillMaxHeight()){
-            item{
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Spacer(modifier = Modifier.fillParentMaxHeight(0.1f))
-                    Row(
+    LazyColumn(modifier = Modifier.fillMaxHeight()){
+        item{
+            Column(modifier = Modifier.fillMaxSize()) {
+                Spacer(modifier = Modifier.fillParentMaxHeight(0.1f))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillParentMaxHeight(0.2f),
+                    horizontalArrangement = Arrangement.Center,
+                ){
+                    Image(
+                        painter = painterResource(id = R.drawable.baseline_calendar_month_24),
+                        contentDescription = null,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .fillParentMaxHeight(0.2f),
-                        horizontalArrangement = Arrangement.Center,
-                    ){
-                        Image(
-                            painter = painterResource(id = R.drawable.baseline_calendar_month_24),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(48.dp)
-                                .padding(end = 8.dp)
-                        )
-                        Text(
-                            text = "내 아이 수면 달력", color = Color.White,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                            .size(48.dp)
+                            .padding(end = 8.dp)
+                    )
+                    Text(
+                        text = "내 아이 수면 달력", color = Color.White,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-                    LoadingComponent<List<Int>>(
-                        uiState = calendarViewModel.calendarUiState,
-                        onSuccessHandler = {
-                            simpleSleepLog = it
-                        }
-                    ){
-                        JongSeokCalendar(
-                            takeMeToDate = null,
-                            kalendarDayColors = KalendarDayColors(Color.White, Color.Black),
-                            onChangeMonth = { year, month ->
-                                tYear = year
-                                tMonth = month
-                            },
-                            onClickDay = onClickDay,
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .height(500.dp),
-                            sleepLogSimple = simpleSleepLog
-                        )
+                LoadingComponent<List<Int>>(
+                    uiState = calendarViewModel.calendarUiState,
+                    onSuccessHandler = {
+                        simpleSleepLog = it
                     }
+                ){
+                    JongSeokCalendar(
+                        takeMeToDate = null,
+                        kalendarDayColors = KalendarDayColors(Color.White, Color.Black),
+                        onChangeMonth = { year, month ->
+                            tYear = year
+                            tMonth = month
+                        },
+                        onClickDay = onClickDay,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .height(500.dp),
+                        sleepLogSimple = simpleSleepLog
+                    )
                 }
             }
         }
     }
+
 }
 
 private fun convert2yyyyMM(year: Int, month: Int): String{
