@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,9 +26,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.data.Content
-import com.ssafy.jaljara.data.DummyChildSleepInfo
-import com.ssafy.jaljara.data.DummyDataProvider
+import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 
@@ -112,13 +111,16 @@ fun reloadMissionButton(modifier: Modifier){
 @Composable
 fun SetSllepTimeContainer(targetBedTime: String, targetWakeupTime:String) {
     Column() {
-        Text(text = "설정된 수면시간", style = MaterialTheme.typography.titleSmall)
+        Text(text = "설정된 수면시간", fontWeight = FontWeight.Bold, color = Color.White)
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 10.dp,
+            ),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.tertiary
+                containerColor = Color(0x20FFFFFF)
             ),
             content = {
                 Row(
@@ -148,28 +150,28 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
                 .size(100.dp, 100.dp)
                 .padding(11.dp)
         )
-        Text(text = title)
-        Text(text = setTime)
+        Text(text = title, color = Color.White)
+        Text(text = setTime, color = Color.White)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
+fun RewardStatusContainer(streakCount:Int) {
     var remainCnt by remember { mutableStateOf(7-streakCount) }
 
     Column() {
-        Text(text = "보상 획득 현황", style = MaterialTheme.typography.titleSmall)
+        Text(text = "보상 획득 현황", fontWeight = FontWeight.Bold, color = Color.White)
         Card(
             modifier = Modifier
                 .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 10.dp,
+            ),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.tertiary
+                containerColor = Color(0x20FFFFFF)
             ),
-            onClick = {
-                onClickCoupon()
-            },
             content = {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -181,6 +183,7 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
                             .padding(start = 5.dp)
                     )
                     Text(text = "연속 $remainCnt 번만 성공하면 보상을 획득할 수 있어요!",
+                        color = Color.White,
                         modifier = Modifier
                             .padding(16.dp)
                     )
@@ -192,15 +195,15 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
 
 
 @Composable
-fun ContentContainer(contents: List<Content>) {
+fun ContentContainer(soundContents: List<SoundContent>) {
     Column() {
-        Text(text = "컨텐츠 바로가기", style = MaterialTheme.typography.titleSmall)
+        Text(text = "컨텐츠 바로가기", fontWeight = FontWeight.Bold, color = Color.White)
         Column() {
             LazyRow() {
-                items(contents){ ContentCard(it) }
+                items(soundContents){ ContentCard(it) }
             }
             LazyRow() {
-                items(contents){ ContentCard(it) }
+                items(soundContents){ ContentCard(it) }
             }
         }
     }
@@ -209,7 +212,7 @@ fun ContentContainer(contents: List<Content>) {
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContentCard(content: Content) {
+fun ContentCard(soundContent: SoundContent) {
     // 이미지 비트맵
     val bitmap : MutableState<Bitmap?> = mutableStateOf(null)
 
@@ -219,7 +222,7 @@ fun ContentCard(content: Content) {
     //
     Glide.with(LocalContext.current)
         .asBitmap()
-        .load(content.url)
+        .load(soundContent.thumbnailImageUrl)
         .into(object : CustomTarget<Bitmap>(){
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 //이미지 비트맵이 다 로드가 됐을때 들어오는 메소드
