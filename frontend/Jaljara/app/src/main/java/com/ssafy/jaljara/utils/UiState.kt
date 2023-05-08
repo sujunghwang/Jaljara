@@ -1,7 +1,7 @@
 package com.ssafy.jaljara.utils
 
-sealed class UiState {
-    data class Success<T>(val data: T): UiState()
-    companion object Error: UiState()
-    object Loading: UiState()
+sealed class UiState <out T>{
+    data class Success<T>(val data: T): UiState<T>()
+    data class Error(val message: String): UiState<Nothing>()
+    object Loading: UiState<Nothing>()
 }
