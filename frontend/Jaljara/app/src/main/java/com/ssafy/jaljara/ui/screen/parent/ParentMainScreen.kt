@@ -82,7 +82,7 @@ fun ParentMainView(parentViewModel: ParentViewModel,
             CurrentRewardContainer(R.drawable.reward_2,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
             Row(modifier = Modifier.fillMaxWidth()) {
                 ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up",
-                    "${if (childSleepInfo.targetWakeupTime!="") childSleepInfo.targetWakeupTime.substring(0, 5) else childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
+                    "${childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
                 Spacer(modifier = Modifier.weight(0.1f))
                 ChildSetTimeCard(
                     modifier = Modifier.weight(1f).clickable{onClickSetTime()},

@@ -150,9 +150,9 @@ fun SetSllepTimeContainer(targetBedTime: String, targetWakeupTime:String) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     SetTimeContainer(painterResource(id = R.drawable.bed_time), "취침시간",
-                        "${if (targetBedTime!="") targetBedTime.substring(0, 5) else targetBedTime}")
+                        "${targetBedTime}")
                     SetTimeContainer(painterResource(id = R.drawable.wake_up), "기상시간",
-                        "${if (targetWakeupTime!="") targetWakeupTime.substring(0, 5) else targetWakeupTime}")
+                        "${targetWakeupTime}")
                 }
             }
         )
