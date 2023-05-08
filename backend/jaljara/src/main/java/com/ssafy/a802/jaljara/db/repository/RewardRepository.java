@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RewardRepository extends JpaRepository<Reward, Long> {
-    List<Reward> findAllByUserIdAndIsUsed(long userId, boolean isUsed);
+    List<Reward> findAllByUserIdAndIsUsedOrderByUpdatedAtDesc(long userId, boolean isUsed);
 }
