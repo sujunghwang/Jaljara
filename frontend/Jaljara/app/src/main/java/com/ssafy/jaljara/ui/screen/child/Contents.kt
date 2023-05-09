@@ -4,14 +4,12 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,9 +17,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -36,15 +32,15 @@ import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.DummyDataProvider
 import com.ssafy.jaljara.data.SoundContent
-import com.ujizin.camposer.focus.SquareCornerFocus
+
 
 @Composable
-fun ContentsView() {
-    SoundListView(soundContents = DummyDataProvider.contentSoundList)
+fun ContentsView(navigateToContent: (SoundContent) -> Unit) {
+    SoundListView(soundContents = DummyDataProvider.contentSoundList, navigateToContent = navigateToContent)
 }
 
 @Composable
-fun SoundListView(soundContents: List<SoundContent>) {
+fun SoundListView(soundContents: List<SoundContent>, navigateToContent: (SoundContent) -> Unit) {
     val typography = MaterialTheme.typography
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -53,7 +49,7 @@ fun SoundListView(soundContents: List<SoundContent>) {
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier.padding(20.dp),
         ) {
             Image(
                 painter = painterResource(id = R.drawable.astronoutsleep),
@@ -66,35 +62,30 @@ fun SoundListView(soundContents: List<SoundContent>) {
                 fontSize = 30.sp
             )
         }
-        Text(
-            text = "수면에 도움이 되는 소리",
-            style = typography.titleSmall,
-            modifier = Modifier.padding(10.dp),
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 20.sp
-        )
-        Column() {
-//            LazyRow() {
-//                items(soundContents) { SoundContentView(it) }
-//            }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            Text(
+                text = "수면에 도움이 되는 소리",
+                style = typography.titleSmall,
+                modifier = Modifier.padding(10.dp),
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp
+            )
             LazyRow() {
-                items(soundContents) { SoundContentView(it) }
+                items(soundContents) { SoundContentView(it, navigateToContent) }
             }
-
-        }
-        Text(
-            text = "수면에 도움이 되는 영상",
-            style = typography.titleSmall,
-            modifier = Modifier.padding(10.dp),
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 20.sp
-        )
-        Column() {
-//            LazyRow() {
-//                items(soundContents) { SoundContentView(it) }
-//            }
+            Text(
+                text = "수면에 도움이 되는 영상",
+                style = typography.titleSmall,
+                modifier = Modifier.padding(10.dp),
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp
+            )
             LazyRow() {
-                items(soundContents) { SoundContentView(it) }
+                items(soundContents) { SoundContentView(it, navigateToContent) }
             }
 
         }
@@ -103,8 +94,9 @@ fun SoundListView(soundContents: List<SoundContent>) {
 }
 
 @Composable
-fun SoundContentView(soundContent: SoundContent) {
+fun SoundContentView(soundContent: SoundContent, navigateToContent: (SoundContent) -> Unit) {
     val typography = MaterialTheme.typography
+
     androidx.compose.material.Card(
         modifier = Modifier
             .padding(10.dp)
@@ -116,21 +108,14 @@ fun SoundContentView(soundContent: SoundContent) {
         //shape 카드의 모양
     ) {
         Column(
-            modifier = Modifier.padding(10.dp),
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.spacedBy(20.dp) //spaceby로 각각 아이템끼리 공간을 줄 수 있다.
+            modifier = Modifier
+                .padding(10.dp)
+                .clickable { navigateToContent(soundContent) },
         ) {
-//            Box(
-//                modifier = Modifier
-//                    .size(width = 60.dp, height = 60.dp)
-//                    .clip(CircleShape)
-//                    .background(Color.Red)
-//            )
             ThumbnailImage(thumbnailImageUrl = soundContent.thumbnailImageUrl)
 
             Box(
                 modifier = Modifier
-                    .background(color = Color.Gray.copy(alpha = 0.2f))
                     .fillMaxWidth()
             ) {
                 Column() {
@@ -197,5 +182,5 @@ fun ThumbnailImage(thumbnailImageUrl: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    ContentsView()
+//    ContentsView()
 }
