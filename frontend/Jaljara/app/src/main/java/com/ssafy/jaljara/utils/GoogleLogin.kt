@@ -51,7 +51,6 @@ fun googleLoginHelper(context : Context, viewModel: LandingViewModel, onClose : 
             onClose()
         }
     );
-
 }
 
 @Composable

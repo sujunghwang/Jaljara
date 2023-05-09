@@ -38,19 +38,13 @@ fun LandingApp(
     NavHost(navController = navController,
         startDestination = LandingScreens.Landing.url,) {
         composable(route = LandingScreens.Landing.url) {
-            NightForestBackGround {
                 LandingScreen(navigate = { navController.navigate(it) })
-            }
         }
         composable(route = LandingScreens.Signup.url) {
-            NightForestBackGround {
                 SignupScreen(navigate = { navController.navigate(it) })
-            }
         }
         composable(route = LandingScreens.Login.url) {
-            NightForestBackGround {
                 LoginScreen(navigate = { navController.navigate(it) })
-            }
         }
     }
 }
