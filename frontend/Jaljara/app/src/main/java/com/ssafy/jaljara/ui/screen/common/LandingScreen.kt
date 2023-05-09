@@ -74,7 +74,7 @@ fun LandingScreen(
                             animationSpec = tween(durationMillis = 2500),
                             initialAlpha = 0.01f
                         ),
-                        exit = fadeOut(animationSpec = tween(durationMillis = 1000)),
+                        exit = fadeOut(animationSpec = tween(durationMillis = 2000)),
 
                         modifier = Modifier
                     ) {
@@ -94,7 +94,7 @@ fun LandingScreen(
                             animationSpec = tween(durationMillis = 3500),
                             initialAlpha = 0.01f
                         ),
-                        exit = fadeOut(animationSpec = tween(durationMillis = 1000)),
+                        exit = fadeOut(animationSpec = tween(durationMillis = 2000)),
                         modifier = Modifier
                     ) {
                         Text(
@@ -114,7 +114,7 @@ fun LandingScreen(
                             animationSpec = tween(durationMillis = 4500),
                             initialAlpha = 0.01f
                         ),
-                        exit = fadeOut(animationSpec = tween(durationMillis = 1000))
+                        exit = fadeOut(animationSpec = tween(durationMillis = 2000))
                     ) {
                         Text(
                             modifier = Modifier
@@ -126,7 +126,16 @@ fun LandingScreen(
                             text = "부모님과 함께 기르는",
                             color = Color.White
                         )
+                    }
 
+                    AnimatedVisibility(
+                        visible = visible,
+                        enter = fadeIn(
+                            animationSpec = tween(durationMillis = 4500),
+                            initialAlpha = 0.01f
+                        ),
+                        exit = fadeOut(animationSpec = tween(durationMillis = 2000))
+                    ) {
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -147,7 +156,7 @@ fun LandingScreen(
                     animationSpec = tween(durationMillis = 3000),
                     initialAlpha = 0.01f
                 ),
-                exit = fadeOut(animationSpec = tween(durationMillis = 1000)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 2000)),
                 modifier = Modifier
             ) {
                 Image(
@@ -177,10 +186,10 @@ fun LandingScreen(
                     AnimatedVisibility(
                         visible = visible,
                         enter = fadeIn(
-                            animationSpec = tween(durationMillis = 1000),
+                            animationSpec = tween(durationMillis = 4000),
                             initialAlpha = 0.01f
                         ),
-                        exit = fadeOut(animationSpec = tween(durationMillis = 1000)),
+                        exit = fadeOut(animationSpec = tween(durationMillis = 2000)),
                         modifier = Modifier
                     ) {
                         Column(verticalArrangement = Arrangement.spacedBy(30.dp)) {
