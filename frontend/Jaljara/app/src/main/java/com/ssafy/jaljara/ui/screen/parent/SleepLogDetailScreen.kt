@@ -1,5 +1,8 @@
 package com.ssafy.jaljara.ui.screen.parent
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
 import androidx.annotation.DrawableRes
@@ -23,6 +26,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -31,6 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.jaljara.R
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.ui.enumType.getWeekBydayOfWeekNumber
 import kotlinx.datetime.DayOfWeek
 import java.time.LocalDate
@@ -114,13 +123,36 @@ fun showButton(
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
-fun MissionLogImageDeatail(modifier: Modifier = Modifier){
-    Image(
-        modifier = modifier,
-        painter = painterResource(R.drawable.ic_launcher_foreground),
-        contentDescription = "settingImage"
-    )
+fun MissionLogImageDeatail(modifier: Modifier = Modifier, missionLog: MissionLog ){
+
+    val bitmap : MutableState<Bitmap?> = mutableStateOf(null)
+
+    Glide.with(LocalContext.current)
+        .asBitmap()
+        .load(missionLog.url)
+        .into(object : CustomTarget<Bitmap>(){
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                bitmap.value = resource
+            }
+            override fun onLoadCleared(placeholder: Drawable?) { }
+        })
+
+
+    Text(text = missionLog.content, fontSize = 24.sp)
+    // 비트 맵이 있다면
+    bitmap.value?.asImageBitmap()?.let{fetchedBitmap ->
+        Image(bitmap = fetchedBitmap,
+            contentScale = ContentScale.Fit,
+            contentDescription = "content image",
+            modifier = modifier.fillMaxSize(0.5f)
+        )
+    } ?: Image(painter = painterResource(R.drawable.today_mission),
+        contentScale = ContentScale.Fit,
+        contentDescription = "default image",
+        modifier = modifier.fillMaxSize(0.5f)
+    ) // 비트맵이 없다면
 }
 
 @Composable
@@ -201,7 +233,7 @@ fun SleepLogDetailScreen(
             userId = childId,
             missionDate = displayDate,
             missionType = "IMAGE",
-            content = "양치 하기",
+            content = "미션 없는 경우 기본 값",
             url = null,
             isSuccess = false
         )
@@ -288,7 +320,7 @@ fun SleepLogDetailScreen(
                                     .height(pageSize / 4)
                             ) { modifier ->
                                 Text(
-                                    text = "${(sleepLog.sleepRate*100).toInt().toString()}%",
+                                    text = "${(sleepLog.sleepRate*100).toInt()}%",
                                     modifier = modifier,
                                     fontSize = 64.sp
                                 )
@@ -319,8 +351,15 @@ fun SleepLogDetailScreen(
                             expanded = !expanded
                         },
                     ){
-                        if(missionLog.missionType == "IMAGE")MissionLogImageDeatail(modifier = Modifier.height(pageSize/2))
-                        else if(missionLog.missionType == "RECORD") Text(text = "레코드", modifier = Modifier.height(pageSize/2))
+                        if(missionLog.missionType == "IMAGE"){
+                            MissionLogImageDeatail(
+                                modifier = Modifier.height(pageSize/2),
+                                missionLog = missionLog
+                            )
+                        }
+                        else if(missionLog.missionType == "RECORD") {
+                            Text(text = "레코드", modifier = Modifier.height(pageSize / 2))
+                        }
                     }
                 }
             }
