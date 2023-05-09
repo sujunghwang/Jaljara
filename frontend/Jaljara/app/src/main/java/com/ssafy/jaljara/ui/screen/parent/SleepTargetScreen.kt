@@ -36,8 +36,8 @@ fun SetTimeScreen(viewModel : ParentViewModel){
     var wakeupTime by remember {
         mutableStateOf(LocalTime.of(6,0))
     }
-    var sleepTime by remember {
-        mutableStateOf(LocalTime.of(9, 0))
+    var sleepTimeInt by remember {
+        mutableStateOf(0)
     }
 
     LaunchedEffect(Unit){
@@ -54,7 +54,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
             bedTimeInt -= 1440
 
         sliderPosition = bedTimeInt.toFloat()..wakeupTimeInt.toFloat()
-        sleepTime = LocalTime.of((wakeupTimeInt - bedTimeInt) / 60, (wakeupTimeInt - bedTimeInt) % 60)
+        sleepTimeInt = wakeupTimeInt - bedTimeInt
     }
 
     val boxModifier = Modifier.background(
@@ -120,7 +120,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                         .padding(bottom = 8.dp)) {
                         RangeSlider(
                             modifier = Modifier,
-                            steps = 275,
+                            steps = 287,
                             values = sliderPosition,
                             colors = SliderDefaults.colors(
                                 thumbColor = Color.White,
@@ -138,7 +138,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                                 var bedTimeInt = sliderPosition.start.roundToInt()
                                 var wakeupTimeInt = sliderPosition.endInclusive.roundToInt()
 
-                                sleepTime = LocalTime.of((wakeupTimeInt - bedTimeInt) / 60, (wakeupTimeInt - bedTimeInt) % 60)
+                                sleepTimeInt = wakeupTimeInt - bedTimeInt
 
                                 if(bedTimeInt < 0)
                                     bedTimeInt += 1440
@@ -148,7 +148,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                                 bedTime = LocalTime.of(bedTimeInt / 60, bedTimeInt % 60)
                                 wakeupTime = LocalTime.of(wakeupTimeInt / 60, wakeupTimeInt % 60)
                             },
-                            valueRange = -360f..1020f,
+                            valueRange = -360f..1080f,
                         )
                     }
                 }
@@ -233,14 +233,20 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                                 .padding(start = 6.dp)
                                 .weight(1f)
                         )
-                        Text(
-                            text = "${sleepTime.hour}시간",
-                            style = MaterialTheme.typography.titleSmall,
-                            textAlign = TextAlign.End
-                        )
-                        if(sleepTime.minute != 0)
+
+                        val sleepTimeH = sleepTimeInt / 60
+                        val sleepTimeM = sleepTimeInt % 60
+
+                        if(sleepTimeH != 0){
                             Text(
-                                text = " %02d분".format(sleepTime.minute),
+                                text = "${sleepTimeH}시간",
+                                style = MaterialTheme.typography.titleSmall,
+                                textAlign = TextAlign.End
+                            )
+                        }
+                        if(sleepTimeM != 0)
+                            Text(
+                                text = " %02d분".format(sleepTimeM),
                                 style = MaterialTheme.typography.titleSmall,
                                 textAlign = TextAlign.End
                             )
