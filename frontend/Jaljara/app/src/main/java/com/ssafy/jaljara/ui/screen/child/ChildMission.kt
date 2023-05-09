@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.ImageCaptureResult

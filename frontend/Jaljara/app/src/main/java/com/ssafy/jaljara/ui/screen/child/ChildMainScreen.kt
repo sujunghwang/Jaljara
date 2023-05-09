@@ -50,9 +50,9 @@ fun ChildMainView(childViewModel: ChildViewModel,
     ) {
         childViewModel.getTodayMission(1)
         childViewModel.getChildSleepInfo(1)
-        MissionTodayContainer(todayMission.content)
+        MissionTodayContainer(todayMission.content, onClickMission)
         SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
-        RewardStatusContainer(childSleepInfo.streakCount)
+        RewardStatusContainer(childSleepInfo.streakCount, onClickCoupon)
         ContentContainer(contents = DummyDataProvider.contentList)
     }
 }
