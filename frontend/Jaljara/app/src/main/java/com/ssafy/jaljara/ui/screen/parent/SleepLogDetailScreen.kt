@@ -7,6 +7,7 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
@@ -45,7 +46,9 @@ import com.ssafy.jaljara.data.MissionLog
 import com.ssafy.jaljara.data.SleepLog
 import com.ssafy.jaljara.ui.component.ErrorScreen
 import com.ssafy.jaljara.ui.component.LoadingScreen
+import com.ssafy.jaljara.ui.enumType.Mission
 import com.ssafy.jaljara.ui.enumType.getWeekBydayOfWeekNumber
+import com.ssafy.jaljara.ui.vm.AudioViewModel
 import com.ssafy.jaljara.ui.vm.MissionDetailLogViewModel
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.delay
@@ -157,78 +160,86 @@ fun MissionLogImageDetail(modifier: Modifier = Modifier, missionLog: MissionLog 
     ) // 비트맵이 없다면
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun AudioPlayerDemo(modifier: Modifier = Modifier, missionLog: MissionLog) {
+//    val audioData = missionLog.url?:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+//
+//    Scaffold(modifier = modifier,
+//        content = {
+//        it -> it
+//        Column(modifier = modifier
+//            .fillMaxWidth()
+//            .fillMaxHeight()
+//            .padding(16.dp), content = {
+//            audioData.let {
+//                val uri = it
+//                if (uri != null) {
+//                    Row(
+//                        content = {
+//                            Card(content = {
+//                                Icon(
+//                                    imageVector = Icons.Default.SettingsVoice,
+//                                    contentDescription = "image",
+//                                    tint = Color.Red, modifier = Modifier.padding(16.dp)
+//                                )
+//                            }, shape = RoundedCornerShape(16.dp))
+//                            Column(content = {
+//                                Text(
+//                                    text = "Audio",
+//                                    fontSize = 20.sp,
+//                                    modifier = Modifier.padding(start = 16.dp),
+//                                    fontWeight = FontWeight.Bold
+//                                )
+//                            })
+//                        }, modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+//                    )
+//                    val player = MediaPlayer().apply {
+//                        setAudioAttributes(
+//                            AudioAttributes.Builder()
+//                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                                .build()
+//                        )
+//                        try {
+//                            setDataSource(it)
+//                        } catch (e: IllegalArgumentException) {
+//                            ErrorScreen()
+//                        } catch (e: IOException) {
+//                            ErrorScreen()
+//                        }
+//                        // 백그라운드 스레드에서 미디어 준비
+//                        prepareAsync()
+//                    }
+//                    A(player = player)
+//                } else {
+//                    Button(onClick = {
+//
+//                    }) {
+//                        Text(text = "Click to Select Audio")
+//                    }
+//                }
+//
+//            }
+//        })
+//    })
+//}
+
 @Composable
-fun AudioPlayerDemo(modifier: Modifier = Modifier, missionLog: MissionLog) {
-    val audioData = missionLog.url?:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-
-    Scaffold(modifier = modifier,
-        content = {
-        it -> it
-        Column(modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(16.dp), content = {
-            audioData.let {
-                val uri = it
-                if (uri != null) {
-                    Row(
-                        content = {
-                            Card(content = {
-                                Icon(
-                                    imageVector = Icons.Default.SettingsVoice,
-                                    contentDescription = "image",
-                                    tint = Color.Red, modifier = Modifier.padding(16.dp)
-                                )
-                            }, shape = RoundedCornerShape(16.dp))
-                            Column(content = {
-                                Text(
-                                    text = "Audio",
-                                    fontSize = 20.sp,
-                                    modifier = Modifier.padding(start = 16.dp),
-                                    fontWeight = FontWeight.Bold
-                                )
-                            })
-                        }, modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                    )
-                    val player = MediaPlayer().apply {
-                        setAudioAttributes(
-                            AudioAttributes.Builder()
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                .build()
-                        )
-                        try {
-                            setDataSource(it)
-                        } catch (e: IllegalArgumentException) {
-                            ErrorScreen()
-                        } catch (e: IOException) {
-                            ErrorScreen()
-                        }
-                        // 백그라운드 스레드에서 미디어 준비
-                        prepareAsync()
-                    }
-                    A(player = player)
-                } else {
-                    Button(onClick = {
-
-                    }) {
-                        Text(text = "Click to Select Audio")
-                    }
-                }
-
-            }
-        })
-    })
-}
-
-@Composable
-fun A(player: MediaPlayer?) {
+fun AudioSlider(player : MediaPlayer?) {
     var playing by remember { mutableStateOf(false) }
     var position by remember { mutableStateOf(0F) }
 
     if (player != null) {
+        LaunchedEffect(Unit){
+            while(playing){
+                Log.d("LaunchedEffect", "1초에 한 번 ㅋ")
+                position = player.currentPosition.toFloat()
+                delay(1000)
+            }
+        }
+
         Slider(
             value = position,
             valueRange = 0F..player.duration.toFloat(),
@@ -251,68 +262,56 @@ fun A(player: MediaPlayer?) {
                         player.start()
                         playing = true
                     }
-
-                    object : CountDownTimer(player.duration.toLong(), 1000) {
-
-                        override fun onTick(millisUntilFinished: Long) {
-                            position = player.currentPosition.toFloat()
-                            if (player.currentPosition == player.duration) {
-                                playing = false
-                            }
-                        }
-
-                        override fun onFinish() {
-
-                        }
-                    }.start()
                 })
         )
     }
-
 }
 
+//@Composable
+//fun AudioButton(
+//    modifier: Modifier = Modifier,
+//    onPlay: () -> Unit = {},
+//    onPause: () -> Unit = {},
+//) {
+//    var isPlaying by remember { mutableStateOf(false) }
+//    var isPaused by remember { mutableStateOf(false) }
+//
+//    Column(
+//        modifier = modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Center,
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        IconButton(
+//            onClick = {
+//                if (isPlaying) {
+//                    onPause()
+//                    isPlaying = false
+//                    isPaused = true
+//                } else {
+//                    onPlay()
+//                    isPlaying = true
+//                    isPaused = false
+//                }
+//            },
+//            modifier = modifier.size(48.dp)
+//        ) {
+//            Icon(
+//                if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+//                contentDescription = null,
+//                tint = MaterialTheme.colorScheme.surfaceTint
+//            )
+//        }
+//    }
+//}
+
 @Composable
-fun AudioButton(
+fun MissionLogAudioDetail(
     modifier: Modifier = Modifier,
-    onPlay: () -> Unit = {},
-    onPause: () -> Unit = {},
-) {
-    var isPlaying by remember { mutableStateOf(false) }
-    var isPaused by remember { mutableStateOf(false) }
+    url:String?="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+){
+    if(url != null){
 
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        IconButton(
-            onClick = {
-                if (isPlaying) {
-                    onPause()
-                    isPlaying = false
-                    isPaused = true
-                } else {
-                    onPlay()
-                    isPlaying = true
-                    isPaused = false
-                }
-            },
-            modifier = modifier.size(48.dp)
-        ) {
-            Icon(
-                if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.surfaceTint
-            )
-        }
-    }
-}
-
-@Composable
-fun MissionLogAudioDetail(modifier: Modifier = Modifier, missionLog: MissionLog){
-    val url = missionLog.url?:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-    if(url != null) {
-        var mediaPlayer: MediaPlayer = MediaPlayer().apply {
+        val player = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -321,27 +320,27 @@ fun MissionLogAudioDetail(modifier: Modifier = Modifier, missionLog: MissionLog)
             try {
                 setDataSource(url)
             } catch (e: IllegalArgumentException) {
-                ErrorScreen()
+                // 뭐 넣지?,,
             } catch (e: IOException) {
-                ErrorScreen()
+
             }
             // 백그라운드 스레드에서 미디어 준비
             prepareAsync()
         }
-        DisposableEffect(Unit) {
-            // 컴포즈 파괴될 때 자원 회수
-            onDispose {
-                mediaPlayer?.release()
+
+        //  compose가 회수될 때 media player 객체 파괴
+        DisposableEffect(
+            Column(modifier = modifier) {
+                AudioSlider(player = player)
+            }
+        ){
+            // AudioSlider가 파괴 될 때
+            // media player 회수
+            onDispose{
+                player?.release()
+                Log.d("onDispose", "media player 파괴")
             }
         }
-        AudioButton(
-            modifier = modifier,
-            onPlay = {mediaPlayer.start()},
-            onPause ={mediaPlayer.pause()},
-        )
-
-    }else{
-
     }
 }
 
@@ -436,7 +435,6 @@ fun SleepLogDetailScreen(
             &&missionDetailLogViewModel.missionLogUiState is UiState.Loading){
             LoadingScreen()
         }else{
-
             // Sleep Log api가 정상적으로 호출 됐을 때
             if(missionDetailLogViewModel.detailSleepLogUiState is UiState.Success)
                 sleepLog = (missionDetailLogViewModel.detailSleepLogUiState as UiState.Success<SleepLog>).data
@@ -543,16 +541,15 @@ fun SleepLogDetailScreen(
                         },
                     ){
                         Text(text = missionLog.content, fontSize = 24.sp)
-                        if(missionLog.missionType == "IMAGE"){
+                        if(missionLog.missionType == Mission.IMAGE.name){
                             MissionLogImageDetail(
                                 modifier = Modifier.height(pageSize/2),
                                 missionLog = missionLog
                             )
                         }
-                        else if(missionLog.missionType == "RECORD") {
+                        else if(missionLog.missionType == Mission.RECORD.name) {
                             MissionLogAudioDetail(
-                                modifier = Modifier.height(pageSize/2),
-                                missionLog = missionLog
+                                modifier = Modifier.height(pageSize/2)
                             )
                         }
                     }
