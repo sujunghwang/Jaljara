@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -143,7 +144,9 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
     ) {
         Image(painter = img,
             contentDescription = null,
-            modifier = Modifier.size(100.dp, 100.dp).padding(11.dp)
+            modifier = Modifier
+                .size(100.dp, 100.dp)
+                .padding(11.dp)
         )
         Text(text = title)
         Text(text = setTime)
@@ -173,7 +176,9 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
                 ) {
                     Image(painter = painterResource(id = R.drawable.reward),
                         contentDescription = null,
-                        modifier = Modifier.size(95.dp,100.dp).padding(start=5.dp)
+                        modifier = Modifier
+                            .size(95.dp, 100.dp)
+                            .padding(start = 5.dp)
                     )
                     Text(text = "연속 $remainCnt 번만 성공하면 보상을 획득할 수 있어요!",
                         modifier = Modifier
@@ -249,37 +254,9 @@ fun ContentCard(content: Content) {
 @Preview(showBackground = true)
 @Composable
 fun ChildMainScreenView() {
-    val scrollState = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .padding(20.dp)
-            .verticalScroll(scrollState),
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        MissionTodayContainer(dummyChildSleepInfo.currentReward)
-        SetSllepTimeContainer(
-            dummyChildSleepInfo.targetBedTime,
-            dummyChildSleepInfo.targetWakeupTime
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .padding(20.dp)
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            MissionTodayContainer(dummyChildSleepInfo.currentReward, onClickMission = {
-                Log.d("미션페이지로 이동", "click")
-            })
-            SetSllepTimeContainer(
-                dummyChildSleepInfo.targetBedTime,
-                dummyChildSleepInfo.targetWakeupTime
-            )
-            RewardStatusContainer(dummyChildSleepInfo.streakCount,onClickCoupon = {
-                Log.d("쿠폰페이지로 이동", "click")
-            })
-            ContentContainer(contents = DummyDataProvider.contentList)
-        }
-    }
+    ChildMainView(
+        childViewModel = viewModel(),
+        onClickCoupon = {},
+        onClickMission = {}
+    )
 }
