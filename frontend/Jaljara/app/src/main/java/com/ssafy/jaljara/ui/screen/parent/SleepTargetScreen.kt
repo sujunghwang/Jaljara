@@ -120,7 +120,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                         .padding(bottom = 8.dp)) {
                         RangeSlider(
                             modifier = Modifier,
-                            steps = 143,
+                            steps = 275,
                             values = sliderPosition,
                             colors = SliderDefaults.colors(
                                 thumbColor = Color.White,
@@ -131,7 +131,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                                 var end = it.endInclusive
 
                                 if(start >= end)
-                                    start = end - 10
+                                    start = end - 5
 
                                 sliderPosition = start..end
 
@@ -148,7 +148,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                                 bedTime = LocalTime.of(bedTimeInt / 60, bedTimeInt % 60)
                                 wakeupTime = LocalTime.of(wakeupTimeInt / 60, wakeupTimeInt % 60)
                             },
-                            valueRange = -360f..1080f,
+                            valueRange = -360f..1020f,
                         )
                     }
                 }

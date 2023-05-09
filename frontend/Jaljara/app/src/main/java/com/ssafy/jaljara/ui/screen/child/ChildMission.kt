@@ -31,8 +31,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.data.todayMission
-import com.ssafy.jaljara.data.todayMission2
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.ImageCaptureResult
