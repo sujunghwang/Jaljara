@@ -5,9 +5,11 @@ import com.ssafy.jaljara.data.TargetSleepInput
 import com.ssafy.jaljara.data.NotUsedCoupon
 import com.ssafy.jaljara.data.TodayMission
 import com.ssafy.jaljara.data.UsedCoupon
+import okhttp3.MultipartBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import java.io.File
 
 
 private const val BASE_URL =
@@ -36,6 +38,14 @@ interface ChildApiService {
 
     @GET("/api/rewards/{childId}")
     suspend fun getNotUsedCoupon(@Path("childId") childId : Long) : List<NotUsedCoupon>
+
+    @Multipart
+    @POST("/api/missions/attachment/{childId}")
+    suspend fun setMissionResult(
+        @Path("childId") childId : Long,
+        @Part file : MultipartBody.Part
+//        @Body file : File
+    )
 
     companion object{
         var apiService:ChildApiService? = null
