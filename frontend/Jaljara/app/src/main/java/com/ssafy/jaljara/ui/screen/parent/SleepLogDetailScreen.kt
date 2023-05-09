@@ -3,8 +3,12 @@ package com.ssafy.jaljara.ui.screen.parent
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.os.Build
-import android.util.Log
+import android.os.CountDownTimer
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
@@ -15,14 +19,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,22 +34,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ssafy.jaljara.R
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.test.core.app.ActivityScenario.launch
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.ssafy.jaljara.ui.enumType.getWeekBydayOfWeekNumber
-import kotlinx.datetime.DayOfWeek
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
+import com.ssafy.jaljara.R
 import com.ssafy.jaljara.component.NightForestBackGround
 import com.ssafy.jaljara.data.MissionLog
 import com.ssafy.jaljara.data.SleepLog
+import com.ssafy.jaljara.ui.component.ErrorScreen
 import com.ssafy.jaljara.ui.component.LoadingScreen
+import com.ssafy.jaljara.ui.enumType.getWeekBydayOfWeekNumber
 import com.ssafy.jaljara.ui.vm.MissionDetailLogViewModel
 import com.ssafy.jaljara.utils.UiState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.DayOfWeek
+import java.io.IOException
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import kotlin.time.seconds
+
 
 @Composable
 fun SleepTimeCircleClock(modifier: Modifier = Modifier){
@@ -125,7 +130,7 @@ fun showButton(
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun MissionLogImageDeatail(modifier: Modifier = Modifier, missionLog: MissionLog ){
+fun MissionLogImageDetail(modifier: Modifier = Modifier, missionLog: MissionLog ){
 
     val bitmap : MutableState<Bitmap?> = mutableStateOf(null)
 
@@ -138,9 +143,6 @@ fun MissionLogImageDeatail(modifier: Modifier = Modifier, missionLog: MissionLog
             }
             override fun onLoadCleared(placeholder: Drawable?) { }
         })
-
-
-    Text(text = missionLog.content, fontSize = 24.sp)
     // 비트 맵이 있다면
     bitmap.value?.asImageBitmap()?.let{fetchedBitmap ->
         Image(bitmap = fetchedBitmap,
@@ -155,12 +157,200 @@ fun MissionLogImageDeatail(modifier: Modifier = Modifier, missionLog: MissionLog
     ) // 비트맵이 없다면
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AudioPlayerDemo(modifier: Modifier = Modifier, missionLog: MissionLog) {
+    val audioData = missionLog.url?:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+
+    Scaffold(modifier = modifier,
+        content = {
+        it -> it
+        Column(modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(16.dp), content = {
+            audioData.let {
+                val uri = it
+                if (uri != null) {
+                    Row(
+                        content = {
+                            Card(content = {
+                                Icon(
+                                    imageVector = Icons.Default.SettingsVoice,
+                                    contentDescription = "image",
+                                    tint = Color.Red, modifier = Modifier.padding(16.dp)
+                                )
+                            }, shape = RoundedCornerShape(16.dp))
+                            Column(content = {
+                                Text(
+                                    text = "Audio",
+                                    fontSize = 20.sp,
+                                    modifier = Modifier.padding(start = 16.dp),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            })
+                        }, modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                    )
+                    val player = MediaPlayer().apply {
+                        setAudioAttributes(
+                            AudioAttributes.Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .build()
+                        )
+                        try {
+                            setDataSource(it)
+                        } catch (e: IllegalArgumentException) {
+                            ErrorScreen()
+                        } catch (e: IOException) {
+                            ErrorScreen()
+                        }
+                        // 백그라운드 스레드에서 미디어 준비
+                        prepareAsync()
+                    }
+                    A(player = player)
+                } else {
+                    Button(onClick = {
+
+                    }) {
+                        Text(text = "Click to Select Audio")
+                    }
+                }
+
+            }
+        })
+    })
+}
+
+@Composable
+fun A(player: MediaPlayer?) {
+    var playing by remember { mutableStateOf(false) }
+    var position by remember { mutableStateOf(0F) }
+
+    if (player != null) {
+        Slider(
+            value = position,
+            valueRange = 0F..player.duration.toFloat(),
+            onValueChange = {
+                position = it
+                player.seekTo(it.toInt())
+            }
+        )
+        Icon(
+            imageVector = if (!playing || player.currentPosition==player.duration) Icons.Default.PlayCircleOutline else Icons.Default.PauseCircleOutline,
+            contentDescription = "image",
+            tint = Color.Red, modifier = Modifier
+                .padding(16.dp)
+                .size(20.dp)
+                .clickable(onClick = {
+                    if (player.isPlaying) {
+                        player.pause()
+                        playing = false
+                    } else {
+                        player.start()
+                        playing = true
+                    }
+
+                    object : CountDownTimer(player.duration.toLong(), 1000) {
+
+                        override fun onTick(millisUntilFinished: Long) {
+                            position = player.currentPosition.toFloat()
+                            if (player.currentPosition == player.duration) {
+                                playing = false
+                            }
+                        }
+
+                        override fun onFinish() {
+
+                        }
+                    }.start()
+                })
+        )
+    }
+
+}
+
+@Composable
+fun AudioButton(
+    modifier: Modifier = Modifier,
+    onPlay: () -> Unit = {},
+    onPause: () -> Unit = {},
+) {
+    var isPlaying by remember { mutableStateOf(false) }
+    var isPaused by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        IconButton(
+            onClick = {
+                if (isPlaying) {
+                    onPause()
+                    isPlaying = false
+                    isPaused = true
+                } else {
+                    onPlay()
+                    isPlaying = true
+                    isPaused = false
+                }
+            },
+            modifier = modifier.size(48.dp)
+        ) {
+            Icon(
+                if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.surfaceTint
+            )
+        }
+    }
+}
+
+@Composable
+fun MissionLogAudioDetail(modifier: Modifier = Modifier, missionLog: MissionLog){
+    val url = missionLog.url?:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    if(url != null) {
+        var mediaPlayer: MediaPlayer = MediaPlayer().apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+            )
+            try {
+                setDataSource(url)
+            } catch (e: IllegalArgumentException) {
+                ErrorScreen()
+            } catch (e: IOException) {
+                ErrorScreen()
+            }
+            // 백그라운드 스레드에서 미디어 준비
+            prepareAsync()
+        }
+        DisposableEffect(Unit) {
+            // 컴포즈 파괴될 때 자원 회수
+            onDispose {
+                mediaPlayer?.release()
+            }
+        }
+        AudioButton(
+            modifier = modifier,
+            onPlay = {mediaPlayer.start()},
+            onPause ={mediaPlayer.pause()},
+        )
+
+    }else{
+
+    }
+}
+
 @Composable
 fun MissionLog(
     modifier: Modifier = Modifier,
     expanded: Boolean ,
-    onClickButton: () -> Unit,
-    innerMission: @Composable () -> Unit
+    onClickButton: () -> Unit = {},
+    innerMission: @Composable () -> Unit = {}
 ){
     Column(modifier = modifier
         .fillMaxWidth()
@@ -184,7 +374,8 @@ fun MissionLog(
                     .weight(1f)
                     .padding(start = 16.dp))
             else Spacer(modifier = Modifier.weight(1f))
-            showButton(expanded = expanded,
+            showButton(
+                expanded = expanded,
                 onClick = onClickButton,
             )
         }
@@ -232,7 +423,7 @@ fun SleepLogDetailScreen(
             missionLogId = -1,
             userId = childId,
             missionDate = displayDate,
-            missionType = "IMAGE",
+            missionType = "RECORD",
             content = "미션 없는 경우 기본 값",
             url = null,
             isSuccess = false
@@ -351,21 +542,24 @@ fun SleepLogDetailScreen(
                             expanded = !expanded
                         },
                     ){
+                        Text(text = missionLog.content, fontSize = 24.sp)
                         if(missionLog.missionType == "IMAGE"){
-                            MissionLogImageDeatail(
+                            MissionLogImageDetail(
                                 modifier = Modifier.height(pageSize/2),
                                 missionLog = missionLog
                             )
                         }
                         else if(missionLog.missionType == "RECORD") {
-                            Text(text = "레코드", modifier = Modifier.height(pageSize / 2))
+                            MissionLogAudioDetail(
+                                modifier = Modifier.height(pageSize/2),
+                                missionLog = missionLog
+                            )
                         }
                     }
                 }
             }
         }
     }
-
 }
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
