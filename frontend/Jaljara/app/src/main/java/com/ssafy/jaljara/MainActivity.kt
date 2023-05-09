@@ -17,7 +17,7 @@ import com.ssafy.jaljara.ui.vm.ParentViewModel
 class MainActivity : ComponentActivity() {
     val childViewModel: ChildViewModel by viewModels()
     val parentViewModel: ParentViewModel by viewModels()
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityCompat.requestPermissions(
