@@ -8,7 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -23,9 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -53,6 +51,7 @@ enum class State() {
 @Composable
 fun ChildMission(childViewModel :ChildViewModel){
     var prevInfo by rememberSaveable { mutableStateOf(false) }
+    var isFirst by rememberSaveable { mutableStateOf(true) }
     var path by rememberSaveable { mutableStateOf("") }
     Column(
         Modifier
@@ -62,72 +61,92 @@ fun ChildMission(childViewModel :ChildViewModel){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         val mission = childViewModel.todayMissionResponse
-//        childViewModel.getTodayMission(1)
+//        childViewModel.getTodayMission(3)
 //        val mission = todayMission2
 
         Text(text = mission.content, color = Color.White)
 //        Text(text = mission.missionContent, color = Color.White)
         if (mission.missionType=="IMAGE"){
             Box(){
-                Log.d("미리 찍은 사진 여부", mission.url.toString())
+                Log.d("isFirst 상태", "$isFirst")
                 // 미션 수행 기록이 있으면 그 사진으로 대체
-                if(prevInfo){
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(path)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .fillMaxHeight(0.8f)
-                    )
-                } else {
-                    val cameraState = rememberCameraState()
-                    val context = LocalContext.current
 
-                    CameraPreview(
-                        cameraState = cameraState,
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .fillMaxHeight(0.8f)
-                    ) {
-                        Column(
+                if(isFirst){
+                    mission.url?.let {
+                        AsyncImage(
+                            model = mission.url,
+                            contentDescription = null,
                             modifier = Modifier
                                 .fillMaxWidth(0.7f)
-                                .fillMaxHeight(0.8f),
-                            verticalArrangement = Arrangement.Bottom,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ){
-                            OutlinedButton(
-                                onClick = {
-                                    val file = context.createNewFile("jpg")
-                                    cameraState.takePicture(file) { result ->
-                                        // Result는 사진이 성공적으로 저장되었는지 여부를 알려줌
-                                        if (result is ImageCaptureResult.Success) { // result.savedUri might be useful to you
-                                            Toast.makeText(context, "사진찍기 성공!", Toast.LENGTH_LONG).show()
-                                            Log.d("파일명", file.absolutePath)
-                                            path = file.absolutePath
-                                            prevInfo = true
-                                        } else{
-                                            Toast.makeText(context, "사진찍기 실패..", Toast.LENGTH_LONG).show()
-                                        }
-                                    }
-                                },
-                                shape = CircleShape,
-                                elevation = ButtonDefaults.buttonElevation(8.dp),
-                                colors = ButtonDefaults.buttonColors(Color.White),
-                                modifier = Modifier
-                                    .size(50.dp, 60.dp)
-                                    .padding(bottom = 10.dp)
-                            ) {  }
-                        }
+                                .fillMaxHeight(0.8f)
+                        )
+                    }?: Box(modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .fillMaxHeight(0.8f)
+                        .background(color = Color.Gray))
+                } else {
+                    if(prevInfo){
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(path)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .fillMaxHeight(0.8f)
+                        )
+                        Log.d("path 경로",path)
+                    } else {
+                        val cameraState = rememberCameraState()
+                        val context = LocalContext.current
 
+                        CameraPreview(
+                            cameraState = cameraState,
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .fillMaxHeight(0.8f)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.7f)
+                                    .fillMaxHeight(0.8f),
+                                verticalArrangement = Arrangement.Bottom,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ){
+                                OutlinedButton(
+                                    onClick = {
+                                        val file = context.createNewFile("jpg")
+                                        cameraState.takePicture(file) { result ->
+                                            // Result는 사진이 성공적으로 저장되었는지 여부를 알려줌
+                                            if (result is ImageCaptureResult.Success) { // result.savedUri might be useful to you
+                                                Toast.makeText(context, "사진찍기 성공!", Toast.LENGTH_LONG).show()
+                                                Log.d("파일명", file.absolutePath)
+                                                path = file.absolutePath
+                                                prevInfo = true
+                                            } else{
+                                                Toast.makeText(context, "사진찍기 실패..", Toast.LENGTH_LONG).show()
+                                            }
+                                        }
+                                    },
+                                    shape = CircleShape,
+                                    elevation = ButtonDefaults.buttonElevation(8.dp),
+                                    colors = ButtonDefaults.buttonColors(Color.White),
+                                    modifier = Modifier
+                                        .size(50.dp, 60.dp)
+                                        .padding(bottom = 10.dp)
+                                ) {  }
+                            }
+
+                        }
                     }
                 }
             }
             Row() {
-                Button(onClick = { prevInfo = false }) {
+                Button(onClick = {
+                    prevInfo = false
+                    isFirst = false
+                }) {
                     Text("사진찍기", color = Color.Red)
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
