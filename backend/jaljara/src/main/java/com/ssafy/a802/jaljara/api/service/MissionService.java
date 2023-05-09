@@ -29,6 +29,7 @@ import com.ssafy.a802.jaljara.db.entity.Mission;
 import com.ssafy.a802.jaljara.db.entity.MissionAttachment;
 import com.ssafy.a802.jaljara.db.entity.MissionLog;
 import com.ssafy.a802.jaljara.db.entity.MissionToday;
+import com.ssafy.a802.jaljara.db.entity.MissionType;
 import com.ssafy.a802.jaljara.db.entity.User;
 import com.ssafy.a802.jaljara.db.entity.UserType;
 import com.ssafy.a802.jaljara.db.repository.UserRepository;
@@ -209,9 +210,20 @@ public class MissionService {
 		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
 			ExceptionFactory.userMissionTodayNotFound(userId));
 
+
 		//ex) https://jaljara.s3.ap-northeast-1.amazonaws.com/randomUUID
 
 		long size = multipartFile.getSize(); // file size
+
+		String extionsion = "";
+
+		MissionType missionType = findMissionToday.getMission().getMissionType();
+
+		if (missionType.equals(MissionType.IMAGE)) {
+			extionsion = ".jpeg";
+		} else {
+			extionsion = ".mp3";
+		}
 
 		ObjectMetadata objectMetadata = new ObjectMetadata();
 		objectMetadata.setContentType(multipartFile.getContentType());
@@ -220,7 +232,7 @@ public class MissionService {
 		AmazonS3Client amazonS3Client = s3Config.amazonS3Client();
 		String bucketName = s3Config.getBucketName();
 
-		String uploadPath = UUID.randomUUID().toString();
+		String uploadPath = UUID.randomUUID().toString() + extionsion;
 
 		amazonS3Client.putObject(
 			new PutObjectRequest(bucketName, uploadPath, multipartFile.getInputStream(), objectMetadata)
