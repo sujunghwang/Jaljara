@@ -29,7 +29,7 @@ public class ContentsRepositoryImpl {
 	public ContentsDetailResponseDto findContentsDetail (Long contentsId) {
 		return em.createQuery(
 			"select new com.ssafy.a802.jaljara.api.dto.response.ContentsDetailResponseDto"
-				+ "(c.id, c.contentType, c.title, c.description, c.youtubeUrl, c.thumbnailImageUrl)"
+				+ "(c.id, c.contentType, c.title, c.description, c.thumbnailImageUrl, c.youtubeUrl)"
 				+ " from Contents c"
 				+ " where c.id = :contentsId", ContentsDetailResponseDto.class)
 			.setParameter("contentsId", contentsId)
@@ -40,7 +40,7 @@ public class ContentsRepositoryImpl {
 	public List<ContentsDetailResponseDto> findContentsDetailList (ContentType contentType) {
 		return em.createQuery(
 			"select new com.ssafy.a802.jaljara.api.dto.response.ContentsDetailResponseDto"
-				+ "(c.id, c.contentType, c.title, c.description, c.youtubeUrl, c.thumbnailImageUrl)"
+				+ "(c.id, c.contentType, c.title, c.description, c.thumbnailImageUrl, c.youtubeUrl)"
 				+ " from Contents c"
 				+ " where c.contentType =:contentType", ContentsDetailResponseDto.class)
 			.setParameter("contentType", contentType)

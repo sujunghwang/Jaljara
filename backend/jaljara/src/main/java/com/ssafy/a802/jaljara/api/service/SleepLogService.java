@@ -49,13 +49,15 @@ public class SleepLogService {
         int wake = sleepLogInput.getWakeupTime().toLocalTime().getHour() * 60 + sleepLogInput.getWakeupTime().toLocalTime().getMinute();
 
         //항상 취침 < 기상이 되도록 조정
-        if(tBed > tWake)
+        if(tBed >= tWake)
             tBed -= 60 * 24;
-        if(bed > wake)
+        if(bed >= wake)
             bed -= 60 * 24;
 
         //목표로 한 수면시간 중 실제로 수면을 취한 비율을 계산해 수면달성도로 저장
         double sleepTime = Math.min(wake, tWake) - Math.max(bed, tBed);
+        if(sleepTime < 0)
+            sleepTime = 0;
         double tSleepTime = tWake - tBed;
         double sleepRate = sleepTime / tSleepTime;
 
