@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,10 +21,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -31,7 +34,9 @@ import coil.request.ImageRequest
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ujizin.camposer.CameraPreview
+import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.ImageCaptureResult
+import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -61,7 +66,7 @@ fun ChildMission(childViewModel :ChildViewModel){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         val mission = childViewModel.todayMissionResponse
-//        childViewModel.getTodayMission(3)
+//        childViewModel.getTodayMission(1)
 //        val mission = todayMission2
 
         Text(text = mission.content, color = Color.White)
@@ -99,10 +104,16 @@ fun ChildMission(childViewModel :ChildViewModel){
                         Log.d("path 경로",path)
                     } else {
                         val cameraState = rememberCameraState()
+                        var zoomRatio by remember { mutableStateOf(cameraState.minZoom) }
+                        var camSelector by rememberCamSelector(CamSelector.Back) // Or CamSelector.Front
                         val context = LocalContext.current
 
                         CameraPreview(
                             cameraState = cameraState,
+                            zoomRatio = zoomRatio,
+                            onZoomRatioChanged = { zoomRatio = it },
+                            isPinchToZoomEnabled = true, // default is true
+                            camSelector = camSelector,
                             modifier = Modifier
                                 .fillMaxWidth(0.7f)
                                 .fillMaxHeight(0.8f)
@@ -137,7 +148,31 @@ fun ChildMission(childViewModel :ChildViewModel){
                                         .padding(bottom = 10.dp)
                                 ) {  }
                             }
-
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.7f)
+                                    .fillMaxHeight(0.8f)
+                                    .padding(end = 10.dp),
+                                verticalArrangement = Arrangement.Bottom,
+                                horizontalAlignment = Alignment.End
+                            ){
+                                Box(
+                                    modifier = Modifier
+                                        .clickable(onClick = {
+                                            camSelector = camSelector.inverse // Switch Camera
+                                        })
+                                        .size(50.dp, 60.dp)
+                                        .padding(bottom = 10.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.Gray),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Image(
+                                        painter = painterResource(R.drawable.baseline_flip_camera_ios_24),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -189,7 +224,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                     Canvas(
                         modifier = Modifier
                             .size(50.dp)
-                            .clickable {  },
+                            .clickable { },
                         onDraw = {
                             val size = 50.dp.toPx()
                             val trianglePath = Path().apply {
