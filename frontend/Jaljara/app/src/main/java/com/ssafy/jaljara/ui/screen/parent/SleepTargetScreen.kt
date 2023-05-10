@@ -6,6 +6,7 @@ import android.widget.Space
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -40,6 +41,10 @@ fun SetTimeScreen(viewModel : ParentViewModel){
         mutableStateOf(0)
     }
 
+    var tipClosed by remember {
+        mutableStateOf(false)
+    }
+
     LaunchedEffect(Unit){
 
         bedTime = LocalTime.parse(viewModel.childSleepResponse.targetBedTime, DateTimeFormatter.ofPattern("HH:mm"))
@@ -50,8 +55,10 @@ fun SetTimeScreen(viewModel : ParentViewModel){
 
         var bedTimeInt = bedTime.hour * 60 + bedTime.minute
         var wakeupTimeInt = wakeupTime.hour * 60 + wakeupTime.minute
-        if(bedTimeInt > wakeupTimeInt)
+        if(bedTimeInt >= 1080)
             bedTimeInt -= 1440
+        if(wakeupTimeInt >= 1080)
+            wakeupTimeInt -= 1440
 
         sliderPosition = bedTimeInt.toFloat()..wakeupTimeInt.toFloat()
         sleepTimeInt = wakeupTimeInt - bedTimeInt
@@ -89,17 +96,30 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                     )
                 }
 
-                //첫 번째 박스 (미정)
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillParentMaxHeight(0.2f)
-                ){
-                    Text(text = "여따 머하지",
-                        style = MaterialTheme.typography.titleSmall,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
+                if(!tipClosed){
+                    //첫 번째 박스 (미정)
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = Color(0x403828B7),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .fillMaxWidth()
+                            .fillParentMaxHeight(0.2f)
+                    ){
+                        Text(text = "x", modifier = Modifier.align(Alignment.TopEnd).padding(end = 8.dp).clickable{
+                            tipClosed = true
+                        })
+                        Text(text = "학동기(6~12세) 수면 시간은 최소 10 ~ 11시간\n" +
+                                "청소년기(12~18세) 수면 시간은 최소 9 ~ 9.25시간",
+                            modifier = Modifier.align(Alignment.Center),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.fillParentMaxHeight(0.02f))
                 }
+
 
                 //수면 시간 설정 박스(range slider)
                 Box(
@@ -180,7 +200,8 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                                 text = "취침 시간", style = MaterialTheme.typography.titleSmall
                             )
                             Text(
-                                text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                                text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     }
@@ -203,7 +224,8 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                                 text = "기상 시간", style = MaterialTheme.typography.titleSmall
                             )
                             Text(
-                                text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                                text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                                style = MaterialTheme.typography.bodyMedium
                             )
                         }
                     }

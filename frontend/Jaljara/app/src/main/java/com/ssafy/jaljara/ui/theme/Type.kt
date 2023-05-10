@@ -13,7 +13,7 @@ val JaljaraTypography = Typography(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 20.sp
+        lineHeight = 30.sp
     ),
     bodySmall = TextStyle(
         fontFamily = FontFamily.Default,

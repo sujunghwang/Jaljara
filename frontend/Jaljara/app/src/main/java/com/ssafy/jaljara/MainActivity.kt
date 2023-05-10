@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
     val childViewModel: ChildViewModel by viewModels()
     val parentViewModel: ParentViewModel by viewModels()
     val landingViewModel: LandingViewModel by viewModels()
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -35,8 +35,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             JaljaraTheme {
 //                ChildApp(childViewModel)
-                //ParentApp(parentViewModel)
-                LandingApp()
+                ParentApp(parentViewModel)
+//                LandingApp()
             }
         }
     }
