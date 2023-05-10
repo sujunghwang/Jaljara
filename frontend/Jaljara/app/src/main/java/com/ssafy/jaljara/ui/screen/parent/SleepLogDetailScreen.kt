@@ -152,78 +152,32 @@ fun MissionLogImageDetail(modifier: Modifier = Modifier, missionLog: MissionLog 
     ) // 비트맵이 없다면
 }
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun AudioPlayerDemo(modifier: Modifier = Modifier, missionLog: MissionLog) {
-//    val audioData = missionLog.url?:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-//
-//    Scaffold(modifier = modifier,
-//        content = {
-//        it -> it
-//        Column(modifier = modifier
-//            .fillMaxWidth()
-//            .fillMaxHeight()
-//            .padding(16.dp), content = {
-//            audioData.let {
-//                val uri = it
-//                if (uri != null) {
-//                    Row(
-//                        content = {
-//                            Card(content = {
-//                                Icon(
-//                                    imageVector = Icons.Default.SettingsVoice,
-//                                    contentDescription = "image",
-//                                    tint = Color.Red, modifier = Modifier.padding(16.dp)
-//                                )
-//                            }, shape = RoundedCornerShape(16.dp))
-//                            Column(content = {
-//                                Text(
-//                                    text = "Audio",
-//                                    fontSize = 20.sp,
-//                                    modifier = Modifier.padding(start = 16.dp),
-//                                    fontWeight = FontWeight.Bold
-//                                )
-//                            })
-//                        }, modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-//                    )
-//                    val player = MediaPlayer().apply {
-//                        setAudioAttributes(
-//                            AudioAttributes.Builder()
-//                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                                .build()
-//                        )
-//                        try {
-//                            setDataSource(it)
-//                        } catch (e: IllegalArgumentException) {
-//                            ErrorScreen()
-//                        } catch (e: IOException) {
-//                            ErrorScreen()
-//                        }
-//                        // 백그라운드 스레드에서 미디어 준비
-//                        prepareAsync()
-//                    }
-//                    A(player = player)
-//                } else {
-//                    Button(onClick = {
-//
-//                    }) {
-//                        Text(text = "Click to Select Audio")
-//                    }
-//                }
-//
-//            }
-//        })
-//    })
-//}
+fun convertMiliSecToMinSec(mili : Float) :String{
+    val totalSec = mili.toInt()/1000
+    
+    val minute = totalSec/60
+    val sec = totalSec%60
+
+    val sb = StringBuilder()
+
+    if(minute < 10) sb.append(0)
+    sb.append(minute).append(':')
+    
+    if(sec < 10) sb.append(0)
+    sb.append(sec)
+    
+    return sb.toString()
+}
 
 @Composable
-fun AudioSlider(player : MediaPlayer?) {
+fun AudioSlider(modifier: Modifier = Modifier, player : MediaPlayer?) {
     var playing by remember { mutableStateOf(false) }
     var position by remember { mutableStateOf(0F) }
-
+    
     if (player != null) {
+        
+        val displayedPosition = convertMiliSecToMinSec(position)
+        val displayedDuration = convertMiliSecToMinSec(player.duration.toFloat())
 
         // playing 상태가 변경 되면
         LaunchedEffect(playing){
@@ -231,80 +185,76 @@ fun AudioSlider(player : MediaPlayer?) {
             while(playing){
                 Log.d("LaunchedEffect", "1초에 한 번 ㅋ")
                 position = player.currentPosition.toFloat()
+
                 delay(1000)
             }
         }
 
-        Slider(
-            value = position,
-            valueRange = 0F..player.duration.toFloat(),
-            onValueChange = {
-                position = it
-                player.seekTo(it.toInt())
+        // 초 단위가 같으면
+        if(position.toInt()/1000 == player.duration/1000){
+            position = 0F
+            player.seekTo(0)
+            player.pause()
+            playing = false
+        }
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier.fillMaxSize().padding(bottom = 8.dp)
+        ) {
+            Column(
+                modifier = modifier.padding(0.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(modifier = modifier.padding(start = 16.dp, end = 16.dp).fillMaxSize()){
+                    Text(
+                        modifier = Modifier.align(Alignment.BottomStart).padding(top = 4.dp, start = 6.dp),
+                        text = "$displayedPosition"
+                    )
+                    Text(
+                        modifier = Modifier.align(Alignment.BottomEnd).padding(top = 4.dp, end = 6.dp),
+                        text = "$displayedDuration"
+                    )
+                    Slider(
+                        modifier = Modifier.align(Alignment.TopCenter).padding(bottom = 4.dp),
+                        value = position,
+                        valueRange = 0F..player.duration.toFloat(),
+                        onValueChange = {
+                            position = it
+                            player.seekTo(it.toInt())
+                        }
+                    )
+                }
+
+                Icon(
+                    imageVector = if (!playing) Icons.Filled.PlayArrow else Icons.Filled.Pause,
+                    contentDescription = "image",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clickable(onClick = {
+                            if (player.isPlaying) {
+                                player.pause()
+                                playing = false
+                            } else {
+                                player.start()
+                                playing = true
+                            }
+                        })
+                )
             }
-        )
-        Icon(
-            imageVector = if (!playing || player.currentPosition==player.duration) Icons.Default.PlayCircleOutline else Icons.Default.PauseCircleOutline,
-            contentDescription = "image",
-            tint = Color.Red, modifier = Modifier
-                .padding(16.dp)
-                .size(20.dp)
-                .clickable(onClick = {
-                    if (player.isPlaying) {
-                        player.pause()
-                        playing = false
-                    } else {
-                        player.start()
-                        playing = true
-                    }
-                })
-        )
+        }
     }
 }
-
-//@Composable
-//fun AudioButton(
-//    modifier: Modifier = Modifier,
-//    onPlay: () -> Unit = {},
-//    onPause: () -> Unit = {},
-//) {
-//    var isPlaying by remember { mutableStateOf(false) }
-//    var isPaused by remember { mutableStateOf(false) }
-//
-//    Column(
-//        modifier = modifier.fillMaxSize(),
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        IconButton(
-//            onClick = {
-//                if (isPlaying) {
-//                    onPause()
-//                    isPlaying = false
-//                    isPaused = true
-//                } else {
-//                    onPlay()
-//                    isPlaying = true
-//                    isPaused = false
-//                }
-//            },
-//            modifier = modifier.size(48.dp)
-//        ) {
-//            Icon(
-//                if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-//                contentDescription = null,
-//                tint = MaterialTheme.colorScheme.surfaceTint
-//            )
-//        }
-//    }
-//}
-
 @Composable
 fun MissionLogAudioDetail(
     modifier: Modifier = Modifier,
     url:String?="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
 ){
     if(url != null){
+
+        var playerUiState: UiState<MediaPlayer> by remember{mutableStateOf(UiState.Loading)}
+
         var player : MediaPlayer? = remember {
             MediaPlayer().apply {
                 setAudioAttributes(
@@ -319,6 +269,13 @@ fun MissionLogAudioDetail(
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
+
+                // player가 재생 가능한 상태가 되면
+                // UiState 변경
+                this.setOnPreparedListener {
+                    playerUiState = UiState.Success(it)
+                }
+
                 // 백그라운드 스레드에서 미디어 준비
                 prepareAsync()
             }
@@ -326,8 +283,9 @@ fun MissionLogAudioDetail(
 
         //  compose가 회수될 때 media player 객체 파괴
         DisposableEffect(
-            Column(modifier = modifier) {
-                AudioSlider(player = player)
+            when{
+                playerUiState is UiState.Loading-> LoadingScreen()
+                else -> AudioSlider(player = player)
             }
         ){
             // AudioSlider가 파괴 될 때
@@ -539,7 +497,7 @@ fun SleepLogDetailScreen(
                             expanded = !expanded
                         },
                     ){
-                        Text(text = missionLog.content, fontSize = 24.sp)
+                        Text(text = missionLog.content, fontSize = 24.sp, modifier = Modifier.padding(bottom =16.dp))
                         if(missionLog.missionType == Mission.IMAGE.name){
                             MissionLogImageDetail(
                                 modifier = Modifier.height(pageSize/2),
