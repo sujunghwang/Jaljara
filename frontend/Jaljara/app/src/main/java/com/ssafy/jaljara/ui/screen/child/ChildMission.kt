@@ -1,6 +1,7 @@
 package com.ssafy.jaljara.ui.screen.child
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
@@ -13,10 +14,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PauseCircleOutline
+import androidx.compose.material.icons.filled.PlayCircleOutline
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -32,18 +33,22 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.data.todayMission2
+import com.ssafy.jaljara.ui.screen.parent.AudioSlider
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
 import com.ujizin.camposer.state.ImageCaptureResult
 import com.ujizin.camposer.state.rememberCamSelector
 import com.ujizin.camposer.state.rememberCameraState
+import kotlinx.coroutines.delay
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 
 enum class State() {
     BEFORE_RECORDING,
@@ -58,6 +63,7 @@ fun ChildMission(childViewModel :ChildViewModel){
     var prevInfo by rememberSaveable { mutableStateOf(false) }
     var isFirst by rememberSaveable { mutableStateOf(true) }
     var path by rememberSaveable { mutableStateOf("") }
+    var isRecording by rememberSaveable { mutableStateOf(false) }
     Column(
         Modifier
             .fillMaxHeight()
@@ -66,11 +72,10 @@ fun ChildMission(childViewModel :ChildViewModel){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         val mission = childViewModel.todayMissionResponse
-//        childViewModel.getTodayMission(1)
+        childViewModel.getTodayMission(1)
 //        val mission = todayMission2
 
         Text(text = mission.content, color = Color.White)
-//        Text(text = mission.missionContent, color = Color.White)
         if (mission.missionType=="IMAGE"){
             Box(){
                 Log.d("isFirst 상태", "$isFirst")
@@ -189,7 +194,6 @@ fun ChildMission(childViewModel :ChildViewModel){
                     val file = File(path)
                     val requestBody: RequestBody = file.asRequestBody("image/jpg".toMediaTypeOrNull())
                     val filePart: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
-                    //MultipartBody.Part.createFormData("file", file.getName(), RequestBody.create(MediaType.parse("image/*"), file))
 
                     childViewModel.setMissionResult(1, filePart)
                 }) {
@@ -200,171 +204,224 @@ fun ChildMission(childViewModel :ChildViewModel){
             Box(){
 //                RecordUI(Modifier)
                 val context = LocalContext.current
-                val recorder = MediaRecorder(context)
-                val player = MediaPlayer()
-                var isRecording by rememberSaveable { mutableStateOf(true) }
+                var recorder:MediaRecorder? by remember { mutableStateOf(null)}
 
                 Row() {
 
-//                    Box(
-//                        modifier = Modifier.clickable {
-//                            val file = context.createNewFile("mp4")
-//                            recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
-//                            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-//                            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-//                            recorder.setOutputFile(FileOutputStream(file).fd)
-//                            recorder.prepare()
-//                            recorder.start()
-//                            prevInfo = true
-//                            Log.d("파일명", file.absolutePath) }
-//                    ){
-//
-//                    }
+                    Log.d("path 상태", path)
 
-                    Canvas(
+                    Box(
                         modifier = Modifier
-                            .size(50.dp)
-                            .clickable { },
-                        onDraw = {
-                            val size = 50.dp.toPx()
-                            val trianglePath = Path().apply {
-                                // Moves to top center position
-                                moveTo(0f, 0f)
-                                // Add line to bottom right corner
-                                lineTo(size, size / 2f)
-                                // Add line to bottom left corner
-                                lineTo(0f, size)
-                            }
-                            drawPath(
-                                color = Color.Green,
-                                path = trianglePath
+                            .clickable(
+                                onClick = {
+                                    isFirst = false
+                                    val file = context.createNewFile("mp4")
+//                                    recorder = MediaRecorder()
+//                                        .apply {
+//                                            setAudioSource(MediaRecorder.AudioSource.MIC)
+//                                            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP) // 포멧
+//                                            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // 엔코더
+//                                            setOutputFile(file)
+//                                            prepare()
+//                                        }
+                                    recorder = MediaRecorder(context)
+                                    recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
+                                    recorder!!.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                                    recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+                                    recorder!!.setOutputFile(FileOutputStream(file).fd)
+                                    recorder!!.prepare()
+                                    recorder!!.start()
+                                    Log.d("파일명", file.absolutePath)
+                                    path = file.absolutePath
+                                    isRecording = true
+                                    prevInfo = true
+                                },
+                                enabled = !isRecording
                             )
-                        },
-
+                            .size(50.dp, 50.dp)
+                            .background(
+                                shape = CircleShape,
+                                color = if (isRecording) Color.Gray else Color.Red
+                            )
                     )
                     Spacer(modifier = Modifier.padding(20.dp))
-                    Box(){
-                        Button(
-                            onClick = {
-                                val file = context.createNewFile("mp4")
-                                recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
-                                recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-                                recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-                                recorder.setOutputFile(FileOutputStream(file).fd)
-                                recorder.prepare()
-                                recorder.start()
-                                Log.d("파일명", file.absolutePath)
-                                path = file.absolutePath
-                                isRecording = false
-                                prevInfo = true },
-                            modifier = Modifier.size(50.dp,50.dp),
-                            colors = ButtonDefaults.buttonColors(Color.Red)
-                        ) { }
-                        Button(
-                            onClick = {},
-                            modifier = Modifier.size(if(!isRecording){50.dp} else {0.dp}),
-                            colors = ButtonDefaults.buttonColors(Color.Gray)
-                        ) { }
-                    }
-                    Spacer(modifier = Modifier.padding(20.dp))
-                    Button(
-                        onClick = {
-                            recorder.stop()
-                            recorder.reset()
-                        },
-                        modifier = Modifier.size(50.dp,50.dp),
-                        shape = RectangleShape,
-                        colors = ButtonDefaults.buttonColors(Color.Gray)
-                    ) {
-                        Text("녹음 종료하기")
-                    }
-
+                    Box(
+                        modifier = Modifier
+                            .clickable(
+                                onClick = {
+                                    Log.d("recorder 상태", "${recorder.toString()}")
+                                    recorder?.run {
+                                        stop()
+                                        Log.d("녹음 종료", "종료")
+                                        release()
+                                    }
+                                    Log.d("recorder 상태", "${recorder.toString()}")
+                                    recorder = null
+//                                    recorder!!.stop()
+//                                    recorder!!.reset()
+                                    isRecording = false
+                                }
+                            )
+                            .size(50.dp, 50.dp)
+                            .background(
+                                shape = RectangleShape,
+                                color = if (isRecording) Color.Red else Color.Gray
+                            )
+                    )
                 }
             }
-            ChildMissionButtons("녹음하기")
+
+            if(isFirst && mission.url != null){
+                var player : MediaPlayer? = remember {
+                    MediaPlayer().apply {
+                        setAudioAttributes(
+                            AudioAttributes.Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .build()
+                        )
+                        try {
+                            setDataSource(mission.url)
+                        } catch (e: IllegalArgumentException) {
+                            e.printStackTrace()
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+
+                        // 백그라운드 스레드에서 미디어 준비
+                        prepareAsync()
+                    }
+                }
+
+                //  compose가 회수될 때 media player 객체 파괴
+                DisposableEffect(
+                    Column() {
+                        var playerPrepared by remember { mutableStateOf(false) }
+                        player?.setOnPreparedListener {
+                            playerPrepared = true
+                        }
+                        if(playerPrepared){
+                            AudioSlider(player = player)
+                        }
+                    }
+                ){
+                    // AudioSlider가 파괴 될 때
+                    // media player 회수
+                    onDispose{
+                        player?.release()
+                        player = null
+                        Log.d("onDispose", "media player 파괴")
+                    }
+                }
+            }
+
+            if(path != "" && !isRecording){
+                var player : MediaPlayer? = remember {
+                    MediaPlayer().apply {
+                        setAudioAttributes(
+                            AudioAttributes.Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .build()
+                        )
+                        try {
+                            setDataSource(path)
+                        } catch (e: IllegalArgumentException) {
+                            e.printStackTrace()
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+
+                        // 백그라운드 스레드에서 미디어 준비
+                        prepareAsync()
+                    }
+                }
+
+                //  compose가 회수될 때 media player 객체 파괴
+                DisposableEffect(
+                    Column() {
+                        var playerPrepared by remember { mutableStateOf(false) }
+                        player?.setOnPreparedListener {
+                            playerPrepared = true
+                        }
+                        if(playerPrepared){
+                            AudioSlider(player = player)
+                        }
+                    }
+                ){
+                    // AudioSlider가 파괴 될 때
+                    // media player 회수
+                    onDispose{
+                        player?.release()
+                        player = null
+                        Log.d("onDispose", "media player 파괴")
+                    }
+                }
+            }else{
+
+            }
+
+            Button(onClick = {
+                val file = File(path)
+                val requestBody: RequestBody = file.asRequestBody("audio/mp3".toMediaTypeOrNull())
+                val filePart: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
+
+                childViewModel.setMissionResult(1, filePart)
+            }) {
+                Text("완료", color = Color.Green)
+            }
         }
 
-    }
-}
-
-@Composable
-fun ChildMissionButtons(text: String){
-    Row() {
-        Button(onClick = { /*TODO*/ }) {
-            Text(text, color = Color.Red)
-        }
-        Spacer(modifier = Modifier.padding(20.dp))
-        Button(onClick = { /*TODO*/ }) {
-            Text("완료", color = Color.Green)
-        }
     }
 }
 
 // 새 파일을 만들기 위한 함수
 private fun Context.createNewFile(type:String) = File(
-//    filesDir, "${System.currentTimeMillis()}.jpg"
     filesDir, "${System.currentTimeMillis()}."+type
 ).apply {
     createNewFile()
 }
 
-
-//@RequiresApi(Build.VERSION_CODES.S)
-//@Composable
-//fun RecordUI(modifier: Modifier){
-//    val context = LocalContext.current
-//    val recorder = MediaRecorder(context)
-//
-//    Row() {
-//        Button(onClick = {
-//            val file = context.createNewFile("mp4")
-//            recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
-//            recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-//            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-//            recorder.setOutputFile(FileOutputStream(file).fd)
-//            recorder.prepare()
-//            recorder.start()
-//            Log.d("파일명", file.absolutePath)
-//        }) {
-//            Text("녹음하기")
-//        }
-//        Button(onClick = {
-//            recorder.stop()
-//            recorder.reset()
-//
-//        }) {
-//            Text("녹음 종료하기")
-//        }
-//
-//    }
-//
-//}
-
-
-//@Preview
-//@Composable
-//fun Prev(){
-//    ChildMission()
-//}
-
 @Composable
-@Preview
-fun CircleShape() {
+fun AudioSlider(player : MediaPlayer?) {
+    var playing by remember { mutableStateOf(false) }
+    var position by remember { mutableStateOf(0F) }
 
-    Canvas(modifier = Modifier.size(50.dp), onDraw = {
-        val size = 50.dp.toPx()
-        val trianglePath = Path().apply {
-            // Moves to top center position
-            moveTo(0f, 0f)
-            // Add line to bottom right corner
-            lineTo(size, size / 2f)
-            // Add line to bottom left corner
-            lineTo(0f, size)
+    if (player != null) {
+
+        // playing 상태가 변경 되면
+        LaunchedEffect(playing){
+            // 1초에 한 번 MediaPlayer의 position을 변경한다
+            while(playing){
+                Log.d("LaunchedEffect", "1초에 한 번 ㅋ")
+                position = player.currentPosition.toFloat()
+                delay(1000)
+            }
         }
-        drawPath(
-            color = Color.Green,
-            path = trianglePath
+
+        Slider(
+            value = position,
+            valueRange = 0F..player.duration.toFloat(),
+            onValueChange = {
+                position = it
+                player.seekTo(it.toInt())
+            }
         )
-    })
+
+        Icon(
+            imageVector = if (!playing || player.currentPosition==player.duration) Icons.Default.PlayCircleOutline else Icons.Default.PauseCircleOutline,
+            contentDescription = "image",
+            tint = Color.Red, modifier = Modifier
+                .padding(16.dp)
+                .size(20.dp)
+                .clickable(onClick = {
+                    if (player.isPlaying) {
+                        player.pause()
+                        playing = false
+                    } else {
+                        player.start()
+                        playing = true
+                    }
+                })
+        )
+    }
 }
 
