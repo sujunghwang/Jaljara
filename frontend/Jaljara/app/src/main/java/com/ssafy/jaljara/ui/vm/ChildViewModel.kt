@@ -125,4 +125,18 @@ class ChildViewModel : ViewModel() {
         }
     }
 
+    fun setCouponUsed(rewardId: Long){
+        viewModelScope.launch{
+            val apiService = ChildApiService.getInstance()
+            try{
+                Log.d("쿠폰 사용 API 호출 - rewardId","rewardId")
+                apiService.setCouponUsed(rewardId)
+            }
+            catch (e:Exception){
+                errorMessage = e.message.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
+
 }

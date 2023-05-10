@@ -44,7 +44,11 @@ interface ChildApiService {
     suspend fun setMissionResult(
         @Path("childId") childId : Long,
         @Part file : MultipartBody.Part
-//        @Body file : File
+    )
+
+    @PUT("/api/rewards/use/{rewardId}")
+    suspend fun setCouponUsed(
+        @Path("rewardId") rewardId : Long
     )
 
     companion object{

@@ -26,9 +26,9 @@ import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 
 
-enum class CouponStatus(@StringRes val title: Int) {
-    Coupon(title = R.string.app_name),
-    UsedCoupon(title = 2)
+enum class CouponStatus(val title: String) {
+    Coupon(title = "사용하지 않은 쿠폰"),
+    UsedCoupon(title = "사용한 쿠폰")
 }
 
 @Composable
@@ -43,7 +43,7 @@ fun ChildCouponNav(
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(Icons.Filled.Favorite, contentDescription = item.name) },
-                label = { Text(item.name, style = MaterialTheme.typography.titleSmall) },
+                label = { Text(item.title, style = MaterialTheme.typography.titleSmall) },
                 selected = selectedItem == index,
                 onClick = {
                     navController.navigate(item.name)
@@ -94,7 +94,7 @@ fun CouponScreen(
                     val coupons = childViewModel.notUsedCouponResponse
                     childViewModel.getNotUsedCoupon(1)
                     items(coupons){
-                        NotUsedCoupon(coupon = it)
+                        NotUsedCoupon(childViewModel = childViewModel, coupon = it)
                     }
                 }
             }

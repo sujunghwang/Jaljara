@@ -1,25 +1,41 @@
 package com.ssafy.jaljara.ui.screen.child
 
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.NotUsedCoupon
+import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotUsedCoupon(coupon: NotUsedCoupon, modifier: Modifier = Modifier) {
+fun NotUsedCoupon(childViewModel: ChildViewModel, coupon: NotUsedCoupon, modifier: Modifier = Modifier) {
+    var showDialog by remember { mutableStateOf(false) }
+
     Card(
-        modifier = modifier.padding(8.dp),
+        modifier = modifier
+            .padding(8.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        showDialog = true
+                        Log.d("아이등록해제모달 요청","$showDialog")
+                    },
+                )
+            },
         elevation = CardDefaults.cardElevation(
             defaultElevation = 10.dp
         ),
@@ -48,6 +64,36 @@ fun NotUsedCoupon(coupon: NotUsedCoupon, modifier: Modifier = Modifier) {
                 NotUsedCouponContent(coupon.content, coupon.getTime)
             }
         }
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "쿠폰 사용") },
+            text = { Text(text = "쿠폰을 사용하시겠습니까?") },
+            confirmButton = {
+                Text(
+                    text = "확인",
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .clickable {
+                            childViewModel.setCouponUsed(coupon.rewardId)
+                            showDialog=false
+                        },
+                    color = Color.Red,
+                )
+            },
+            dismissButton = {
+                Text(
+                    text = "취소",
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .clickable {
+                            showDialog = false
+                        },
+                )
+            }
+        )
     }
 }
 
