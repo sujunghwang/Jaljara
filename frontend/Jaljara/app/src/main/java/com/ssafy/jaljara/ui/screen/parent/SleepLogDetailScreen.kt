@@ -6,10 +6,7 @@ import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
-import android.os.CountDownTimer
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
@@ -36,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.test.core.app.ActivityScenario.launch
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -44,20 +40,16 @@ import com.ssafy.jaljara.R
 import com.ssafy.jaljara.component.NightForestBackGround
 import com.ssafy.jaljara.data.MissionLog
 import com.ssafy.jaljara.data.SleepLog
-import com.ssafy.jaljara.ui.component.ErrorScreen
 import com.ssafy.jaljara.ui.component.LoadingScreen
 import com.ssafy.jaljara.ui.enumType.Mission
 import com.ssafy.jaljara.ui.enumType.getWeekBydayOfWeekNumber
-import com.ssafy.jaljara.ui.vm.AudioViewModel
 import com.ssafy.jaljara.ui.vm.MissionDetailLogViewModel
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.DayOfWeek
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import kotlin.time.seconds
 
 
 @Composable
@@ -232,7 +224,10 @@ fun AudioSlider(player : MediaPlayer?) {
     var position by remember { mutableStateOf(0F) }
 
     if (player != null) {
-        LaunchedEffect(Unit){
+
+        // playing 상태가 변경 되면
+        LaunchedEffect(playing){
+            // 1초에 한 번 MediaPlayer의 position을 변경한다
             while(playing){
                 Log.d("LaunchedEffect", "1초에 한 번 ㅋ")
                 position = player.currentPosition.toFloat()
@@ -310,22 +305,23 @@ fun MissionLogAudioDetail(
     url:String?="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
 ){
     if(url != null){
-
-        val player = MediaPlayer().apply {
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build()
-            )
-            try {
-                setDataSource(url)
-            } catch (e: IllegalArgumentException) {
-                // 뭐 넣지?,,
-            } catch (e: IOException) {
-
+        var player : MediaPlayer? = remember {
+            MediaPlayer().apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .build()
+                )
+                try {
+                    setDataSource(url)
+                } catch (e: IllegalArgumentException) {
+                    e.printStackTrace()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                // 백그라운드 스레드에서 미디어 준비
+                prepareAsync()
             }
-            // 백그라운드 스레드에서 미디어 준비
-            prepareAsync()
         }
 
         //  compose가 회수될 때 media player 객체 파괴
@@ -338,9 +334,12 @@ fun MissionLogAudioDetail(
             // media player 회수
             onDispose{
                 player?.release()
+                player = null
                 Log.d("onDispose", "media player 파괴")
             }
         }
+    }else{
+
     }
 }
 
