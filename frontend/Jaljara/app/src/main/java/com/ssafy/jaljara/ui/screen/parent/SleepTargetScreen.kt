@@ -3,6 +3,7 @@ package com.ssafy.jaljara.ui.screen.parent
 import android.os.Build
 import android.util.Log
 import android.widget.Space
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +46,8 @@ fun SetTimeScreen(viewModel : ParentViewModel){
     var tipClosed by remember {
         mutableStateOf(false)
     }
+
+    val toast = Toast.makeText(LocalContext.current, "목표 수면 시간 설정 완료", Toast.LENGTH_SHORT)
 
     LaunchedEffect(Unit){
 
@@ -280,6 +284,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                     onClick = {
                         viewModel.setTargetSleepTime(1, bedTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")), wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
                         viewModel.getChildSleepInfo(1)
+                        toast.show()
                     },
                     contentPadding = PaddingValues(12.dp),
                     colors = ButtonDefaults.buttonColors(

@@ -1,5 +1,6 @@
 package com.ssafy.jaljara.ui.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +37,9 @@ fun StarLink(childViewModel: ChildViewModel){
     var openDialog = rememberSaveable {
         mutableStateOf(false)
     }
+
+    val successToast = Toast.makeText(LocalContext.current, "보상 획득 성공", Toast.LENGTH_SHORT)
+    val failToast = Toast.makeText(LocalContext.current, "등록된 보상이 없습니다", Toast.LENGTH_SHORT)
 
     var starLinkImg = R.drawable.star_link_7
     when (childSleepInfo.streakCount) {
@@ -61,7 +66,7 @@ fun StarLink(childViewModel: ChildViewModel){
                 ) {
                     Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon")
                     Text(
-                        text = "바른 수면 별자리",
+                        text = "수면 별자리",
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -107,7 +112,12 @@ fun StarLink(childViewModel: ChildViewModel){
 
                 Button(
                     onClick = {
-                        childViewModel.getReward(1)
+                        if(childSleepInfo.currentReward == "")
+                            failToast.show()
+                        else{
+                            childViewModel.getReward(1)
+                            successToast.show()
+                        }
                     },
                     contentPadding = PaddingValues(12.dp),
                     colors = ButtonDefaults.buttonColors(
