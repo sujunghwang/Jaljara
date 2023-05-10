@@ -3,11 +3,11 @@ package com.ssafy.jaljara.ui.screen.child
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,18 +30,28 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.data.DummyDataProvider
+import com.ssafy.jaljara.data.ContentsInfo
 import com.ssafy.jaljara.data.SoundContent
+import com.ssafy.jaljara.ui.vm.ContentsViewModel
 
 
 @Composable
-fun ContentsView(navigateToContent: (SoundContent) -> Unit) {
-    SoundListView(soundContents = DummyDataProvider.contentSoundList, navigateToContent = navigateToContent)
+fun ContentsView(contentsViewModel: ContentsViewModel) {
+    var contentsSoundList = contentsViewModel.contentsSoundListResponse
+    var contentsVideoList = contentsViewModel.contentsVideoListResponse
+    contentsViewModel.getContentsSoundList()
+    contentsViewModel.getContentsVideoList()
+    ContentsListView(contentsViewModel = contentsViewModel, contentsSoundList, contentsVideoList)
 }
 
 @Composable
-fun SoundListView(soundContents: List<SoundContent>, navigateToContent: (SoundContent) -> Unit) {
+fun ContentsListView(
+    contentsViewModel: ContentsViewModel,
+    contentsSoundList: List<ContentsInfo>,
+    contentsVideoList: List<ContentsInfo>
+) {
     val typography = MaterialTheme.typography
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,7 +85,13 @@ fun SoundListView(soundContents: List<SoundContent>, navigateToContent: (SoundCo
                 fontSize = 20.sp
             )
             LazyRow() {
-                items(soundContents) { SoundContentView(it, navigateToContent) }
+                itemsIndexed(contentsSoundList) { index: Int, item: ContentsInfo ->
+                    ContentsItemView(
+                        contentsViewModel,
+                        item,
+                        index
+                    )
+                }
             }
             Text(
                 text = "수면에 도움이 되는 영상",
@@ -85,7 +101,11 @@ fun SoundListView(soundContents: List<SoundContent>, navigateToContent: (SoundCo
                 fontSize = 20.sp
             )
             LazyRow() {
-                items(soundContents) { SoundContentView(it, navigateToContent) }
+                itemsIndexed(contentsVideoList) { index: Int, item: ContentsInfo ->
+                    ContentsItemView(
+                        contentsViewModel, item, index
+                    )
+                }
             }
 
         }
@@ -94,7 +114,7 @@ fun SoundListView(soundContents: List<SoundContent>, navigateToContent: (SoundCo
 }
 
 @Composable
-fun SoundContentView(soundContent: SoundContent, navigateToContent: (SoundContent) -> Unit) {
+fun ContentsItemView(contentsViewModel: ContentsViewModel, contentsInfo: ContentsInfo, index: Int) {
     val typography = MaterialTheme.typography
 
     androidx.compose.material.Card(
@@ -109,10 +129,10 @@ fun SoundContentView(soundContent: SoundContent, navigateToContent: (SoundConten
     ) {
         Column(
             modifier = Modifier
-                .padding(10.dp)
-                .clickable { navigateToContent(soundContent) },
+                .padding(10.dp),
+//                .clickable { navigateToContent(soundContent) }
         ) {
-            ThumbnailImage(thumbnailImageUrl = soundContent.thumbnailImageUrl)
+            ThumbnailImage(thumbnailImageUrl = contentsInfo.thumbnailImageUrl)
 
             Box(
                 modifier = Modifier
@@ -120,12 +140,12 @@ fun SoundContentView(soundContent: SoundContent, navigateToContent: (SoundConten
             ) {
                 Column() {
                     Text(
-                        text = soundContent.title,
+                        text = contentsInfo.title,
                         style = typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = soundContent.description,
+                        text = contentsInfo.description,
                         style = typography.bodySmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -145,6 +165,7 @@ fun ThumbnailImage(thumbnailImageUrl: String, modifier: Modifier = Modifier) {
     // 이미지 비트맵
     val bitmap: MutableState<Bitmap?> = mutableStateOf(null)
 
+    Log.d("thumbnailImage 엄ㅇ라ㅣㅡㅁㄴㅇㄹㅈㄷㄻ","$thumbnailImageUrl")
     val imageModifier = modifier
         .size(200.dp, 200.dp)
         .clip(RoundedCornerShape(10.dp))
@@ -182,5 +203,5 @@ fun ThumbnailImage(thumbnailImageUrl: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-//    ContentsView()
+    ContentsView(contentsViewModel = ContentsViewModel())
 }
