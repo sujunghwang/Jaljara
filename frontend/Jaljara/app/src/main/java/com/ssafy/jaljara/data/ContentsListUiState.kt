@@ -1,5 +1,30 @@
 package com.ssafy.jaljara.data
 
+
+data class ContentsInfo(
+    val contentsId: Long,
+    val contentType: String,
+    val title: String,
+    val description: String,
+    val thumbnailImageUrl: String,
+    val youtubeUrl: String,
+)
+
+data class ContentsListUiState(
+
+    // 컨텐츠 리스트
+    val contentsList: List<ContentsInfo> = listOf(),
+
+    val showNavigation : Boolean = true,
+
+    )
+
+data class ContentsUiState(
+    val conetents: ContentsInfo? = null,
+
+    val showNavigation: Boolean = true,
+)
+
 data class SoundContent(
     val contentsId: Long = 1,
     val contentType: String = "SOUND",
