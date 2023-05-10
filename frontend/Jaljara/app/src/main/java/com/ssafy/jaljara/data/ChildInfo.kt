@@ -38,7 +38,7 @@ data class UsedCoupon(
 )
 
 data class NotUsedCoupon(
-    val rewardId: Int,
+    val rewardId: Long,
     val userId: Int,
     val content: String,
     val getTime: String?,
