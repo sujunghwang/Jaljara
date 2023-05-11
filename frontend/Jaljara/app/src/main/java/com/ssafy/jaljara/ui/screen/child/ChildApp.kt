@@ -163,15 +163,18 @@ fun setAlarm(context: Context, targetBedTime:String){
 //    val timeSec = System.currentTimeMillis() + 5000
 //    val temp = "12:25"
     Log.d("설정 수면 시간", targetBedTime)
-    val now = LocalDateTime.now()
-    val timeArr = targetBedTime.split(":")
-    val hour = timeArr[0]
-    val minute = timeArr[1]
-    val temptime = LocalDateTime.of(now.year, now.monthValue, now.dayOfMonth, hour.toInt(), minute.toInt(), 0)
-    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    val intent = Intent(context, ChildAlarm::class.java)
-    val pendingIntent = PendingIntent.getBroadcast(context,0,intent, PendingIntent.FLAG_MUTABLE)
-    alarmManager.set(AlarmManager.RTC_WAKEUP, temptime.atZone(ZoneId.systemDefault()).toInstant()?.toEpochMilli() ?: 0, pendingIntent)
+    if(targetBedTime != "") {
+        val now = LocalDateTime.now()
+        val timeArr = targetBedTime.split(":")
+//        val timeArr = temp.split(":")
+        val hour = timeArr[0]
+        val minute = timeArr[1]
+        val temptime = LocalDateTime.of(now.year, now.monthValue, now.dayOfMonth, hour.toInt(), minute.toInt(), 0)
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, ChildAlarm::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(context,0,intent, PendingIntent.FLAG_MUTABLE)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, temptime.atZone(ZoneId.systemDefault()).toInstant()?.toEpochMilli() ?: 0, pendingIntent)
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.S)
