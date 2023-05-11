@@ -1,5 +1,6 @@
 package com.ssafy.jaljara.ui.screen.child
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -41,6 +42,13 @@ fun ContentsDetailView(contentsViewModel: ContentsViewModel = viewModel()) {
                 contentsViewModel.getSoundContentByIdx(soundIdx)
             }
 
+        var youtubeUrlPath = contentsInfo.youtubeUrl
+        youtubeUrlPath = youtubeUrlPath.split("v=")[1].split("&")[0]
+        Log.d("youtubeId입니다.", "$youtubeUrlPath")
+//        Log.d("youtubeId입니다.", "$youtubeUrlPath")
+//        var
+
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(20.dp),
@@ -69,7 +77,7 @@ fun ContentsDetailView(contentsViewModel: ContentsViewModel = viewModel()) {
                 object : AbstractYouTubePlayerListener() {
                     override fun onReady(youTubePlayer: YouTubePlayer) {
                         super.onReady(youTubePlayer)
-                        youTubePlayer.loadVideo("S0Q4gqBUs7c`", 0f)
+                        youTubePlayer.loadVideo("$youtubeUrlPath", 0f)
                     }
                 }
             )
