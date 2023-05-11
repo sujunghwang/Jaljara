@@ -51,6 +51,8 @@ class ContentsViewModel : ViewModel() {
     }
 
     var contentsSoundListResponse: List<ContentsInfo> by mutableStateOf(listOf())
+    var selectedSoundIdx by mutableStateOf(0)
+
     fun getContentsSoundList() {
         viewModelScope.launch {
             val apiService = ContentsApiService.getInstance()
@@ -67,7 +69,13 @@ class ContentsViewModel : ViewModel() {
         }
     }
 
+    fun getSoundContentByIdx(idx: Int) : ContentsInfo{
+        return contentsSoundListResponse[idx]
+    }
+
     var contentsVideoListResponse: List<ContentsInfo> by mutableStateOf(listOf())
+    var selectedVideoIdx by mutableStateOf(0)
+
     fun getContentsVideoList() {
         viewModelScope.launch {
             val apiService = ContentsApiService.getInstance()
@@ -82,6 +90,10 @@ class ContentsViewModel : ViewModel() {
                 Log.d("errorMessage", "$errorMessage")
             }
         }
+    }
+
+    fun getVideoContentByIdx(idx: Int) : ContentsInfo{
+        return contentsVideoListResponse[idx]
     }
 
     var contentsResponse: ContentsUiState by mutableStateOf(ContentsUiState())

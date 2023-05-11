@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.Log
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -36,24 +36,40 @@ import com.ssafy.jaljara.ui.vm.ContentsViewModel
 
 
 @Composable
-fun ContentsView(contentsViewModel: ContentsViewModel) {
+fun ContentsView(
+    contentsViewModel: ContentsViewModel,
+    onClickContents: (ContentsInfo) -> Unit
+) {
+    val scrollState = rememberScrollState()
     var contentsSoundList = contentsViewModel.contentsSoundListResponse
     var contentsVideoList = contentsViewModel.contentsVideoListResponse
     contentsViewModel.getContentsSoundList()
     contentsViewModel.getContentsVideoList()
-    ContentsListView(contentsViewModel = contentsViewModel, contentsSoundList, contentsVideoList)
+    ContentsListView(
+        contentsViewModel = contentsViewModel,
+        contentsSoundList,
+        contentsVideoList,
+        onClickContents = onClickContents,
+        //navigateToContentsDetail = navigateToContentsDetail
+        scrollState = scrollState
+    )
 }
 
 @Composable
 fun ContentsListView(
     contentsViewModel: ContentsViewModel,
     contentsSoundList: List<ContentsInfo>,
-    contentsVideoList: List<ContentsInfo>
+    contentsVideoList: List<ContentsInfo>,
+    onClickContents: (ContentsInfo) -> Unit,
+    //navigateToContentsDetail: (ContentsInfo) -> Unit
+    scrollState: ScrollState
 ) {
     val typography = MaterialTheme.typography
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -89,7 +105,12 @@ fun ContentsListView(
                     ContentsItemView(
                         contentsViewModel,
                         item,
-                        index
+                        index,
+                        modifier = Modifier.clickable {
+                            onClickContents(item)
+                            contentsViewModel.selectedVideoIdx = -1
+                            contentsViewModel.selectedSoundIdx = index
+                        }
                     )
                 }
             }
@@ -103,7 +124,14 @@ fun ContentsListView(
             LazyRow() {
                 itemsIndexed(contentsVideoList) { index: Int, item: ContentsInfo ->
                     ContentsItemView(
-                        contentsViewModel, item, index
+                        modifier = Modifier.clickable {
+                            onClickContents(item)
+                            contentsViewModel.selectedVideoIdx = index
+                            contentsViewModel.selectedSoundIdx = -1
+                        },
+                        contentsViewModel = contentsViewModel,
+                        contentsInfo = item,
+                        index = index,
                     )
                 }
             }
@@ -114,13 +142,21 @@ fun ContentsListView(
 }
 
 @Composable
-fun ContentsItemView(contentsViewModel: ContentsViewModel, contentsInfo: ContentsInfo, index: Int) {
+fun ContentsItemView(
+    contentsViewModel: ContentsViewModel,
+    contentsInfo: ContentsInfo,
+    index: Int,
+    modifier: Modifier = Modifier
+) {
     val typography = MaterialTheme.typography
-
+    Log.d("contents info", "${contentsInfo.title}")
+    Log.d("contents info", "${contentsInfo.title}")
     androidx.compose.material.Card(
-        modifier = Modifier
+        modifier = modifier
             .padding(10.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+//            .clickable { onClickContents() }
+        ,
         elevation = 10.dp,
         shape = RoundedCornerShape(12.dp)
         //fillMaxWidth() 가로로 다 채우기
@@ -129,8 +165,8 @@ fun ContentsItemView(contentsViewModel: ContentsViewModel, contentsInfo: Content
     ) {
         Column(
             modifier = Modifier
-                .padding(10.dp),
-//                .clickable { navigateToContent(soundContent) }
+                .padding(10.dp)
+
         ) {
             ThumbnailImage(thumbnailImageUrl = contentsInfo.thumbnailImageUrl)
 
@@ -165,7 +201,7 @@ fun ThumbnailImage(thumbnailImageUrl: String, modifier: Modifier = Modifier) {
     // 이미지 비트맵
     val bitmap: MutableState<Bitmap?> = mutableStateOf(null)
 
-    Log.d("thumbnailImage 엄ㅇ라ㅣㅡㅁㄴㅇㄹㅈㄷㄻ","$thumbnailImageUrl")
+//    Log.d("thumbnailImage 엄ㅇ라ㅣㅡㅁㄴㅇㄹㅈㄷㄻ","$thumbnailImageUrl")
     val imageModifier = modifier
         .size(200.dp, 200.dp)
         .clip(RoundedCornerShape(10.dp))
@@ -203,5 +239,10 @@ fun ThumbnailImage(thumbnailImageUrl: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    ContentsView(contentsViewModel = ContentsViewModel())
+    val scrollState = rememberScrollState()
+    ContentsView(contentsViewModel = ContentsViewModel(),
+        onClickContents = { it ->
+            Log.d("온클릭컨텐츠", "$it 클릭 됨 ㅋㅋ")
+        }
+    )
 }
