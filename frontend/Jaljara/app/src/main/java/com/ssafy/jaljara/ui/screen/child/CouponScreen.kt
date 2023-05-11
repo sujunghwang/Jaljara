@@ -9,10 +9,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.twotone.ContentCopy
+import androidx.compose.material.icons.twotone.ContentCut
+import androidx.compose.material.icons.twotone.Home
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -26,9 +30,9 @@ import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 
 
-enum class CouponStatus(@StringRes val title: Int) {
-    Coupon(title = R.string.app_name),
-    UsedCoupon(title = 2)
+enum class CouponStatus(val title: String, val icon: ImageVector) {
+    Coupon(title = "사용하지 않은 쿠폰", icon = Icons.TwoTone.ContentCopy),
+    UsedCoupon(title = "사용한 쿠폰", icon = Icons.TwoTone.ContentCut)
 }
 
 @Composable
@@ -42,8 +46,8 @@ fun ChildCouponNav(
     NavigationBar {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                icon = { Icon(Icons.Filled.Favorite, contentDescription = item.name) },
-                label = { Text(item.name, style = MaterialTheme.typography.titleSmall) },
+                icon = { Icon(item.icon, contentDescription = item.name) },
+                label = { Text(item.title, style = MaterialTheme.typography.titleSmall) },
                 selected = selectedItem == index,
                 onClick = {
                     navController.navigate(item.name)
@@ -94,7 +98,7 @@ fun CouponScreen(
                     val coupons = childViewModel.notUsedCouponResponse
                     childViewModel.getNotUsedCoupon(1)
                     items(coupons){
-                        NotUsedCoupon(coupon = it)
+                        NotUsedCoupon(childViewModel = childViewModel, coupon = it)
                     }
                 }
             }

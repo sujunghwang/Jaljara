@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import java.io.File
 
 
 class ChildViewModel : ViewModel() {
@@ -108,4 +110,33 @@ class ChildViewModel : ViewModel() {
             }
         }
     }
+
+    fun setMissionResult(childId: Long, file : MultipartBody.Part){
+        viewModelScope.launch{
+            val apiService = ChildApiService.getInstance()
+            try{
+                Log.d("미션 수행 후 전송 API 호출 - childId","$childId, ${file.headers}")
+                apiService.setMissionResult(childId, file)
+            }
+            catch (e:Exception){
+                errorMessage = e.message.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
+
+    fun setCouponUsed(rewardId: Long){
+        viewModelScope.launch{
+            val apiService = ChildApiService.getInstance()
+            try{
+                Log.d("쿠폰 사용 API 호출 - rewardId","rewardId")
+                apiService.setCouponUsed(rewardId)
+            }
+            catch (e:Exception){
+                errorMessage = e.message.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
+
 }

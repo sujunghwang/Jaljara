@@ -1,11 +1,14 @@
 package com.ssafy.jaljara.ui.vm
 
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.network.ParentApi
+import com.ssafy.jaljara.ui.component.ErrorScreen
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.launch
 import retrofit2.HttpException

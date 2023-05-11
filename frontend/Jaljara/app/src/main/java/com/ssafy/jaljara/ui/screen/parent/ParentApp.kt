@@ -5,25 +5,29 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.twotone.CalendarMonth
+import androidx.compose.material.icons.twotone.Home
+import androidx.compose.material.icons.twotone.KingBed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.screen.ParentMainView
-import com.ssafy.jaljara.ui.screen.child.ChildScreen
+import com.ssafy.jaljara.ui.theme.DarkNavy
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 import kotlinx.datetime.toJavaLocalDate
 import java.time.LocalDate
@@ -50,15 +54,24 @@ fun ParentNavigationBar(
 
     /** 원하는 아이콘을 찾아서 넣으세요 **/
     items : List<NavigationInfo> = listOf(
-        NavigationInfo(ParentScreen.Start, Icons.Filled.Star),
-        NavigationInfo(ParentScreen.SetSleepTime, Icons.Filled.Star),
-        NavigationInfo(ParentScreen.SleepCalendar, Icons.Filled.Star),
+        NavigationInfo(ParentScreen.Start, Icons.TwoTone.Home),
+        NavigationInfo(ParentScreen.SetSleepTime, Icons.TwoTone.KingBed),
+        NavigationInfo(ParentScreen.SleepCalendar, Icons.TwoTone.CalendarMonth),
     ),
     navController : NavController,
     selectedItem : Int,
     onChangeNavIdx: (Int) -> Unit = {},
 ) {
-    NavigationBar {
+    NavigationBar(
+        modifier = Modifier.clip(shape = RoundedCornerShape(
+            topStart = CornerSize(50),
+            topEnd = CornerSize(50),
+            bottomEnd = CornerSize(0),
+            bottomStart = CornerSize(0)
+        )
+        ),
+        containerColor = DarkNavy
+    ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = item.route.name) },
