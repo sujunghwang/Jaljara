@@ -128,7 +128,8 @@ fun ParentApp(
                     },
                     onClickSetTime ={
                         navController.navigate(ParentScreen.SetSleepTime.url)
-                    }
+                    },
+                    2//////parentId 바뀌면 넣는 부분,
                 )
                 navBarSelectedItem = 0
             }

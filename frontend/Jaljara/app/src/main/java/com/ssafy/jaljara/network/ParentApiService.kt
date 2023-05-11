@@ -1,10 +1,13 @@
 package com.ssafy.jaljara.network
 
+import com.ssafy.jaljara.data.ChildInfo
 import com.ssafy.jaljara.data.MissionLog
 import com.ssafy.jaljara.data.SleepLog
+import kotlinx.coroutines.NonDisposableHandle.parent
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -25,6 +28,12 @@ interface ParentApiService {
 
     @GET("/api/missions/{userId}/{date}")
     suspend fun  getMissionLog(@Path("userId") userId : Long, @Path("date") date: String): MissionLog
+
+    @GET("/api/childinfos/{parentId}")
+    suspend fun getChildList(@Path("parentId") parentId : Long): List<ChildInfo>
+
+    @DELETE("/api/childinfos/{childId}")
+    suspend fun deleteChild(@Path("childId") childId : Long)
 }
 
 object ParentApi {
