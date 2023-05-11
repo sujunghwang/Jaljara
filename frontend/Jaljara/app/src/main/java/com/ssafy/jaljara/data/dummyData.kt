@@ -4,7 +4,8 @@ import com.ssafy.jaljara.ui.screen.Children
 
 object DummyDataProvider {
 
-    val contentList = List<Content>(200){ Content() }
+    val contentSoundList = List<SoundContent>(20){ SoundContent() }
+    val contentVideoList = List<VideoContent>(20){ VideoContent()}
     val childList = List<ChildInfo>(3){ ChildInfo() }
 }
 

@@ -16,10 +16,10 @@ spring:
        driver-class-name: com.mysql.cj.jdbc.Driver
 
     #    local
-    # url: jdbc:mysql://localhost:3306/jaljara?useUnicode=true&characterEncoding=utf-8
-    # username: root
-    # password: ssafy
-    # driver-class-name: com.mysql.cj.jdbc.Driver
+#     url: jdbc:mysql://localhost:3306/jaljara?useUnicode=true&characterEncoding=utf-8
+#     username: root
+#     password: ssafy
+#     driver-class-name: com.mysql.cj.jdbc.Driver
 
   output.ansi.enabled: always
 
