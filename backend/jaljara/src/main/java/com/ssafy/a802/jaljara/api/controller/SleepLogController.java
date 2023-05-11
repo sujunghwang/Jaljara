@@ -29,9 +29,9 @@ public class SleepLogController {
 
     @GetMapping("/{childId}/{date}/simple")
     @ValidChild
-    public ResponseEntity<?> getDayHasLogList(@PathVariable long childId, @PathVariable String date) throws ParseException {
-        List<Integer> dayHasLogList = sleepLogService.findSleepLogByMonth(childId, date);
-        return new ResponseEntity<>(dayHasLogList, HttpStatus.OK);
+    public ResponseEntity<?> getMissionCompleteDayList(@PathVariable long childId, @PathVariable String date) throws ParseException {
+        List<Integer> missionCompleteDayList = sleepLogService.findMissionCompleteDayListByMonth(childId, date);
+        return new ResponseEntity<>(missionCompleteDayList, HttpStatus.OK);
     }
 
     @GetMapping("/{childId}/{date}")

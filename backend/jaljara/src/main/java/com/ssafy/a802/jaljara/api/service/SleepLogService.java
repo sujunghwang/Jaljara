@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -70,31 +69,22 @@ public class SleepLogService {
                 .sleepRate(sleepRate).build());
     }
 
-    public List<Integer> findSleepLogByMonth(long childId, String date) throws ParseException {
-        //입력된 달의 1일부터 31일 중 저장된 모든 수면기록 조회
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-        List<SleepLog> sleepLogs = sleepLogRepository.findAllByUserIdAndDateBetween(
-                childId,
-                formatter.parse(date.concat("01")),
-                formatter.parse(date.concat("31")));
-
+    public List<Integer> findMissionCompleteDayListByMonth(long childId, String date) throws ParseException {
         //입력된 달의 1일부터 31일 중 저장된 모든 미션기록 조회
-        List<MissionLog> missionLogs = missionLogRepository.findAllByUserIdAndMissionDateBetween(
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+        List<MissionLog> missionLogs = missionLogRepository.findAllByUserIdAndMissionDateBetweenAndIsSuccess(
                 childId,
                 formatter.parse(date.concat("01")),
-                formatter.parse(date.concat("31")));
+                formatter.parse(date.concat("31")),
+                true);
 
-        //수면기록이 저장된 날의 일(day)만 List에 저장
         List<Integer> daysExistsLog = new ArrayList<>();
-        for(SleepLog sleepLog : sleepLogs)
-            daysExistsLog.add(sleepLog.getDate().getDate());
-
         //미션기록이 저장된 날의 일(day)만 List에 저장
         for(MissionLog missionLog : missionLogs)
             daysExistsLog.add(missionLog.getMissionDate().getDate());
 
         //중복을 제거하여 return
-        return daysExistsLog.stream().distinct().collect(Collectors.toList());
+        return daysExistsLog;
     }
 
     public SleepLogResponseDto.SleepLogDetail findSleepLogByDay(long childId, String date) throws ParseException {
