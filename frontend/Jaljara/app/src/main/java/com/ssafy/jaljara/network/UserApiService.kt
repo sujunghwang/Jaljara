@@ -15,10 +15,10 @@ interface UserApiService {
     @POST("/api/auth/login")
     suspend fun loginWithExternalToken(@Body req : UserLoginRequestDto) : UserLoginResponseDto
 
-    @POST("/api/auth/parent/signup")
-    suspend fun signupWithExternalToken(@Body req : UserLoginRequestDto) : UserSignupResponseDto
+        @POST("/api/auth/parent/signup")
+        suspend fun signupWithExternalToken(@Body req : UserLoginRequestDto) : UserSignupResponseDto
 
-    companion object{
+        companion object{
         var apiService:UserApiService? = null
         fun getInstance() : UserApiService {
             if (apiService == null){
