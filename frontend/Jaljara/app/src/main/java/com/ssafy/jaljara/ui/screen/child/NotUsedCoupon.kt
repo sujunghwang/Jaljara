@@ -27,7 +27,7 @@ fun NotUsedCoupon(childViewModel: ChildViewModel, coupon: NotUsedCoupon, modifie
 
     Card(
         modifier = modifier
-            .padding(8.dp)
+            .padding(vertical = 8.dp, horizontal = 20.dp)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = {
