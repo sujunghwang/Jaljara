@@ -64,10 +64,6 @@ fun ParentMainView(parentViewModel: ParentViewModel,
                    userId : Long,
 ){
     val scrollState = rememberScrollState()
-//    var childSleepInfo = parentViewModel.childSleepResponse
-//    var todayMission = parentViewModel.todayMissionResponse
-//    var childList = parentViewModel.childList
-    //val state by remember { mutableStateOf(parentViewModel.uiState.value.selectedChildrenIdx)}
 
     Column(
         modifier = Modifier
@@ -81,7 +77,6 @@ fun ParentMainView(parentViewModel: ParentViewModel,
         parentViewModel.getChildList(userId)
         val childIdx = parentViewModel.selectedChildIdx
 
-//        parentViewModel.getChildren()
         val childList = parentViewModel.childList
         val childPk = if(childList.isNotEmpty()) childList[childIdx].userId else null
 
@@ -105,13 +100,6 @@ fun ParentMainView(parentViewModel: ParentViewModel,
                     modifier = Modifier
                         .weight(1f)
                         .clickable { onClickSetTime() })
-//                ChildSetTimeCard(
-//                    modifier = Modifier
-//                        .weight(1f)
-//                        .clickable { onClickSetTime() },
-//                    img = painterResource(id = R.drawable.baseline_king_bed_24),
-//                    title = "수면 설정하기",
-//                    content = "8H")
             }
         }
 }
@@ -356,25 +344,4 @@ fun ParentMainScreenView() {
         onClickSetTime={},
         userId =2,
     )
-//    val scrollState = rememberScrollState()
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxHeight()
-//            .padding(20.dp)
-//            .verticalScroll(scrollState),
-//        verticalArrangement = Arrangement.SpaceBetween
-//    ) {
-////        Children(childList)
-////            CurrentRewardContainer(painterResource(R.drawable.current_reward),"현재 보상", "놀이동산 가기")
-////            CurrentRewardContainer(painterResource(id = R.drawable.today_mission),"오늘의 미션", "이닦는 사진 찍기")
-//        CurrentRewardContainer(R.drawable.reward_2,"현재 보상", "놀이동산 가기")
-//        CurrentRewardContainer(R.drawable.current_reward_2,"오늘의 미션", "이닦는 사진 찍기")
-//        Row(modifier = Modifier.fillMaxWidth()) {
-//            ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up", "5:00", Modifier.weight(1f))
-//            Spacer(modifier = Modifier.weight(0.1f))
-//            ChildSetTimeCard(painterResource(id = R.drawable.baseline_king_bed_24),"수면 설정하기", "8H", Modifier.weight(1f))
-//        }
-//    }
-
 }

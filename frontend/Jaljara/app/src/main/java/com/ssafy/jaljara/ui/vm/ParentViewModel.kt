@@ -30,19 +30,6 @@ class ParentViewModel : ViewModel() {
         }
     }
 
-//    fun setSelectedChildIdx(idx: Long) {
-//        _uiState.update { currentState ->
-//            currentState.copy(
-//                selectedChildrenIdx = idx
-//            )
-//        }
-//        Log.d("선택 된 idx", _uiState.value.selectedChildrenIdx.toString())
-//    }
-
-//    fun getSelectedChildIdx() : Long{
-//        return _uiState.value.selectedChildrenIdx
-//    }
-
     var errorMessage: String by mutableStateOf("")
 
     var childSleepResponse: ChildSleepInfo by mutableStateOf(ChildSleepInfo())
@@ -53,7 +40,6 @@ class ParentViewModel : ViewModel() {
                 Log.d("아이 수면 목표 조회 API 호출 - childId","$childId")
                 val childSleepInfo = apiService.getChildSleepInfo(childId)
                 childSleepResponse = childSleepInfo
-                Log.d("아이 수면 목표 조회 API 호출 - childId","$childSleepResponse")
             }
             catch (e:Exception){
                 errorMessage = e.cause.toString()
@@ -94,7 +80,6 @@ class ParentViewModel : ViewModel() {
         }
     }
 
-//    var children: List<ChildInfo> by mutableStateOf(listOf())
     var childList: List<ChildInfo> by mutableStateOf(listOf())
     fun getChildList(parentId : Long): List<ChildInfo>{
         var childListResponse: List<ChildInfo> = listOf()
@@ -111,10 +96,6 @@ class ParentViewModel : ViewModel() {
         return childListResponse
     }
 
-//    fun getChildren(){
-//        children=childList
-//    }
-
     var selectedChildIdx by mutableStateOf(0)
 
     fun deleteChild(childId : Long){
@@ -129,10 +110,4 @@ class ParentViewModel : ViewModel() {
         }
     }
 
-//    fun getSelectedChildIdx():Int{
-//        return selectedChildIdx
-//    }
-//    fun setSelectedChildIdx(idx: Int){
-//        selectedChildIdx = idx
-//    }
 }
