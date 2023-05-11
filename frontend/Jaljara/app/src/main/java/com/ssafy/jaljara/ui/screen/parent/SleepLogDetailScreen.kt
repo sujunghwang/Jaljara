@@ -89,7 +89,7 @@ fun SettingTime(modifier: Modifier = Modifier, @DrawableRes draw: Int, descripti
                 .padding(8.dp)
         ) {
             Text(text = description, style = MaterialTheme.typography.titleSmall)
-            Text(text = time, textAlign = TextAlign.Center)
+            Text(text = time, textAlign = TextAlign.Center, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -412,8 +412,7 @@ fun SleepLogDetailScreen(
                             .fillMaxHeight(0.1f)
                             .padding(16.dp),
                         textAlign = TextAlign.Center,
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.titleLarge
                     )
                     Row() {
                         Column(
@@ -459,7 +458,7 @@ fun SleepLogDetailScreen(
                                 .weight(1f)
                                 .padding(16.dp)
                         ) {
-                            Text(text = "수면달성도")
+                            Text(text = "수면달성도", style = MaterialTheme.typography.titleSmall)
                             ArtBox(
                                 modifier = Modifier
                                     .fillMaxSize()
@@ -477,7 +476,7 @@ fun SleepLogDetailScreen(
                                 .weight(1f)
                                 .padding(16.dp)
                         ) {
-                            Text(text = "미션달성")
+                            Text(text = "미션달성", style = MaterialTheme.typography.titleSmall)
                             ArtBox(
                                 modifier = Modifier
                                     .fillMaxSize()
