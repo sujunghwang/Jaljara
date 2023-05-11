@@ -23,6 +23,7 @@ import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.screen.StarLink
 import com.ssafy.jaljara.ui.screen.parent.ParentScreen
 import com.ssafy.jaljara.ui.vm.ChildViewModel
+import com.ssafy.jaljara.ui.vm.ContentsViewModel
 
 
 /**
@@ -36,7 +37,9 @@ enum class ChildScreen(@StringRes val title: Int, val url: String) {
     StarLink(title = R.string.star_link, "/starlink"),
     Contents(title = R.string.contents, "/contents"),
     Coupon(title = R.string.coupon, "/coupons"),
-    Mission(title = R.string.mission, "/mission")
+    Mission(title = R.string.mission, "/mission"),
+    ContentsDetail(title = R.string.content, "/content")
+
 }
 
 
@@ -75,6 +78,7 @@ fun ChildNavigationBar(
 @Composable
 fun ChildApp(
     viewModel: ChildViewModel = viewModel(),
+    viewModelContents: ContentsViewModel = viewModel(),
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
@@ -93,7 +97,7 @@ fun ChildApp(
         },
     ) { innerPadding ->
         val uiState by viewModel.uiState.collectAsState()
-
+        val _uiState by viewModelContents._contentsListUiState.collectAsState()
         NavHost(
             navController = navController,
             startDestination = ChildScreen.Start.url,
@@ -114,6 +118,7 @@ fun ChildApp(
             }
             composable(route = ChildScreen.Contents.url) {
                 // 컨텐츠 함수
+//                ContentsView(contentsViewModel = )
             }
             composable(route = ChildScreen.Coupon.url) {
                 // 쿠폰 함수
@@ -122,6 +127,17 @@ fun ChildApp(
             composable(route = ChildScreen.Mission.url) {
                 // 미션 함수
                 ChildMission(viewModel)
+            }
+            composable(route = ChildScreen.Contents.url) {
+                ContentsView(viewModelContents,
+                    onClickContents = {
+                        navController.navigate(ChildScreen.ContentsDetail.url)
+                    }
+                )
+            }
+            composable(route = ChildScreen.ContentsDetail.url) {
+                // 미션 함수
+                ContentsDetailView(viewModelContents)
             }
         }
     }
