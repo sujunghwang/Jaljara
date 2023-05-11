@@ -19,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -284,10 +285,8 @@ fun ChildMainScreenView() {
                 dummyChildSleepInfo.targetBedTime,
                 dummyChildSleepInfo.targetWakeupTime
             )
-            RewardStatusContainer(dummyChildSleepInfo.streakCount,onClickCoupon = {
-                Log.d("쿠폰페이지로 이동", "click")
-            })
-            ContentContainer(contents = DummyDataProvider.contentList)
+            RewardStatusContainer(dummyChildSleepInfo.streakCount)
+            ContentContainer(soundContents = DummyDataProvider.contentSoundList)
         }
     }
 }
