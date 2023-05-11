@@ -18,9 +18,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.data.ContentsInfo
-import com.ssafy.jaljara.data.ContentsListUiState
-import com.ssafy.jaljara.data.SoundContent
 import com.ssafy.jaljara.ui.screen.child.ui.theme.JaljaraTheme
 import com.ssafy.jaljara.ui.vm.ContentsViewModel
 

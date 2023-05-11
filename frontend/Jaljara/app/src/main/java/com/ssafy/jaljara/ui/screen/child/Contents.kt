@@ -31,7 +31,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.ContentsInfo
-import com.ssafy.jaljara.data.SoundContent
 import com.ssafy.jaljara.ui.vm.ContentsViewModel
 
 
@@ -84,8 +83,6 @@ fun ContentsListView(
             androidx.compose.material3.Text(
                 text = "컨텐츠 페이지",
                 style = typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                fontSize = 30.sp
             )
         }
         Column(
