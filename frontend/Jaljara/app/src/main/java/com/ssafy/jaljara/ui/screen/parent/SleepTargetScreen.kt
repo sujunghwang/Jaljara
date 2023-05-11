@@ -50,6 +50,10 @@ fun SetTimeScreen(viewModel : ParentViewModel){
     val toast = Toast.makeText(LocalContext.current, "목표 수면 시간 설정 완료", Toast.LENGTH_SHORT)
 
     LaunchedEffect(Unit){
+        viewModel.getChildSleepInfo(1)
+    }
+
+    LaunchedEffect(viewModel.childSleepResponse){
 
         bedTime = LocalTime.parse(viewModel.childSleepResponse.targetBedTime, DateTimeFormatter.ofPattern("HH:mm"))
         wakeupTime = LocalTime.parse(viewModel.childSleepResponse.targetWakeupTime, DateTimeFormatter.ofPattern("HH:mm"))
@@ -61,7 +65,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
         var wakeupTimeInt = wakeupTime.hour * 60 + wakeupTime.minute
         if(bedTimeInt >= 1080)
             bedTimeInt -= 1440
-        if(wakeupTimeInt >= 1080)
+        if(wakeupTimeInt > 1080)
             wakeupTimeInt -= 1440
 
         sliderPosition = bedTimeInt.toFloat()..wakeupTimeInt.toFloat()
@@ -111,9 +115,12 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                             .fillMaxWidth()
                             .fillParentMaxHeight(0.2f)
                     ){
-                        Text(text = "x", modifier = Modifier.align(Alignment.TopEnd).padding(end = 8.dp).clickable{
-                            tipClosed = true
-                        })
+                        Text(text = "x", modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(end = 8.dp)
+                            .clickable {
+                                tipClosed = true
+                            })
                         Text(text = "학동기(6~12세) 권장 수면 시간은 10 ~ 11시간\n" +
                                 "청소년기(12~18세) 권장 수면 시간은 9 ~ 9.25시간",
                             modifier = Modifier.align(Alignment.Center),
@@ -283,7 +290,6 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                 Button(
                     onClick = {
                         viewModel.setTargetSleepTime(1, bedTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")), wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
-                        viewModel.getChildSleepInfo(1)
                         toast.show()
                     },
                     contentPadding = PaddingValues(12.dp),
