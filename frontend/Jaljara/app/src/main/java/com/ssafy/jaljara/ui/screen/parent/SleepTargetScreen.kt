@@ -114,8 +114,8 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                         Text(text = "x", modifier = Modifier.align(Alignment.TopEnd).padding(end = 8.dp).clickable{
                             tipClosed = true
                         })
-                        Text(text = "학동기(6~12세) 수면 시간은 최소 10 ~ 11시간\n" +
-                                "청소년기(12~18세) 수면 시간은 최소 9 ~ 9.25시간",
+                        Text(text = "학동기(6~12세) 권장 수면 시간은 10 ~ 11시간\n" +
+                                "청소년기(12~18세) 권장 수면 시간은 9 ~ 9.25시간",
                             modifier = Modifier.align(Alignment.Center),
                             style = MaterialTheme.typography.bodyMedium
                         )

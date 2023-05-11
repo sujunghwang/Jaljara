@@ -7,12 +7,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -66,7 +69,7 @@ fun StarLink(childViewModel: ChildViewModel){
                 ) {
                     Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon")
                     Text(
-                        text = "수면 별자리",
+                        text = "바른 수면 별자리",
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -100,7 +103,9 @@ fun StarLink(childViewModel: ChildViewModel){
                         Image(
                             painter = painterResource(id = R.drawable.reward),
                             contentDescription = null,
-                            modifier = Modifier.size(56.dp).padding(end = 8.dp)
+                            modifier = Modifier
+                                .size(60.dp)
+                                .padding(end = 6.dp)
                         )
                         Text(
                             text = "${childSleepInfo.streakCount} / 7",
@@ -108,6 +113,7 @@ fun StarLink(childViewModel: ChildViewModel){
                             fontSize = 24.sp
                         )
                     }
+                    Icon(Icons.Filled.OpenInNew, null, Modifier.align(Alignment.TopEnd).size(24.dp).padding(4.dp))
                 }
 
                 Button(
@@ -156,28 +162,30 @@ fun RewardDialog(reward: String, onDismiss: () -> Unit) {
     ) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .fillMaxHeight(0.45f),
             shape = RoundedCornerShape(16.dp)
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .background(color = Color(0xFF674AB3)),
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.primary)
+                    .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.SpaceAround
             ) {
                 Image(
                     modifier = Modifier
-                        .padding(top = 16.dp, bottom = 16.dp),
-                    painter = painterResource(id = R.drawable.baseline_card_giftcard_24),
-                    contentDescription = "gift image"
+                        .size(64.dp)
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(50)),
+                    painter = painterResource(id = R.drawable.rabbit),
+                    contentDescription = null
                 )
-                Spacer(modifier = Modifier.size(16.dp))
                 Text(
-                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+                    modifier = Modifier.padding(8.dp).fillMaxWidth(),
                     text = reward,
-                    textAlign = TextAlign.Justify,
+                    textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.titleSmall
                 )
             }
