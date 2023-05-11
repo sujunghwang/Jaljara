@@ -89,13 +89,14 @@ fun ParentMainView(parentViewModel: ParentViewModel,
         val todayMission = parentViewModel.todayMissionResponse
 
         Children(parentViewModel, childList, userId)
-            CurrentRewardContainer(R.drawable.reward_2,"현재 보상", childSleepInfo.currentReward)
-            CurrentRewardContainer(R.drawable.current_reward_2,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
+            if(childSleepInfo.currentReward.isBlank()) CurrentRewardContainer(R.drawable.reward,"현재 보상", "보상을 입력해 주세요!")
+            else CurrentRewardContainer(R.drawable.reward,"현재 보상", childSleepInfo.currentReward)
+            CurrentRewardContainer(R.drawable.current_reward,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
             Row(modifier = Modifier.fillMaxWidth()) {
-                ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up",
+                ChildSetTimeCard(painterResource(id = R.drawable.wake_up),"Wake Up",
                     "${childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
                 Spacer(modifier = Modifier.weight(0.1f))
-                ChildSetTimeCard(img = painterResource(id = R.drawable.baseline_king_bed_24), title = "수면 설정하기",
+                ChildSetTimeCard(img = painterResource(id = R.drawable.bed_time), title = "수면 설정하기",
                     content ="${calTime(childSleepInfo)}" ,
                     modifier = Modifier
                         .weight(1f)
@@ -249,7 +250,7 @@ fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int, pare
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: Modifier = Modifier) {
     Card(
@@ -263,15 +264,16 @@ fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: M
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                GlideImage(
-                    model = img,
-                    contentDescription = null,
-                )
-//                Image(painter = img,
+//                GlideImage(
+//                    model = img,
 //                    contentDescription = null,
-//                    modifier = Modifier.size(110.dp, 110.dp)
-//                        .padding(15.dp)
 //                )
+                Image(painter = painterResource(id = img),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(110.dp, 110.dp)
+                        .padding(15.dp)
+                )
                 Column() {
                     Text(text = title, style = MaterialTheme.typography.titleSmall)
                     Text(text = "$content")
