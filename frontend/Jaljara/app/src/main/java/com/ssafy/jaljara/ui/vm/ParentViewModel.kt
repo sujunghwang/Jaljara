@@ -53,6 +53,7 @@ class ParentViewModel : ViewModel() {
                 Log.d("아이 수면 목표 조회 API 호출 - childId","$childId")
                 val childSleepInfo = apiService.getChildSleepInfo(childId)
                 childSleepResponse = childSleepInfo
+                Log.d("아이 수면 목표 조회 API 호출 - childId","$childSleepResponse")
             }
             catch (e:Exception){
                 errorMessage = e.cause.toString()
@@ -93,22 +94,40 @@ class ParentViewModel : ViewModel() {
         }
     }
 
+//    var children: List<ChildInfo> by mutableStateOf(listOf())
     var childList: List<ChildInfo> by mutableStateOf(listOf())
-    fun getChildList(parentId : Long){
+    fun getChildList(parentId : Long): List<ChildInfo>{
+        var childListResponse: List<ChildInfo> = listOf()
         viewModelScope.launch {
             try{
                 UiState.Success(childList)
-                Log.d("아이리스트 API 호출 - parentId","$parentId")
-                val childListResponse = ParentApi.retrofitService.getChildList(parentId)
+                childListResponse = ParentApi.retrofitService.getChildList(parentId)
                 childList = childListResponse
+            }catch (e:Exception){
+                errorMessage = e.message.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+        return childListResponse
+    }
+
+//    fun getChildren(){
+//        children=childList
+//    }
+
+    var selectedChildIdx by mutableStateOf(0)
+
+    fun deleteChild(childId : Long){
+        viewModelScope.launch {
+            try{
+                Log.d("아이 등록 해제 API 호출 - childId","$childId")
+                ParentApi.retrofitService.deleteChild(childId)
             }catch (e:Exception){
                 errorMessage = e.cause.toString()
                 Log.d("errorMessage","$errorMessage")
             }
         }
     }
-
-    var selectedChildIdx by mutableStateOf(0)
 
 //    fun getSelectedChildIdx():Int{
 //        return selectedChildIdx

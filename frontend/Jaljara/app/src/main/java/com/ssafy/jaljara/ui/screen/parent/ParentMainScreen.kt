@@ -3,7 +3,9 @@ package com.ssafy.jaljara.ui.screen
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -49,9 +51,12 @@ import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import java.text.SimpleDateFormat
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ParentMainView(parentViewModel: ParentViewModel,
                    onClickMissionParent: () -> Unit,
@@ -74,9 +79,9 @@ fun ParentMainView(parentViewModel: ParentViewModel,
 
 
         parentViewModel.getChildList(userId)
-//        val childIdx = parentViewModel.getSelectedChildIdx()
         val childIdx = parentViewModel.selectedChildIdx
 
+//        parentViewModel.getChildren()
         val childList = parentViewModel.childList
         val childPk = if(childList.isNotEmpty()) childList[childIdx].userId else null
 
@@ -88,22 +93,25 @@ fun ParentMainView(parentViewModel: ParentViewModel,
         val childSleepInfo = parentViewModel.childSleepResponse
         val todayMission = parentViewModel.todayMissionResponse
 
-        Children(parentViewModel, childList)
-//            CurrentRewardContainer(painterResource(R.drawable.current_reward),"현재 보상", childSleepInfo.currentReward)
-//            CurrentRewardContainer(painterResource(id = R.drawable.today_mission),"오늘의 미션", todayMission.content)
+        Children(parentViewModel, childList, userId)
             CurrentRewardContainer(R.drawable.reward_2,"현재 보상", childSleepInfo.currentReward)
             CurrentRewardContainer(R.drawable.current_reward_2,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
             Row(modifier = Modifier.fillMaxWidth()) {
                 ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up",
                     "${childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
                 Spacer(modifier = Modifier.weight(0.1f))
-                ChildSetTimeCard(
+                ChildSetTimeCard(img = painterResource(id = R.drawable.baseline_king_bed_24), title = "수면 설정하기",
+                    content ="${calTime(childSleepInfo)}" ,
                     modifier = Modifier
                         .weight(1f)
-                        .clickable { onClickSetTime() },
-                    img = painterResource(id = R.drawable.baseline_king_bed_24),
-                    title = "수면 설정하기",
-                    content = "8H")
+                        .clickable { onClickSetTime() })
+//                ChildSetTimeCard(
+//                    modifier = Modifier
+//                        .weight(1f)
+//                        .clickable { onClickSetTime() },
+//                    img = painterResource(id = R.drawable.baseline_king_bed_24),
+//                    title = "수면 설정하기",
+//                    content = "8H")
             }
         }
 }
@@ -113,7 +121,7 @@ fun ParentMainView(parentViewModel: ParentViewModel,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>){
+fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>, parentId: Long){
 
     Card(
         modifier = Modifier
@@ -128,13 +136,16 @@ fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>){
             ) {
 
                 itemsIndexed(children){ index, item ->
-                    Child(parentViewModel, item, index)
+                    Child(parentViewModel, item, index, parentId)
                 }
                 item(){
                     Image(painter = painterResource(id = R.drawable.ic_person_add),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(50.dp,50.dp)
+                            .size(50.dp, 50.dp)
+                            .clickable {
+                                Log.d("아이등록 API 요청", "여기다가 뭘할까")
+                            }
                     )
                 }
             }
@@ -145,7 +156,7 @@ fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>){
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int) {
+fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int, parentId:Long) {
     var showDialog by remember { mutableStateOf(false) }
     //var selectedChildId by remember { mutableStateOf(selectedChildId) }
 
@@ -178,7 +189,6 @@ fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int) {
                 .clip(CircleShape)
                 .border(
                     // selectedChildId와 현재 Child의 childInfo.userId가 같을 경우 border표시
-//                    width = if (parentViewModel.getSelectedChildIdx() == idx) 5.dp else 0.dp,
                     width = if (parentViewModel.selectedChildIdx == idx) 5.dp else 0.dp,
                     brush = Brush.verticalGradient(listOf(Color.Red, Color.Blue)),
                     shape = CircleShape
@@ -191,8 +201,7 @@ fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int) {
                         },
                         onTap = {
                             Log.d("아이 선택", "${childInfo.userId}")
-//                            state.selectedChildrenIdx = idx
-                            parentViewModel.selectedChildIdx=idx
+                            parentViewModel.selectedChildIdx = idx
                         }
                     )
                 }
@@ -226,9 +235,11 @@ fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int) {
                     modifier = Modifier
                         .padding(end = 8.dp)
                         .clickable {
-                            //아이 삭제 로직 구현
                             //아이 등록 해제 api call
+                            parentViewModel.deleteChild(childInfo.userId)
                             //=>전체 아이 리스트 api call
+                            parentViewModel.childList = parentViewModel.getChildList(parentId)
+                            parentViewModel.selectedChildIdx = 0
                             showDialog = false
                         },
                     color = Color.Red,
@@ -312,6 +323,28 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun calTime(childSleepInfo: ChildSleepInfo): String {
+
+    var bedTime = LocalTime.parse(childSleepInfo.targetBedTime, DateTimeFormatter.ofPattern("HH:mm"))
+    var wakeupTime = LocalTime.parse(childSleepInfo.targetWakeupTime, DateTimeFormatter.ofPattern("HH:mm"))
+
+    Log.d("베드타임", bedTime.toString())
+    Log.d("웨이크업타임", wakeupTime.toString())
+
+    var bedTimeInt = bedTime.hour * 60 + bedTime.minute
+    var wakeupTimeInt = wakeupTime.hour * 60 + wakeupTime.minute
+    if (bedTimeInt > wakeupTimeInt)
+        bedTimeInt -= 1440
+
+    var sleepTime = LocalTime.of((wakeupTimeInt - bedTimeInt) / 60, (wakeupTimeInt - bedTimeInt) % 60)
+
+    var text = "${sleepTime.hour}H"
+
+    return text
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun ParentMainScreenView() {
