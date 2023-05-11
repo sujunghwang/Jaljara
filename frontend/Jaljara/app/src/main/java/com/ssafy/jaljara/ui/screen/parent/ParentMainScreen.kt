@@ -326,6 +326,8 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
 @RequiresApi(Build.VERSION_CODES.O)
 fun calTime(childSleepInfo: ChildSleepInfo): String {
 
+    if(childSleepInfo.targetBedTime.isBlank()) return "수면설정을 진행해 주세요!"
+
     var bedTime = LocalTime.parse(childSleepInfo.targetBedTime, DateTimeFormatter.ofPattern("HH:mm"))
     var wakeupTime = LocalTime.parse(childSleepInfo.targetWakeupTime, DateTimeFormatter.ofPattern("HH:mm"))
 
