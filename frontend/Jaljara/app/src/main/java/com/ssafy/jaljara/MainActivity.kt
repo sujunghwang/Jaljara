@@ -34,8 +34,8 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             JaljaraTheme {
-                ChildApp(childViewModel)
-//                ParentApp(parentViewModel)
+//                ChildApp(childViewModel)
+                ParentApp(parentViewModel)
 //                LandingApp()
             }
         }
