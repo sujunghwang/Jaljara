@@ -54,7 +54,6 @@ enum class ChildScreen(@StringRes val title: Int, val url: String) {
     Coupon(title = R.string.coupon, "/coupons"),
     Mission(title = R.string.mission, "/mission"),
     ContentsDetail(title = R.string.content, "/content")
-
 }
 
 
@@ -173,16 +172,14 @@ fun ChildApp(
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-//@Composable
 @SuppressLint("UnspecifiedImmutableFlag")
 fun setAlarm(context: Context, targetBedTime:String){
-//    val timeSec = System.currentTimeMillis() + 5000
-//    val temp = "12:25"
-    Log.d("설정 수면 시간", targetBedTime)
-    if(targetBedTime != "") {
+    if(targetBedTime != ""){
+        //    val timeSec = System.currentTimeMillis() + 5000
+        //    val temp = "12:25"
+        Log.d("설정 수면 시간", targetBedTime)
         val now = LocalDateTime.now()
         val timeArr = targetBedTime.split(":")
-//        val timeArr = temp.split(":")
         val hour = timeArr[0]
         val minute = timeArr[1]
         val temptime = LocalDateTime.of(now.year, now.monthValue, now.dayOfMonth, hour.toInt(), minute.toInt(), 0)

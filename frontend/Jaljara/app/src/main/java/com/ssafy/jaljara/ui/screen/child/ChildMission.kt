@@ -34,7 +34,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.todayMission2
-import com.ssafy.jaljara.ui.screen.parent.AudioSlider
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
@@ -75,7 +74,21 @@ fun ChildMission(childViewModel :ChildViewModel){
         childViewModel.getTodayMission(1)
 //        val mission = todayMission2
 
-        Text(text = mission.content, color = Color.White)
+        Row(
+            modifier = Modifier.fillMaxHeight(0.2f).padding(top = 20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon")
+            Text(
+                text = "오늘의 미션",
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+
+        Text(
+            text = mission.content,
+            color = Color.White,
+            style = MaterialTheme.typography.titleSmall)
         if (mission.missionType=="IMAGE"){
             Box(){
                 Log.d("isFirst 상태", "$isFirst")
@@ -398,6 +411,7 @@ fun AudioSlider(player : MediaPlayer?) {
         }
 
         Slider(
+            modifier = Modifier.fillMaxWidth(0.8f),
             value = position,
             valueRange = 0F..player.duration.toFloat(),
             onValueChange = {
