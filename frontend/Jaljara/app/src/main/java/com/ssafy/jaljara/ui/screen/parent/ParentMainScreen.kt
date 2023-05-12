@@ -218,15 +218,6 @@ fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>, parent
                         )
                     },
                     dismissButton = {
-                        Text(
-                            text = "취소",
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                                .clickable {
-                                    showDialog = false
-                                },
-                            color = Color.Blue,
-                        )
                     }
                 )
             }
