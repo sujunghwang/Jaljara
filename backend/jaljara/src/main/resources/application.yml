@@ -42,10 +42,10 @@ spring:
       write-dates-as-timestamps: false
     time-zone: Asia/Seoul
 
-  http:
+  servlet:
     multipart:
-      maxFileSize: 10GB
-      maxRequestSize: 10GB
+      maxFileSize: 10MB
+      maxRequestSize: 10MB
 
   redis:
     host: 172.17.0.1
