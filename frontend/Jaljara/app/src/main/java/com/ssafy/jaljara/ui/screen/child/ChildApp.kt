@@ -131,12 +131,15 @@ fun ChildApp(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = ChildScreen.Start.url) {
-                ChildMainView(viewModel,
+                ChildMainView(viewModel,viewModelContents,
                     onClickMission = {
                         navController.navigate(ChildScreen.Mission.url)
                     },
                     onClickCoupon ={
-                        navController.navigate(ChildScreen.Coupon.url)
+                        navController.navigate(ChildScreen.StarLink.url)
+                    },
+                    onClickContent = {
+                        navController.navigate(ChildScreen.ContentsDetail.url)
                     }
                 )
             }
