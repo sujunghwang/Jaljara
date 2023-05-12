@@ -41,6 +41,7 @@ import com.ssafy.jaljara.R
 import com.ssafy.jaljara.manager.SleepManager
 import com.ssafy.jaljara.manager.SleepManager.registerForSleepUpdates
 import com.ssafy.jaljara.ui.screen.StarLink
+import com.ssafy.jaljara.ui.screen.parent.ParentScreen
 import com.ssafy.jaljara.ui.theme.DarkNavy
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import java.time.LocalDateTime
@@ -97,7 +98,9 @@ fun ChildNavigationBar(
                 label = { Text(stringResource(id = item.route.title), style = MaterialTheme.typography.titleSmall) },
                 selected = selectedItem == index,
                 onClick = {
-                    navController.navigate(item.route.url)
+                    navController.navigate(item.route.url){
+                        popUpTo(ChildScreen.Start.url)
+                    }
                     onChangeNavIdx(index)
                 }
             )
@@ -124,15 +127,17 @@ fun ChildApp(
 
     setAlarm(LocalContext.current, sleepInfo.targetBedTime)
 
+    val uiState by viewModel.uiState.collectAsState()
+
     Scaffold(
         bottomBar = {
-            ChildNavigationBar(
+            if(uiState.showNavigation){ChildNavigationBar(
                 navController = navController,
                 selectedItem = navBarSelectedItem,
                 onChangeNavIdx = {
                     navBarSelectedItem = it
                 }
-            )
+            )}
         },
     ) { innerPadding ->
         val uiState by viewModel.uiState.collectAsState()
@@ -143,6 +148,9 @@ fun ChildApp(
             modifier = modifier.padding(innerPadding)
         ) {
             composable(route = ChildScreen.Start.url) {
+
+                viewModel.setNavShow(true)
+
                 ChildMainView(viewModel,viewModelContents,
                     onClickMission = {
                         navController.navigate(ChildScreen.Mission.url)
@@ -155,31 +163,43 @@ fun ChildApp(
                         navController.navigate(ChildScreen.ContentsDetail.url)
                     }
                 )
+
+                navBarSelectedItem = 0
             }
             composable(route = ChildScreen.StarLink.url) {
+
+                viewModel.setNavShow(true)
+
                 StarLink(viewModel)
+
+                navBarSelectedItem = 1
             }
             composable(route = ChildScreen.Contents.url) {
-                // 컨텐츠 함수
-//                ContentsView(contentsViewModel = )
-            }
-            composable(route = ChildScreen.Coupon.url) {
-                // 쿠폰 함수
-                CouponScreen(viewModel)
-            }
-            composable(route = ChildScreen.Mission.url) {
-                // 미션 함수
-                ChildMission(viewModel)
-            }
-            composable(route = ChildScreen.Contents.url) {
+
+                viewModel.setNavShow(true)
+
                 ContentsView(viewModelContents,
                     onClickContents = {
                         navController.navigate(ChildScreen.ContentsDetail.url)
                     }
                 )
+
+                navBarSelectedItem = 2
+            }
+            composable(route = ChildScreen.Coupon.url) {
+                viewModel.setNavShow(true)
+                // 쿠폰 함수
+                CouponScreen(viewModel)
+                navBarSelectedItem = 3
+            }
+            composable(route = ChildScreen.Mission.url) {
+                viewModel.setNavShow(true)
+                // 미션 함수
+                ChildMission(viewModel)
+                navBarSelectedItem = 4
             }
             composable(route = ChildScreen.ContentsDetail.url) {
-                // 미션 함수
+                viewModel.setNavShow(false)
                 ContentsDetailView(viewModelContents)
             }
         }
