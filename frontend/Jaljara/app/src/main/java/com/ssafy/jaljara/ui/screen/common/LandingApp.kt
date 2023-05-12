@@ -16,7 +16,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.gson.reflect.TypeToken
 import com.kakao.sdk.common.KakaoSdk
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.component.NightForestBackGround
 import com.ssafy.jaljara.data.UserInfoWithTokens
 import com.ssafy.jaljara.data.UserType
 import com.ssafy.jaljara.ui.screen.child.ChildApp
