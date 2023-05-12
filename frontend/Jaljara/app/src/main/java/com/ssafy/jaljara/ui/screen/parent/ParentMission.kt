@@ -74,89 +74,92 @@ fun ParentMission(viewModel: ParentViewModel){
         if (mission.missionType == "IMAGE") {
             Box() {
                 mission.url?.let {
-                    AsyncImage(
-                        model = mission.url,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .fillMaxHeight(0.8f)
-                    )
+                    Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                        AsyncImage(
+                            model = mission.url,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f)
+                                .fillMaxHeight(0.8f)
+                        )
+                        if (missionClear){
+                            Button(onClick = {  },
+                                colors = ButtonDefaults.buttonColors(Color.Gray)) {
+                                Text("승인 완료", color = Color.Red)
+                            }
+                        } else {
+                            Button(onClick = {
+                                viewModel.setMissionClear(viewModel.selectedChildId)
+                                missionClear = true
+                            }) {
+                                Text("승인", color = Color.Red)
+                            }
+                        }
+                    }
+
                 } ?: Text(text = "아직 오늘의 미션을 수행하지 않았습니다.`")
             }
-            if (missionClear){
-                Button(onClick = {  },
-                    colors = ButtonDefaults.buttonColors(Color.Gray)) {
-                    Text("승인 완료", color = Color.Red)
-                }
-            } else {
-                Button(onClick = {
-                    viewModel.setMissionClear(viewModel.selectedChildId)
-                    missionClear = true
-                }) {
-                    Text("승인", color = Color.Red)
-                }
-            }
+
+
         }
         else {
-            if(mission.url != null){
-                var player : MediaPlayer? = remember {
-                    MediaPlayer().apply {
-                        setAudioAttributes(
-                            AudioAttributes.Builder()
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                .build()
-                        )
-                        try {
-                            setDataSource(mission.url)
-                        } catch (e: IllegalArgumentException) {
-                            e.printStackTrace()
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
+            mission.url?.let{
+                Column(verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    var player : MediaPlayer? = remember {
+                        MediaPlayer().apply {
+                            setAudioAttributes(
+                                AudioAttributes.Builder()
+                                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                    .build()
+                            )
+                            try {
+                                setDataSource(mission.url)
+                            } catch (e: IllegalArgumentException) {
+                                e.printStackTrace()
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
 
-                        // 백그라운드 스레드에서 미디어 준비
-                        prepareAsync()
-                    }
-                }
-
-                //  compose가 회수될 때 media player 객체 파괴
-                DisposableEffect(
-                    Column() {
-                        var playerPrepared by remember { mutableStateOf(false) }
-                        player?.setOnPreparedListener {
-                            playerPrepared = true
-                        }
-                        if(playerPrepared){
-                            AudioSlider(player = player)
+                            // 백그라운드 스레드에서 미디어 준비
+                            prepareAsync()
                         }
                     }
-                ){
-                    // AudioSlider가 파괴 될 때
-                    // media player 회수
-                    onDispose{
-                        player?.release()
-                        player = null
-                        Log.d("onDispose", "media player 파괴")
+
+                    //  compose가 회수될 때 media player 객체 파괴
+                    DisposableEffect(
+                        Column() {
+                            var playerPrepared by remember { mutableStateOf(false) }
+                            player?.setOnPreparedListener {
+                                playerPrepared = true
+                            }
+                            if(playerPrepared){
+                                AudioSlider(player = player)
+                            }
+                        }
+                    ){
+                        // AudioSlider가 파괴 될 때
+                        // media player 회수
+                        onDispose{
+                            player?.release()
+                            player = null
+                            Log.d("onDispose", "media player 파괴")
+                        }
+                    }
+                    if (missionClear){
+                        Button(onClick = {  },
+                            colors = ButtonDefaults.buttonColors(Color.Gray)) {
+                            Text("승인 완료", color = Color.Red)
+                        }
+                    } else {
+                        Button(onClick = {
+                            viewModel.setMissionClear(viewModel.selectedChildId)
+                            missionClear = true
+                        }) {
+                            Text("승인", color = Color.Red)
+                        }
                     }
                 }
-            } else{
-                Text(text = "아직 오늘의 미션을 수행하지 않았습니다.")
-            }
-
-
-            if (missionClear){
-                Button(onClick = {  },
-                    colors = ButtonDefaults.buttonColors(Color.Gray)) {
-                    Text("승인 완료", color = Color.Red)
-                }
-            } else {
-                Button(onClick = {
-                    viewModel.setMissionClear(viewModel.selectedChildId)
-                    missionClear = true
-                }) {
-                    Text("승인", color = Color.Red)
-                }
-            }
+            } ?: Text(text = "아직 오늘의 미션을 수행하지 않았습니다.")
         }
 
     }
