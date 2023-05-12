@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,7 +36,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.component.NightForestBackGround
 import com.ssafy.jaljara.data.MissionLog
 import com.ssafy.jaljara.data.SleepLog
 import com.ssafy.jaljara.ui.component.LoadingScreen
@@ -344,9 +342,6 @@ fun SleepLogDetailScreen(
     childId : Long = 1,
     formatDate : String =  "20230502"
 ){
-
-    // api 호출 코드 필요
-
     val date: LocalDate = LocalDate.parse(formatDate, DateTimeFormatter.ofPattern("yyyyMMdd"))
 
     val dayOfWeek: DayOfWeek = date.dayOfWeek
@@ -386,128 +381,131 @@ fun SleepLogDetailScreen(
         )
     ) }
 
-    NightForestBackGround {
-        // 둘 다 로딩 중일 때
-        if(missionDetailLogViewModel.detailSleepLogUiState is UiState.Loading
-            &&missionDetailLogViewModel.missionLogUiState is UiState.Loading){
-            LoadingScreen()
-        }else{
-            // Sleep Log api가 정상적으로 호출 됐을 때
-            if(missionDetailLogViewModel.detailSleepLogUiState is UiState.Success)
-                sleepLog = (missionDetailLogViewModel.detailSleepLogUiState as UiState.Success<SleepLog>).data
+    // 둘 다 로딩 중일 때
+    if(missionDetailLogViewModel.detailSleepLogUiState is UiState.Loading
+        &&missionDetailLogViewModel.missionLogUiState is UiState.Loading){
+        LoadingScreen()
+    }else {
+        // Sleep Log api가 정상적으로 호출 됐을 때
+        if (missionDetailLogViewModel.detailSleepLogUiState is UiState.Success)
+            sleepLog =
+                (missionDetailLogViewModel.detailSleepLogUiState as UiState.Success<SleepLog>).data
 
-            if(missionDetailLogViewModel.missionLogUiState is UiState.Success)
-                missionLog = (missionDetailLogViewModel.missionLogUiState as UiState.Success<MissionLog>).data
+        if (missionDetailLogViewModel.missionLogUiState is UiState.Success)
+            missionLog =
+                (missionDetailLogViewModel.missionLogUiState as UiState.Success<MissionLog>).data
 
-            BoxWithConstraints {
-                val pageSize = this.maxHeight
-                Column(
+        BoxWithConstraints {
+            val pageSize = this.maxHeight
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    text = "$displayDate ${getWeekBydayOfWeekNumber(dayOfWeekNumber).korean}",
                     modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    Text(
-                        text = "$displayDate ${getWeekBydayOfWeekNumber(dayOfWeekNumber).korean}",
+                        .fillMaxHeight(0.1f)
+                        .padding(16.dp),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Row() {
+                    Column(
                         modifier = Modifier
-                            .fillMaxHeight(0.1f)
-                            .padding(16.dp),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                    Row() {
-                        Column(
+                            .weight(1f)
+                            .padding(8.dp)
+                    ) {
+                        Text(text = "수면시간", style = MaterialTheme.typography.titleSmall)
+                        SleepTimeCircleClock(
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(8.dp)
-                        ) {
-                            Text(text = "수면시간", style = MaterialTheme.typography.titleSmall)
-                            SleepTimeCircleClock(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(8.dp)
-                                    .height(pageSize / 4)
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
+                                .fillMaxSize()
                                 .padding(8.dp)
                                 .height(pageSize / 4)
-                        ) {
-                            SettingTime(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f),
-                                draw = R.drawable.baseline_king_bed_24,
-                                description = "취침시간",
-                                time = sleepLog.bedTime
-                            )
-                            SettingTime(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f),
-                                draw = R.drawable.baseline_alarm_24,
-                                description = "기상시간",
-                                time = sleepLog.wakeupTime
+                        )
+                    }
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                            .height(pageSize / 4)
+                    ) {
+                        SettingTime(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            draw = R.drawable.baseline_king_bed_24,
+                            description = "취침시간",
+                            time = sleepLog.bedTime
+                        )
+                        SettingTime(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            draw = R.drawable.baseline_alarm_24,
+                            description = "기상시간",
+                            time = sleepLog.wakeupTime
+                        )
+                    }
+                }
+                Row() {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(16.dp)
+                    ) {
+                        Text(text = "수면달성도", style = MaterialTheme.typography.titleSmall)
+                        ArtBox(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .height(pageSize / 4)
+                        ) { modifier ->
+                            Text(
+                                text = "${(sleepLog.sleepRate * 100).toInt()}%",
+                                modifier = modifier,
+                                fontSize = 64.sp
                             )
                         }
                     }
-                    Row() {
-                        Column(
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(16.dp)
+                    ) {
+                        Text(text = "미션달성", style = MaterialTheme.typography.titleSmall)
+                        ArtBox(
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(16.dp)
-                        ) {
-                            Text(text = "수면달성도", style = MaterialTheme.typography.titleSmall)
-                            ArtBox(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .height(pageSize / 4)
-                            ) { modifier ->
-                                Text(
-                                    text = "${(sleepLog.sleepRate*100).toInt()}%",
-                                    modifier = modifier,
-                                    fontSize = 64.sp
-                                )
-                            }
-                        }
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(16.dp)
-                        ) {
-                            Text(text = "미션달성", style = MaterialTheme.typography.titleSmall)
-                            ArtBox(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .height(pageSize / 4)
-                            ) { modifier ->
-                                if(missionLog.isSuccess){
-                                    Text(text = "COMPLETE!", modifier = modifier)
-                                }else{
-                                    Text(text = "NOT YET..", modifier = modifier)
-                                }
+                                .fillMaxSize()
+                                .height(pageSize / 4)
+                        ) { modifier ->
+                            if (missionLog.isSuccess) {
+                                Text(text = "COMPLETE!", modifier = modifier)
+                            } else {
+                                Text(text = "NOT YET..", modifier = modifier)
                             }
                         }
                     }
-                    MissionLog(
-                        expanded = expanded,
-                        onClickButton = {
-                            expanded = !expanded
-                        },
-                    ){
-                        Text(text = missionLog.content, fontSize = 24.sp, modifier = Modifier.padding(bottom =16.dp))
-                        if(missionLog.missionType == Mission.IMAGE.name){
-                            MissionLogImageDetail(
-                                modifier = Modifier.height(pageSize/2),
-                                missionLog = missionLog
-                            )
-                        }
-                        else if(missionLog.missionType == Mission.RECORD.name) {
-                            MissionLogAudioDetail(
-                                modifier = Modifier.height(pageSize/2)
-                            )
-                        }
+                }
+                MissionLog(
+                    expanded = expanded,
+                    onClickButton = {
+                        expanded = !expanded
+                    },
+                ) {
+                    Text(
+                        text = missionLog.content,
+                        fontSize = 24.sp,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    if (missionLog.missionType == Mission.IMAGE.name) {
+                        MissionLogImageDetail(
+                            modifier = Modifier.height(pageSize / 2),
+                            missionLog = missionLog
+                        )
+                    } else if (missionLog.missionType == Mission.RECORD.name) {
+                        MissionLogAudioDetail(
+                            modifier = Modifier.height(pageSize / 2)
+                        )
                     }
                 }
             }
