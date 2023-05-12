@@ -3,6 +3,7 @@ package com.ssafy.jaljara.ui.screen.common
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.activity.ChildActivity
 import com.ssafy.jaljara.data.UserType
@@ -74,7 +76,7 @@ fun LoginScreen(
                         )
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.kakao_login_medium_wide),
+                            painter = painterResource(id = R.drawable.kakao_login_large_wide),
                             contentDescription = null,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -98,13 +100,17 @@ fun LoginScreen(
                             contentColor = Color.Black
                         )
                     ) {
-                        Row {
-                            Image(
-                                painter = painterResource(id = R.drawable.google_login_normal),
-                                contentDescription = null,
-                                Modifier.wrapContentWidth(Alignment.Start)
-                            )
-                        }
+                        var drawable = AppCompatResources.getDrawable(
+                            LocalContext.current,
+                            com.google.android.gms.auth.api.R.drawable.common_google_signin_btn_icon_light_normal
+                        )
+                        Image(
+                            painter = rememberDrawablePainter(drawable = drawable),
+                            modifier = Modifier
+                                .width(50.dp),
+                            contentDescription = null,
+                            alignment = Alignment.CenterStart,
+                        )
                         Text(
                             text = "Sign With google", modifier = Modifier
                                 .padding(6.dp)
