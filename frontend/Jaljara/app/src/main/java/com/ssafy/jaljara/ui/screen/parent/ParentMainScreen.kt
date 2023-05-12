@@ -64,10 +64,6 @@ fun ParentMainView(parentViewModel: ParentViewModel,
                    userId : Long,
 ){
     val scrollState = rememberScrollState()
-//    var childSleepInfo = parentViewModel.childSleepResponse
-//    var todayMission = parentViewModel.todayMissionResponse
-//    var childList = parentViewModel.childList
-    //val state by remember { mutableStateOf(parentViewModel.uiState.value.selectedChildrenIdx)}
 
     Column(
         modifier = Modifier
@@ -81,7 +77,6 @@ fun ParentMainView(parentViewModel: ParentViewModel,
         parentViewModel.getChildList(userId)
         val childIdx = parentViewModel.selectedChildIdx
 
-//        parentViewModel.getChildren()
         val childList = parentViewModel.childList
         val childPk = if(childList.isNotEmpty()) childList[childIdx].userId else null
 
@@ -94,24 +89,18 @@ fun ParentMainView(parentViewModel: ParentViewModel,
         val todayMission = parentViewModel.todayMissionResponse
 
         Children(parentViewModel, childList, userId)
-            CurrentRewardContainer(R.drawable.reward_2,"현재 보상", childSleepInfo.currentReward)
-            CurrentRewardContainer(R.drawable.current_reward_2,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
+            if(childSleepInfo.currentReward.isBlank()) CurrentRewardContainer(R.drawable.reward,"현재 보상", "보상을 입력해 주세요!")
+            else CurrentRewardContainer(R.drawable.reward,"현재 보상", childSleepInfo.currentReward)
+            CurrentRewardContainer(R.drawable.current_reward,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
             Row(modifier = Modifier.fillMaxWidth()) {
-                ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up",
+                ChildSetTimeCard(painterResource(id = R.drawable.wake_up),"Wake Up",
                     "${childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
                 Spacer(modifier = Modifier.weight(0.1f))
-                ChildSetTimeCard(img = painterResource(id = R.drawable.baseline_king_bed_24), title = "수면 설정하기",
+                ChildSetTimeCard(img = painterResource(id = R.drawable.bed_time), title = "수면 설정하기",
                     content ="${calTime(childSleepInfo)}" ,
                     modifier = Modifier
                         .weight(1f)
                         .clickable { onClickSetTime() })
-//                ChildSetTimeCard(
-//                    modifier = Modifier
-//                        .weight(1f)
-//                        .clickable { onClickSetTime() },
-//                    img = painterResource(id = R.drawable.baseline_king_bed_24),
-//                    title = "수면 설정하기",
-//                    content = "8H")
             }
         }
 }
@@ -261,7 +250,7 @@ fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int, pare
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalGlideComposeApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: Modifier = Modifier) {
     Card(
@@ -275,15 +264,16 @@ fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: M
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                GlideImage(
-                    model = img,
-                    contentDescription = null,
-                )
-//                Image(painter = img,
+//                GlideImage(
+//                    model = img,
 //                    contentDescription = null,
-//                    modifier = Modifier.size(110.dp, 110.dp)
-//                        .padding(15.dp)
 //                )
+                Image(painter = painterResource(id = img),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(110.dp, 110.dp)
+                        .padding(15.dp)
+                )
                 Column() {
                     Text(text = title, style = MaterialTheme.typography.titleSmall)
                     Text(text = "$content")
@@ -356,25 +346,4 @@ fun ParentMainScreenView() {
         onClickSetTime={},
         userId =2,
     )
-//    val scrollState = rememberScrollState()
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxHeight()
-//            .padding(20.dp)
-//            .verticalScroll(scrollState),
-//        verticalArrangement = Arrangement.SpaceBetween
-//    ) {
-////        Children(childList)
-////            CurrentRewardContainer(painterResource(R.drawable.current_reward),"현재 보상", "놀이동산 가기")
-////            CurrentRewardContainer(painterResource(id = R.drawable.today_mission),"오늘의 미션", "이닦는 사진 찍기")
-//        CurrentRewardContainer(R.drawable.reward_2,"현재 보상", "놀이동산 가기")
-//        CurrentRewardContainer(R.drawable.current_reward_2,"오늘의 미션", "이닦는 사진 찍기")
-//        Row(modifier = Modifier.fillMaxWidth()) {
-//            ChildSetTimeCard(painterResource(id = R.drawable.baseline_alarm_24),"Wake Up", "5:00", Modifier.weight(1f))
-//            Spacer(modifier = Modifier.weight(0.1f))
-//            ChildSetTimeCard(painterResource(id = R.drawable.baseline_king_bed_24),"수면 설정하기", "8H", Modifier.weight(1f))
-//        }
-//    }
-
 }
