@@ -146,6 +146,7 @@ fun ChildApp(
                 ChildMainView(viewModel,viewModelContents,
                     onClickMission = {
                         navController.navigate(ChildScreen.Mission.url)
+                        navBarSelectedItem = 4
                     },
                     onClickCoupon ={
                         navController.navigate(ChildScreen.StarLink.url)
