@@ -197,9 +197,14 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
-    var remainCnt by remember { mutableStateOf(0) }
-    if(streakCount<7) remainCnt=7-streakCount
-    else remainCnt=0
+    var remainText by remember { mutableStateOf("") }
+    if(streakCount<7) {
+        val remainCnt=7-streakCount
+        remainText = "${remainCnt}번만 성공하면 보상을 획득할 수 있어요!"
+    }
+    else {
+        remainText="지금 보상을 획득할 수 있어요 ☺"
+    }
 
     Column() {
 
@@ -224,7 +229,7 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
                             .size(95.dp, 100.dp)
                             .padding(start = 5.dp)
                     )
-                    Text(text = "연속 $remainCnt 번만 성공하면 보상을 획득할 수 있어요!",
+                    Text(text = "$remainText",
                         modifier = Modifier
                             .padding(16.dp)
                     )
