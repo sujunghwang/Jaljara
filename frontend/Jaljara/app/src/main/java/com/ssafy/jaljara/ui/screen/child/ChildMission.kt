@@ -15,7 +15,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PauseCircleOutline
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,6 +36,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.todayMission2
+import com.ssafy.jaljara.ui.screen.parent.convertMiliSecToMinSec
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ujizin.camposer.CameraPreview
 import com.ujizin.camposer.state.CamSelector
@@ -49,12 +52,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-enum class State() {
-    BEFORE_RECORDING,
-    ON_RECORDING,
-    AFTER_RECORDING,
-    ON_PLAYING
-}
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
@@ -71,7 +68,7 @@ fun ChildMission(childViewModel :ChildViewModel){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         val mission = childViewModel.todayMissionResponse
-        childViewModel.getTodayMission(1)
+//        childViewModel.getTodayMission(1)
 //        val mission = todayMission2
 
         Row(
@@ -394,11 +391,14 @@ private fun Context.createNewFile(type:String) = File(
 }
 
 @Composable
-fun AudioSlider(player : MediaPlayer?) {
+fun AudioSlider(modifier: Modifier = Modifier, player : MediaPlayer?) {
     var playing by remember { mutableStateOf(false) }
     var position by remember { mutableStateOf(0F) }
 
     if (player != null) {
+
+        val displayedPosition = convertMiliSecToMinSec(position)
+        val displayedDuration = convertMiliSecToMinSec(player.duration.toFloat())
 
         // playing 상태가 변경 되면
         LaunchedEffect(playing){
@@ -406,36 +406,64 @@ fun AudioSlider(player : MediaPlayer?) {
             while(playing){
                 Log.d("LaunchedEffect", "1초에 한 번 ㅋ")
                 position = player.currentPosition.toFloat()
+
                 delay(1000)
             }
         }
 
-        Slider(
-            modifier = Modifier.fillMaxWidth(0.8f),
-            value = position,
-            valueRange = 0F..player.duration.toFloat(),
-            onValueChange = {
-                position = it
-                player.seekTo(it.toInt())
-            }
-        )
+        // 초 단위가 같으면
+        if(position.toInt()/1000 == player.duration/1000){
+            position = 0F
+            player.seekTo(0)
+            player.pause()
+            playing = false
+        }
 
-        Icon(
-            imageVector = if (!playing || player.currentPosition==player.duration) Icons.Default.PlayCircleOutline else Icons.Default.PauseCircleOutline,
-            contentDescription = "image",
-            tint = Color.Red, modifier = Modifier
-                .padding(16.dp)
-                .size(20.dp)
-                .clickable(onClick = {
-                    if (player.isPlaying) {
-                        player.pause()
-                        playing = false
-                    } else {
-                        player.start()
-                        playing = true
-                    }
-                })
-        )
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = modifier.padding(0.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(modifier = modifier.fillMaxWidth(0.8f)){
+                    Text(
+                        modifier = Modifier.align(Alignment.BottomStart).padding(top = 4.dp, start = 6.dp),
+                        text = "$displayedPosition"
+                    )
+                    Text(
+                        modifier = Modifier.align(Alignment.BottomEnd).padding(top = 4.dp, end = 6.dp),
+                        text = "$displayedDuration"
+                    )
+                    Slider(
+                        modifier = Modifier.align(Alignment.TopCenter).padding(bottom = 4.dp),
+                        value = position,
+                        valueRange = 0F..player.duration.toFloat(),
+                        onValueChange = {
+                            position = it
+                            player.seekTo(it.toInt())
+                        }
+                    )
+                }
+
+                Icon(
+                    imageVector = if (!playing) Icons.Filled.PlayArrow else Icons.Filled.Pause,
+                    contentDescription = "image",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clickable(onClick = {
+                            if (player.isPlaying) {
+                                player.pause()
+                                playing = false
+                            } else {
+                                player.start()
+                                playing = true
+                            }
+                        })
+                )
+            }
+        }
     }
 }
 

@@ -110,4 +110,26 @@ class ParentViewModel : ViewModel() {
         }
     }
 
+    fun setMissionClear(childId: Long){
+        viewModelScope.launch {
+            try{
+                ParentApi.retrofitService.setMissionClear(childId)
+            }catch (e:Exception){
+                errorMessage = e.message.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
+
+    var selectedChildId by mutableStateOf(0L)
+    fun getChildIdByIdx(){
+        selectedChildId = childList[selectedChildIdx].userId
+    }
+
+//    fun getSelectedChildIdx():Int{
+//        return selectedChildIdx
+//    }
+//    fun setSelectedChildIdx(idx: Int){
+//        selectedChildIdx = idx
+//    }
 }
