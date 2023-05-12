@@ -2,16 +2,27 @@ package com.ssafy.jaljara.utils
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.Composable
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.ssafy.jaljara.data.UserType
 import com.ssafy.jaljara.ui.vm.LandingViewModel
+
+fun kakaoSignupHelper(context: Context,
+                      viewModel: LandingViewModel,
+                      userType: UserType = UserType.PARENTS,
+                      parentCode: String?
+) {
+    kakaoLoginWorker(context,
+        onTokenIdReceived = { token -> TokenHandler.getInstance().signupWithToken(token, TokenHandler.ProviderType.KAKAO, viewModel, userType, parentCode) },
+        onLoginFailed = { error -> Log.e(TAG, error)}
+    )
+}
 
 fun kakaoLoginHelper(context : Context, viewModel: LandingViewModel) {
     kakaoLoginWorker(context,
-        onTokenIdReceived = { token -> TokenHandler.getInstance().checkTokenIsValid(token, TokenHandler.ProviderType.KAKAO, viewModel) },
+        onTokenIdReceived = { token -> TokenHandler.getInstance().loginWithToken(token, TokenHandler.ProviderType.KAKAO, viewModel) },
         onLoginFailed = { error -> Log.e(TAG, error)}
     )
 }

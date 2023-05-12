@@ -1,7 +1,7 @@
 package com.ssafy.jaljara.utils
 
-import android.content.Context
 import android.util.Log
+import com.ssafy.jaljara.data.UserType
 import com.ssafy.jaljara.ui.vm.LandingViewModel
 
 class TokenHandler private constructor() {
@@ -22,12 +22,23 @@ class TokenHandler private constructor() {
         }
     }
 
-    fun checkTokenIsValid(token : String, providerType: ProviderType, viewModel: LandingViewModel) {
-        Log.e("TokenValidChecker", token)
+    fun loginWithToken(token : String,
+                       providerType: ProviderType,
+                       viewModel: LandingViewModel
+    ) {
+        Log.e("loginWithToken", "loginWithExternalToken s")
         viewModel.loginWithExternalToken(token = token, provider = providerType)
+        Log.e("loginWithToken", "loginWithExternalToken e")
     }
 
-    fun signupWithToken(token : String, providerType: ProviderType, viewModel: LandingViewModel) {
-        viewModel.signupWithExternalToken(token = token, provider = providerType)
+    fun signupWithToken(token : String,
+                        providerType: ProviderType,
+                        viewModel: LandingViewModel,
+                        userType: UserType = UserType.PARENTS,
+                        parentCode: String?
+    ) {
+        Log.e("signupWithToken", "singupExternalToken s")
+        viewModel.signupWithExternalToken(token = token, provider = providerType, userType = userType, parentCode = parentCode)
+        Log.e("signupWithToken", "singupExternalToken e")
     }
 }

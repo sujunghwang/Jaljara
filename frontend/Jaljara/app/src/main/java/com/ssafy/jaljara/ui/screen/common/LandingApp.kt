@@ -3,9 +3,7 @@ package com.ssafy.jaljara.ui.screen.common
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
@@ -20,30 +18,54 @@ import com.ssafy.jaljara.data.UserInfoWithTokens
 import com.ssafy.jaljara.data.UserType
 import com.ssafy.jaljara.ui.screen.child.ChildApp
 import com.ssafy.jaljara.ui.screen.parent.ParentApp
+import com.ssafy.jaljara.ui.vm.LandingViewModel
 import com.ssafy.jaljara.utils.PreferenceUtil
 
-enum class LandingScreens(val url: String){
+enum class LandingScreens(val url: String) {
     Landing(url = "/landing"),
     Signup(url = "/signup"),
     Login(url = "/login")
 }
 
+@SuppressLint("NewApi")
 @Composable
 fun LandingApp(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    viewModel: LandingViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    initialize()
+    val preferenceUtil = PreferenceUtil<UserInfoWithTokens>(LocalContext.current, "user")
+    when {
+        preferenceUtil.hasValue("UserInfoWithTokens") -> {
+            // 로그인 된 경우
+            val a = preferenceUtil.getValue(
+                "UserInfoWithTokens",
+                null,
+                object : TypeToken<UserInfoWithTokens>() {})
 
-    NavHost(navController = navController,
-        startDestination = LandingScreens.Landing.url,) {
-        composable(route = LandingScreens.Landing.url) {
-                LandingScreen(navigate = { navController.navigate(it) })
+            when (a!!.userInfo.userType) {
+                UserType.PARENTS -> ParentApp()
+                UserType.CHILD -> ChildApp()
+            }
         }
-        composable(route = LandingScreens.Signup.url) {
-                SignupScreen(navigate = { navController.navigate(it) })
-        }
-        composable(route = LandingScreens.Login.url) {
-                LoginScreen(navigate = { navController.navigate(it) })
+        else -> {
+            // 로그인 안된 경우
+            NavHost(
+                navController = navController,
+                startDestination = LandingScreens.Landing.url,
+            ) {
+                composable(route = LandingScreens.Landing.url) {
+                    LandingScreen(navigate = { navController.navigate(it) }, viewModel = viewModel)
+                }
+                composable(route = LandingScreens.Signup.url) {
+                    SignupScreen(navigate = { navController.navigate(it) }, viewModel = viewModel)
+                }
+                composable(route = LandingScreens.Login.url) {
+                    LoginScreen(navigate = { navController.navigate(it) }, viewModel = viewModel)
+                }
+            }
+
+            initalizeKakaoAuthentication()
+            initalizeGoogleAuthentication()
         }
     }
 }
@@ -53,25 +75,7 @@ fun LandingApp(
 private fun initialize() {
 
     // navigate to target
-    val preferenceUtil = PreferenceUtil<UserInfoWithTokens>(LocalContext.current, "user")
-    when {
-        preferenceUtil.hasValue("UserInfoWithTokens") -> {
-            // 로그인 된 경우
-            val a = preferenceUtil.getValue(
-                "UserInfoWithTokens",
-                null,
-                object : TypeToken<UserInfoWithTokens>() {})
-            when (a!!.userInfo.userType) {
-                UserType.PARENTS -> ParentApp()
-                UserType.CHILD -> ChildApp()
-            }
-        }
-        else -> {
-            // 로그인 안된 경우
-            initalizeKakaoAuthentication()
-            initalizeGoogleAuthentication()
-        }
-    }
+
 }
 
 @Composable
