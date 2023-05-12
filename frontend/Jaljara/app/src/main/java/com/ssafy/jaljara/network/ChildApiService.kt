@@ -15,11 +15,6 @@ import java.io.File
 private const val BASE_URL =
     "https://jaljara.movebxeax.me"
 
-//private val retrofit = Retrofit.Builder()
-//    .addConverterFactory(ScalarsConverterFactory.create())
-//    .baseUrl(BASE_URL)
-//    .build()
-
 interface ChildApiService {
     @GET("/api/childinfos/detail/{childId}")
     suspend fun getChildSleepInfo(@Path("childId") childId : Long) : ChildSleepInfo
@@ -51,6 +46,9 @@ interface ChildApiService {
         @Path("rewardId") rewardId : Long
     )
 
+    @GET("/api/missions/{userId}/reroll")
+    suspend fun getMissionReroll(@Path("userId") userId : Long)
+
     companion object{
         var apiService:ChildApiService? = null
         fun getInstance() : ChildApiService {
@@ -65,9 +63,3 @@ interface ChildApiService {
     }
 
 }
-
-//object ChildApi {
-//    val retrofitService : ChildApiService by lazy {
-//        retrofit.create(ChildApiService::class.java)
-//    }
-//}

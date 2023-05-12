@@ -9,13 +9,17 @@ import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.network.ChildApiService
 import com.ssafy.jaljara.network.ContentsApiService
+import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import retrofit2.HttpException
+import retrofit2.http.Path
 import java.io.File
+import java.io.IOException
 
 
 class ChildViewModel : ViewModel() {
@@ -64,12 +68,13 @@ class ChildViewModel : ViewModel() {
     }
     
     var todayMissionResponse: TodayMission by mutableStateOf(TodayMission())
-    fun getTodayMission(childId: Long){
+    fun getTodayMission(childId: Long) : TodayMission{
+        var todayMission: TodayMission = TodayMission()
         viewModelScope.launch{
             val apiService = ChildApiService.getInstance()
             try{
                 Log.d("오늘의 미션 조회 API 호출 - childId","$childId")
-                val todayMission = apiService.getTodayMission(childId)
+                todayMission = apiService.getTodayMission(childId)
                 todayMissionResponse = todayMission
             }
             catch (e:Exception){
@@ -77,6 +82,7 @@ class ChildViewModel : ViewModel() {
                 Log.d("errorMessage","$errorMessage")
             }
         }
+        return todayMission
     }
 
     var usedCouponResponse: List<UsedCoupon> by mutableStateOf(listOf())
@@ -130,12 +136,39 @@ class ChildViewModel : ViewModel() {
         viewModelScope.launch{
             val apiService = ChildApiService.getInstance()
             try{
-                Log.d("쿠폰 사용 API 호출 - rewardId","rewardId")
+                Log.d("쿠폰 사용 API 호출 - rewardId","$rewardId")
                 apiService.setCouponUsed(rewardId)
             }
             catch (e:Exception){
                 errorMessage = e.message.toString()
                 Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
+
+    var rerollUiState: UiState<String> by mutableStateOf(UiState.Success(""))
+    var reroll by mutableStateOf(3)
+    fun getMissionReroll(userId : Long){
+        rerollUiState = UiState.Loading
+        viewModelScope.launch{
+            val apiService = ChildApiService.getInstance()
+            rerollUiState = try{
+                Log.d("미션 재설정 API 호출 - userId","$userId")
+                apiService.getMissionReroll(userId)
+                UiState.Success("ok")
+            }catch (e: IOException) {
+                e.printStackTrace()
+                UiState.Error("아이오 익셉션")
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                Log.d("errorCode",e.code().toString())
+                if (e.code()==400){
+                    reroll=0
+                }
+                UiState.Error("404나 400 같은거")
+            } catch (e: Exception){
+                e.printStackTrace()
+                UiState.Error("알 수 없는 이유입니다.")
             }
         }
     }

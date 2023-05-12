@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -25,14 +26,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.himanshoe.kalendar.component.day.config.KalendarDayColors
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.Content
 import com.ssafy.jaljara.data.ContentsInfo
 import com.ssafy.jaljara.data.DummyChildSleepInfo
 import com.ssafy.jaljara.data.DummyDataProvider
+import com.ssafy.jaljara.ui.component.ErrorScreen
+import com.ssafy.jaljara.ui.component.LoadingScreen
+import com.ssafy.jaljara.ui.screen.parent.JongSeokCalendar
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ssafy.jaljara.ui.vm.ContentsViewModel
-
+import com.ssafy.jaljara.utils.UiState
 
 @Composable
 fun ChildMainView(childViewModel: ChildViewModel,
@@ -60,7 +65,7 @@ fun ChildMainView(childViewModel: ChildViewModel,
         childViewModel.getChildSleepInfo(userId)
         contentsViewModel.getContentsSoundList()
         contentsViewModel.getContentsVideoList()
-        MissionTodayContainer(todayMission.content, onClickMission)
+        MissionTodayContainer(childViewModel,todayMission.content, onClickMission,userId)
         SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
         RewardStatusContainer(childSleepInfo.streakCount, onClickCoupon)
         ContentContainer(contentsViewModel,soundContents,videoContents, onClickContent)
@@ -69,9 +74,13 @@ fun ChildMainView(childViewModel: ChildViewModel,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MissionTodayContainer(todayMission: String,
-                          onClickMission: () -> Unit = {}
+fun MissionTodayContainer(childViewModel: ChildViewModel,
+                          todayMission: String,
+                          onClickMission: () -> Unit = {},
+                          userId : Long
 ){
+    val rerollState = childViewModel.rerollUiState
+
     Column() {
         Text(text = "오늘의 미션", style = MaterialTheme.typography.titleSmall)
         Card(
@@ -85,15 +94,36 @@ fun MissionTodayContainer(todayMission: String,
                 onClickMission()
             },
             content = {
-                reloadMissionButton(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .clickable {
-                            Log.d("missionReload", "미션 재설정 호출")
-                            //미션 재설정API 호출
-
-                        },
-                )
+                when {
+                    rerollState is UiState.Loading -> LoadingScreen(modifier = Modifier.size(5.dp))
+                    rerollState is UiState.Success -> {
+                        reloadMissionButton(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .clickable {
+                                    Log.d("missionReload", "미션 재설정 호출")
+                                    childViewModel.getMissionReroll(userId)
+                                    childViewModel.todayMissionResponse = childViewModel.getTodayMission(userId)
+                                    Log.d("missionReload", "미션 재설정 완료")
+                                },
+                        )
+                    }
+                    rerollState is UiState.Error -> {
+                        if (childViewModel.reroll == 0) {
+                            val context = LocalContext.current
+                            Toast.makeText(context, "더 이상 재설정 할 수 없어요 ☹", Toast.LENGTH_LONG).show()
+                            childViewModel.rerollUiState = UiState.Success("ok")
+                        }
+                        reloadMissionButton(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .clickable {
+                                    Log.d("missionReload", "미션 재설정 호출")
+                                    childViewModel.getMissionReroll(userId)
+                                },
+                        )
+                    }
+                }
                 Text(
                     text = "$todayMission",
                     modifier = Modifier
@@ -172,6 +202,7 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
     else remainCnt=0
 
     Column() {
+
         Text(text = "보상 획득 현황", style = MaterialTheme.typography.titleSmall)
         Card(
             modifier = Modifier
