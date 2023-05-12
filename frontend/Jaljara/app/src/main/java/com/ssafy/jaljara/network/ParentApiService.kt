@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 private const val BASE_URL =
@@ -34,6 +35,9 @@ interface ParentApiService {
 
     @DELETE("/api/childinfos/{childId}")
     suspend fun deleteChild(@Path("childId") childId : Long)
+
+    @PUT("/api/missions/{childId}/clear")
+    suspend fun setMissionClear(@Path("childId") childId: Long)
 }
 
 object ParentApi {

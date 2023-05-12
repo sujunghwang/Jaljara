@@ -45,6 +45,7 @@ enum class ParentScreen(@StringRes val title : Int,  val url: String) {
     SetSleepTime(title = R.string.time_setting, "/set_sleep"),
     SleepCalendar(title = R.string.calendar, "/calendar"),
     SleepLogDetail(title = 3, "/sleep_detail"),
+    ParentMission(title = 4, "/parent_mission")
 
 }
 
@@ -121,10 +122,7 @@ fun ParentApp(
                 // 부모 메인 페이지
                 ParentMainView(viewModel,
                     onClickMissionParent = {
-                        val fomatter = DateTimeFormatter.ofPattern("yyyyMMdd")
-                        val displayDate = LocalDate.now().format(fomatter)
-
-                        navController.navigate(ParentScreen.SleepLogDetail.url+ "/"+displayDate)
+                        navController.navigate(ParentScreen.ParentMission.url)
                     },
                     onClickSetTime ={
                         navController.navigate(ParentScreen.SetSleepTime.url)
@@ -159,6 +157,11 @@ fun ParentApp(
                 viewModel.setNavShow(false)
                 // 수면 기록 상세 페이지
                 SleepLogDetailScreen(formatDate = backStackEntry.arguments?.getString("formatDate")?:"20990513")
+            }
+            composable(route = ParentScreen.ParentMission.url) {
+                    backStackEntry ->
+                viewModel.setNavShow(false)
+                ParentMission(viewModel)
             }
         }
     }
