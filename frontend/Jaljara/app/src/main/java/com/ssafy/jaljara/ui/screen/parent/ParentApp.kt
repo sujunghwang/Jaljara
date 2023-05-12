@@ -160,7 +160,7 @@ fun ParentApp(
             }
             composable(route = ParentScreen.ParentMission.url) {
                     backStackEntry ->
-                viewModel.setNavShow(false)
+                viewModel.setNavShow(true)
                 ParentMission(viewModel)
             }
         }

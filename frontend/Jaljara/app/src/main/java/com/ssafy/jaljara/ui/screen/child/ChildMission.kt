@@ -60,6 +60,7 @@ fun ChildMission(childViewModel :ChildViewModel){
     var isFirst by rememberSaveable { mutableStateOf(true) }
     var path by rememberSaveable { mutableStateOf("") }
     var isRecording by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
     Column(
         Modifier
             .fillMaxHeight()
@@ -146,7 +147,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                                         cameraState.takePicture(file) { result ->
                                             // Result는 사진이 성공적으로 저장되었는지 여부를 알려줌
                                             if (result is ImageCaptureResult.Success) { // result.savedUri might be useful to you
-                                                Toast.makeText(context, "사진찍기 성공!", Toast.LENGTH_LONG).show()
+                                                Toast.makeText(context, "사진찍기 성공!", Toast.LENGTH_SHORT).show()
                                                 Log.d("파일명", file.absolutePath)
                                                 path = file.absolutePath
                                                 prevInfo = true
@@ -197,7 +198,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                     prevInfo = false
                     isFirst = false
                 }) {
-                    Text("사진찍기", color = Color.Red)
+                    Text("다시 찍기", color = Color.Red)
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
                 Button(onClick = {
@@ -205,7 +206,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                     val requestBody: RequestBody = file.asRequestBody("image/jpg".toMediaTypeOrNull())
                     val filePart: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
 
-                    childViewModel.setMissionResult(1, filePart)
+                    childViewModel.setMissionResult(1, filePart, context)
                 }) {
                     Text("완료", color = Color.Green)
                 }
@@ -374,7 +375,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                 val requestBody: RequestBody = file.asRequestBody("audio/mp3".toMediaTypeOrNull())
                 val filePart: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
 
-                childViewModel.setMissionResult(1, filePart)
+                childViewModel.setMissionResult(1, filePart, context)
             }) {
                 Text("완료", color = Color.Green)
             }

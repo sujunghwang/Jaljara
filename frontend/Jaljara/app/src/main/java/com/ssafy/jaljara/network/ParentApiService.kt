@@ -3,10 +3,9 @@ package com.ssafy.jaljara.network
 import com.ssafy.jaljara.data.ChildInfo
 import com.ssafy.jaljara.data.MissionLog
 import com.ssafy.jaljara.data.SleepLog
-import kotlinx.coroutines.NonDisposableHandle.parent
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PUT
@@ -38,6 +37,13 @@ interface ParentApiService {
 
     @PUT("/api/missions/{childId}/clear")
     suspend fun setMissionClear(@Path("childId") childId: Long)
+
+    @PUT("/api/childinfos/reward")
+    suspend fun setReward(
+        @Body body: HashMap<String, Any>
+//        @Body childId: Long,
+//        @Body reward: String
+    )
 }
 
 object ParentApi {
