@@ -61,6 +61,7 @@ fun ParentMainView(parentViewModel: ParentViewModel,
                    userId : Long,
 ){
     val scrollState = rememberScrollState()
+    var showRewardDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -87,23 +88,65 @@ fun ParentMainView(parentViewModel: ParentViewModel,
         val childSleepInfo = parentViewModel.childSleepResponse
         val todayMission = parentViewModel.todayMissionResponse
 
-
-
         Children(parentViewModel, childList, userId, parentCode)
-            if(childSleepInfo.currentReward.isBlank()) CurrentRewardContainer(R.drawable.reward,"현재 보상", "보상을 입력해 주세요!")
+            if(childSleepInfo.currentReward.isBlank()) CurrentRewardContainer(R.drawable.reward,"현재 보상", "보상을 입력해 주세요!",
+                Modifier.pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            showRewardDialog = true
+                        }
+                    )
+                }
+            )
             else CurrentRewardContainer(R.drawable.reward,"현재 보상", childSleepInfo.currentReward)
-            CurrentRewardContainer(R.drawable.current_reward,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
-            Row(modifier = Modifier.fillMaxWidth()) {
-                ChildSetTimeCard(painterResource(id = R.drawable.wake_up),"Wake Up",
-                    "${childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
-                Spacer(modifier = Modifier.weight(0.1f))
-                ChildSetTimeCard(img = painterResource(id = R.drawable.bed_time), title = "수면 설정하기",
-                    content ="${calTime(childSleepInfo)}" ,
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { onClickSetTime() })
-            }
+        CurrentRewardContainer(R.drawable.current_reward,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
+        Row(modifier = Modifier.fillMaxWidth()) {
+            ChildSetTimeCard(painterResource(id = R.drawable.wake_up),"Wake Up",
+                "${childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(0.1f))
+            ChildSetTimeCard(img = painterResource(id = R.drawable.bed_time), title = "수면 설정하기",
+                content ="${calTime(childSleepInfo)}" ,
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable { onClickSetTime() })
         }
+    }
+
+    if (showRewardDialog) {
+        var reward by remember { mutableStateOf("") }
+        AlertDialog(
+            onDismissRequest = { showRewardDialog = false },
+            title = { Text(text = "보상을 등록해주세요", style = MaterialTheme.typography.titleMedium, color = Color.White) },
+            text = { TextField(modifier = Modifier.fillMaxWidth().height(100.dp), value = reward, onValueChange = {reward = it}) },
+            confirmButton = {
+                Text(
+                    text = "확인",
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .clickable {
+                            parentViewModel.getChildIdByIdx()
+                            Log.d("아이 아이디", "${parentViewModel.selectedChildId}")
+                            Log.d("보상 내용", reward)
+                            //보상 등록 api call
+                            parentViewModel.setReward(parentViewModel.selectedChildId, reward)
+                            showRewardDialog = false
+                        },
+                    color = Color.Red,
+                )
+            },
+            dismissButton = {
+                Text(
+                    text = "취소",
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .clickable {
+                            showRewardDialog = false
+                        },
+                    color = Color.Blue,
+                )
+            }
+        )
+    }
 }
 
 

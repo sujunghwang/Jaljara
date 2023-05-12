@@ -1,9 +1,12 @@
 package com.ssafy.jaljara.ui.vm
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.data.*
@@ -118,14 +121,16 @@ class ChildViewModel : ViewModel() {
         }
     }
 
-    fun setMissionResult(childId: Long, file : MultipartBody.Part){
+    fun setMissionResult(childId: Long, file : MultipartBody.Part, context: Context){
         viewModelScope.launch{
             val apiService = ChildApiService.getInstance()
             try{
                 Log.d("미션 수행 후 전송 API 호출 - childId","$childId, ${file.headers}")
                 apiService.setMissionResult(childId, file)
+                Toast.makeText(context, "전송 완료!", Toast.LENGTH_LONG).show()
             }
             catch (e:Exception){
+                Toast.makeText(context, "전송 실패..ㅠㅠ", Toast.LENGTH_LONG).show()
                 errorMessage = e.message.toString()
                 Log.d("errorMessage","$errorMessage")
             }

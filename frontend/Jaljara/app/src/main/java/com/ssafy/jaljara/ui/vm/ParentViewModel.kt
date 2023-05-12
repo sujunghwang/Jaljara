@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.network.ChildApiService
 import com.ssafy.jaljara.network.ParentApi
-import com.ssafy.jaljara.network.ParentApiService
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -115,6 +114,18 @@ class ParentViewModel : ViewModel() {
         viewModelScope.launch {
             try{
                 ParentApi.retrofitService.setMissionClear(childId)
+            }catch (e:Exception){
+                errorMessage = e.message.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
+
+    fun setReward(childId: Long, reward: String){
+        viewModelScope.launch {
+            try{
+                val map = mutableMapOf<String, Any>("childId" to childId, "reward" to reward)
+                ParentApi.retrofitService.setReward(map as HashMap<String, Any>)
             }catch (e:Exception){
                 errorMessage = e.message.toString()
                 Log.d("errorMessage","$errorMessage")

@@ -1,12 +1,18 @@
 package com.ssafy.jaljara.ui.screen.child
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
@@ -20,11 +26,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -32,6 +38,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.manager.SleepManager
+import com.ssafy.jaljara.manager.SleepManager.registerForSleepUpdates
 import com.ssafy.jaljara.ui.screen.StarLink
 import com.ssafy.jaljara.ui.theme.DarkNavy
 import com.ssafy.jaljara.ui.vm.ChildViewModel
@@ -56,6 +64,8 @@ enum class ChildScreen(@StringRes val title: Int, val url: String) {
     ContentsDetail(title = R.string.content, "/content")
 }
 
+
+private const val TAG = "ChildApp"
 
 data class NavigationInfo(val route: ChildScreen, val icon: ImageVector)
 @Composable
@@ -104,6 +114,8 @@ fun ChildApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
+    val activity = LocalContext.current as ComponentActivity
+
     // 하단 네비게이션 선택 애니메이션 용
     var navBarSelectedItem by rememberSaveable { mutableStateOf(0) }
 
@@ -134,6 +146,7 @@ fun ChildApp(
                 ChildMainView(viewModel,viewModelContents,
                     onClickMission = {
                         navController.navigate(ChildScreen.Mission.url)
+                        navBarSelectedItem = 4
                     },
                     onClickCoupon ={
                         navController.navigate(ChildScreen.StarLink.url)

@@ -1,4 +1,4 @@
-package com.ssafy.jaljara
+package com.ssafy.jaljara.activity
 
 import android.Manifest
 import android.os.Build
