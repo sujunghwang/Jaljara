@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <application
         android:allowBackup="true"
@@ -19,8 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jaljara"
         tools:targetApi="31">
+
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:label="@string/app_name"
@@ -32,6 +34,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".activity.ChildActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Jaljara"
+            android:screenOrientation="portrait"
+            >
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <!-- KAKAO Login Activity -->
@@ -50,12 +67,20 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".ui.screen.child.ChildAlarm"
+        <receiver
+            android:name=".ui.screen.child.ChildAlarm"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.ssafy.jaljara.ui.screen.child" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".receiver.SleepReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.ACTIVITY_RECOGNITION" />
+
     </application>
 
 </manifest>
