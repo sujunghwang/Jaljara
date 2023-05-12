@@ -64,7 +64,7 @@ public class MissionService {
 
 	// cron "초 분 시 일 월 년"
 	@Transactional
-	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 0 14 * * *", zone = "Asia/Seoul")
 	public void addMissionTodayChildren() {
 		List<User> allByUserType = userRepository.findAllByUserType(UserType.CHILD);
 		for (User user : allByUserType) {
