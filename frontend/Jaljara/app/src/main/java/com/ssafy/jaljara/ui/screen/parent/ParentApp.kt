@@ -22,9 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.screen.ParentMainView
 import com.ssafy.jaljara.ui.theme.DarkNavy
@@ -79,7 +81,9 @@ fun ParentNavigationBar(
                 label = { Text(stringResource(id = item.route.title), style = MaterialTheme.typography.titleSmall) },
                 selected = selectedItem == index,
                 onClick = {
-                    navController.navigate(item.route.url)
+                    navController.navigate(route = item.route.url){
+                        popUpTo(ParentScreen.Start.url)
+                    }
                     onChangeNavIdx(index)
                 }
             )
