@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -14,10 +15,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -25,8 +29,10 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -70,7 +76,6 @@ fun ParentMainView(parentViewModel: ParentViewModel,
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-
 
         parentViewModel.getChildList(userId)
         parentViewModel.getParentCode(userId)
@@ -156,6 +161,8 @@ fun ParentMainView(parentViewModel: ParentViewModel,
 @Composable
 fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>, parentId: Long, parentCode:ParentCode){
     var showDialog by remember { mutableStateOf(false) }
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
 
     Card(
         modifier = Modifier
@@ -187,7 +194,17 @@ fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>, parent
             if (showDialog) {
                 AlertDialog(
                     onDismissRequest = { showDialog = false },
-                    title = { Text(text = "초대코드 : ${parentCode.parentCode}") },
+                    title = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ){
+                            Text(text = "초대코드 : ${parentCode.parentCode} ")
+                            Icon(Icons.Filled.ContentCopy, null, Modifier.clickable {
+                                clipboardManager.setText(AnnotatedString(parentCode.parentCode))
+                                Toast.makeText(context, "클립보드 복사", Toast.LENGTH_LONG).show()
+                            })
+                        }
+                    },
                     text = { Text(text = "해당 코드를 아이에게 제공해주세요") },
                     confirmButton = {
                         Text(
@@ -277,6 +294,7 @@ fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int, pare
                     contentDescription = null,
                     modifier = Modifier
                         .size(50.dp,50.dp)
+                        .alpha(if(parentViewModel.selectedChildIdx == idx) 1f else 0.3f)
                 )
             } ?: Image(painter = painterResource(R.drawable.ic_no_person),
                 contentScale = ContentScale.FillBounds,
