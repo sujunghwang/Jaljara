@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,23 +26,34 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.himanshoe.kalendar.component.day.config.KalendarDayColors
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.Content
+import com.ssafy.jaljara.data.ContentsInfo
 import com.ssafy.jaljara.data.DummyChildSleepInfo
 import com.ssafy.jaljara.data.DummyDataProvider
+import com.ssafy.jaljara.ui.component.ErrorScreen
+import com.ssafy.jaljara.ui.component.LoadingScreen
+import com.ssafy.jaljara.ui.screen.parent.JongSeokCalendar
 import com.ssafy.jaljara.ui.vm.ChildViewModel
-
-
-var dummyChildSleepInfo = DummyChildSleepInfo()
+import com.ssafy.jaljara.ui.vm.ContentsViewModel
+import com.ssafy.jaljara.utils.UiState
 
 @Composable
 fun ChildMainView(childViewModel: ChildViewModel,
+                  contentsViewModel: ContentsViewModel,
                   onClickMission: () -> Unit,
-                  onClickCoupon: () -> Unit
+                  onClickCoupon: () -> Unit,
+                  onClickContent: (ContentsInfo)->Unit
 ){
     val scrollState = rememberScrollState()
     var childSleepInfo = childViewModel.childSleepResponse
     var todayMission = childViewModel.todayMissionResponse
+    val soundContents = contentsViewModel.contentsSoundListResponse
+    val videoContents = contentsViewModel.contentsVideoListResponse
+    val userId =1L
+
+
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -48,20 +61,26 @@ fun ChildMainView(childViewModel: ChildViewModel,
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        childViewModel.getTodayMission(1)
-        childViewModel.getChildSleepInfo(1)
-        MissionTodayContainer(todayMission.content, onClickMission)
+        childViewModel.getTodayMission(userId)
+        childViewModel.getChildSleepInfo(userId)
+        contentsViewModel.getContentsSoundList()
+        contentsViewModel.getContentsVideoList()
+        MissionTodayContainer(childViewModel,todayMission.content, onClickMission,userId)
         SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
         RewardStatusContainer(childSleepInfo.streakCount, onClickCoupon)
-        ContentContainer(contents = DummyDataProvider.contentList)
+        ContentContainer(contentsViewModel,soundContents,videoContents, onClickContent)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MissionTodayContainer(todayMission: String,
-                          onClickMission: () -> Unit = {}
+fun MissionTodayContainer(childViewModel: ChildViewModel,
+                          todayMission: String,
+                          onClickMission: () -> Unit = {},
+                          userId : Long
 ){
+    val rerollState = childViewModel.rerollUiState
+
     Column() {
         Text(text = "오늘의 미션", style = MaterialTheme.typography.titleSmall)
         Card(
@@ -75,14 +94,36 @@ fun MissionTodayContainer(todayMission: String,
                 onClickMission()
             },
             content = {
-                reloadMissionButton(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .clickable {
-                            Log.d("missionReload", "미션 재설정 호출")
-                            //미션 재설정API 호출
-                        },
-                )
+                when {
+                    rerollState is UiState.Loading -> LoadingScreen(modifier = Modifier.size(5.dp))
+                    rerollState is UiState.Success -> {
+                        reloadMissionButton(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .clickable {
+                                    Log.d("missionReload", "미션 재설정 호출")
+                                    childViewModel.getMissionReroll(userId)
+                                    childViewModel.todayMissionResponse = childViewModel.getTodayMission(userId)
+                                    Log.d("missionReload", "미션 재설정 완료")
+                                },
+                        )
+                    }
+                    rerollState is UiState.Error -> {
+                        if (childViewModel.reroll == 0) {
+                            val context = LocalContext.current
+                            Toast.makeText(context, "더 이상 재설정 할 수 없어요 ☹", Toast.LENGTH_LONG).show()
+                            childViewModel.rerollUiState = UiState.Success("ok")
+                        }
+                        reloadMissionButton(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .clickable {
+                                    Log.d("missionReload", "미션 재설정 호출")
+                                    childViewModel.getMissionReroll(userId)
+                                },
+                        )
+                    }
+                }
                 Text(
                     text = "$todayMission",
                     modifier = Modifier
@@ -156,9 +197,12 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
-    var remainCnt by remember { mutableStateOf(7-streakCount) }
+    var remainCnt by remember { mutableStateOf(0) }
+    if(streakCount<7) remainCnt=7-streakCount
+    else remainCnt=0
 
     Column() {
+
         Text(text = "보상 획득 현황", style = MaterialTheme.typography.titleSmall)
         Card(
             modifier = Modifier
@@ -192,15 +236,37 @@ fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
 
 
 @Composable
-fun ContentContainer(contents: List<Content>) {
+fun ContentContainer(contentsViewModel: ContentsViewModel, soundContents: List<ContentsInfo>, videoContents: List<ContentsInfo>,onClickContent: (ContentsInfo) -> Unit = {} ) {
     Column() {
         Text(text = "컨텐츠 바로가기", style = MaterialTheme.typography.titleSmall)
         Column() {
             LazyRow() {
-                items(contents){ ContentCard(it) }
+                itemsIndexed(soundContents) { index: Int, item: ContentsInfo ->
+                    ContentCard(
+                        item,
+                        index,
+                        Modifier.clickable {
+                            Log.d("소리 컨텐츠 클릭 - contentIdx","$index")
+                            onClickContent(item)
+                            contentsViewModel.selectedVideoIdx = -1
+                            contentsViewModel.selectedSoundIdx = index
+                        }
+                    )
+                }
             }
             LazyRow() {
-                items(contents){ ContentCard(it) }
+                itemsIndexed(videoContents) { index: Int, item: ContentsInfo ->
+                    ContentCard(
+                        item,
+                        index,
+                        Modifier.clickable {
+                            Log.d("영상 컨텐츠 클릭 - contentIdx","$index")
+                            onClickContent(item)
+                            contentsViewModel.selectedVideoIdx = index
+                            contentsViewModel.selectedSoundIdx = -1
+                        }
+                    )
+                }
             }
         }
     }
@@ -209,7 +275,7 @@ fun ContentContainer(contents: List<Content>) {
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContentCard(content: Content) {
+fun ContentCard(content: ContentsInfo, idx:Int, modifier: Modifier= Modifier) {
     // 이미지 비트맵
     val bitmap : MutableState<Bitmap?> = mutableStateOf(null)
 
@@ -219,7 +285,7 @@ fun ContentCard(content: Content) {
     //
     Glide.with(LocalContext.current)
         .asBitmap()
-        .load(content.url)
+        .load(content.thumbnailImageUrl)
         .into(object : CustomTarget<Bitmap>(){
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 //이미지 비트맵이 다 로드가 됐을때 들어오는 메소드
@@ -233,7 +299,7 @@ fun ContentCard(content: Content) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.tertiary
         ),
-        modifier = Modifier
+        modifier = modifier
             .padding(end = 3.dp, bottom = 5.dp)
     ) {
         // 비트 맵이 있다면
@@ -256,7 +322,9 @@ fun ContentCard(content: Content) {
 fun ChildMainScreenView() {
     ChildMainView(
         childViewModel = viewModel(),
+        contentsViewModel = viewModel(),
         onClickCoupon = {},
-        onClickMission = {}
+        onClickMission = {},
+        onClickContent = {}
     )
 }
