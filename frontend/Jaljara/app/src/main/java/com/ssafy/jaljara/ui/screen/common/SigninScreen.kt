@@ -2,6 +2,7 @@ package com.ssafy.jaljara.ui.screen.common
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -18,8 +19,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.activity.ChildActivity
 import com.ssafy.jaljara.data.UserType
-import com.ssafy.jaljara.ui.screen.child.ChildApp
 import com.ssafy.jaljara.ui.screen.parent.ParentApp
 import com.ssafy.jaljara.ui.vm.LandingViewModel
 import com.ssafy.jaljara.utils.googleLoginHelper
@@ -41,7 +42,11 @@ fun LoginScreen(
         true -> {
             when (state.userType!!) {
                 UserType.PARENTS -> ParentApp()
-                UserType.CHILD -> ChildApp()
+                UserType.CHILD -> {
+                    context.startActivity(
+                        Intent(context, ChildActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    )
+                }
             }
         }
         else -> {
