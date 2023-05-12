@@ -18,6 +18,7 @@ import com.ssafy.jaljara.data.UserInfoWithTokens
 import com.ssafy.jaljara.data.UserType
 import com.ssafy.jaljara.ui.screen.child.ChildApp
 import com.ssafy.jaljara.ui.screen.parent.ParentApp
+import com.ssafy.jaljara.ui.vm.LandingViewModel
 import com.ssafy.jaljara.utils.PreferenceUtil
 
 enum class LandingScreens(val url: String) {
@@ -29,7 +30,8 @@ enum class LandingScreens(val url: String) {
 @SuppressLint("NewApi")
 @Composable
 fun LandingApp(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    viewModel: LandingViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val preferenceUtil = PreferenceUtil<UserInfoWithTokens>(LocalContext.current, "user")
     when {
@@ -52,13 +54,13 @@ fun LandingApp(
                 startDestination = LandingScreens.Landing.url,
             ) {
                 composable(route = LandingScreens.Landing.url) {
-                    LandingScreen(navigate = { navController.navigate(it) })
+                    LandingScreen(navigate = { navController.navigate(it) }, viewModel = viewModel)
                 }
                 composable(route = LandingScreens.Signup.url) {
-                    SignupScreen(navigate = { navController.navigate(it) })
+                    SignupScreen(navigate = { navController.navigate(it) }, viewModel = viewModel)
                 }
                 composable(route = LandingScreens.Login.url) {
-                    LoginScreen(navigate = { navController.navigate(it) })
+                    LoginScreen(navigate = { navController.navigate(it) }, viewModel = viewModel)
                 }
             }
 

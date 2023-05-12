@@ -13,8 +13,8 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 
-import com.ssafy.jaljara.utils.TokenHandler
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.data.UserType
 import com.ssafy.jaljara.ui.vm.LandingViewModel
 
 private val TAG = "GoogleLogin"
@@ -38,6 +38,27 @@ private fun rememberOneTapSignInState(): OneTapSignInState {
 }
 
 @Composable
+fun googleSignupHelper(context : Context,
+                       viewModel: LandingViewModel,
+                       onClose : () -> Unit,
+                       userType: UserType = UserType.PARENTS,
+                       parentCode: String?
+) {
+    val state = rememberOneTapSignInState()
+    state.open();
+
+    googleLoginWorker(context as Activity,
+        state,
+        stringResource(id = R.string.google_web_client_id),
+        onTokenIdReceived = {token -> TokenHandler.getInstance().signupWithToken(token, TokenHandler.ProviderType.GOOGLE, viewModel, userType, parentCode); onClose() },
+        onDialogDismissed = {
+            Log.e(TAG, "Dialog dismissed")
+            onClose()
+        }
+    );
+}
+
+@Composable
 fun googleLoginHelper(context : Context, viewModel: LandingViewModel, onClose : () -> Unit) {
     val state = rememberOneTapSignInState()
     state.open();
@@ -45,7 +66,7 @@ fun googleLoginHelper(context : Context, viewModel: LandingViewModel, onClose : 
     googleLoginWorker(context as Activity,
         state,
         stringResource(id = R.string.google_web_client_id),
-        onTokenIdReceived = {token -> TokenHandler.getInstance().checkTokenIsValid(token, TokenHandler.ProviderType.GOOGLE, viewModel) },
+        onTokenIdReceived = {token -> TokenHandler.getInstance().loginWithToken(token, TokenHandler.ProviderType.GOOGLE, viewModel) },
         onDialogDismissed = {
             Log.e(TAG, "Dialog dismissed")
             onClose()
