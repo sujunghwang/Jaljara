@@ -1,6 +1,7 @@
 package com.ssafy.jaljara.ui.screen.common
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -43,8 +44,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.activity.ChildActivity
 import com.ssafy.jaljara.data.UserType
-import com.ssafy.jaljara.ui.screen.child.ChildApp
 import com.ssafy.jaljara.ui.screen.parent.ParentApp
 import com.ssafy.jaljara.ui.vm.LandingViewModel
 import com.ssafy.jaljara.utils.googleSignupHelper
@@ -88,7 +89,12 @@ fun SignupScreen(
         true -> {
             when (state.userType!!) {
                 UserType.PARENTS -> ParentApp()
-                UserType.CHILD -> ChildApp()
+                UserType.CHILD -> context.startActivity(
+                    Intent(
+                        context,
+                        ChildActivity::class.java
+                    ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                )
             }
         }
         else -> {
