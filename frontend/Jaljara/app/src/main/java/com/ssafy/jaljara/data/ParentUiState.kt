@@ -11,3 +11,10 @@ data class ParentUiState(
     var showNavigation : Boolean = true,
 
 )
+
+data class ParentCode(
+    var parentCode: String,
+    var parentId: String
+){
+    constructor() : this("","")
+}

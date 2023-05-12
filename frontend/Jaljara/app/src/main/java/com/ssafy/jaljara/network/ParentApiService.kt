@@ -2,15 +2,13 @@ package com.ssafy.jaljara.network
 
 import com.ssafy.jaljara.data.ChildInfo
 import com.ssafy.jaljara.data.MissionLog
+import com.ssafy.jaljara.data.ParentCode
 import com.ssafy.jaljara.data.SleepLog
 import kotlinx.coroutines.NonDisposableHandle.parent
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import retrofit2.http.*
 
 private const val BASE_URL =
     "https://jaljara.movebxeax.me"
@@ -38,6 +36,9 @@ interface ParentApiService {
 
     @PUT("/api/missions/{childId}/clear")
     suspend fun setMissionClear(@Path("childId") childId: Long)
+
+    @GET("/api/auth/parent/code")
+    suspend fun getParentCode(@Query("parentId") parentId: Long,): ParentCode
 }
 
 object ParentApi {

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import retrofit2.http.Path
+import retrofit2.http.Query
 import java.io.IOException
 
 class ParentViewModel : ViewModel() {
@@ -126,10 +127,17 @@ class ParentViewModel : ViewModel() {
         selectedChildId = childList[selectedChildIdx].userId
     }
 
-//    fun getSelectedChildIdx():Int{
-//        return selectedChildIdx
-//    }
-//    fun setSelectedChildIdx(idx: Int){
-//        selectedChildIdx = idx
-//    }
+    var parentCode: ParentCode by mutableStateOf(ParentCode())
+    fun getParentCode(parentId: Long){
+        viewModelScope.launch {
+            try{
+                Log.d("부모 코드 API 호출 - parentId","$parentId")
+                val parentCodeResponse = ParentApi.retrofitService.getParentCode(parentId)
+                parentCode = parentCodeResponse
+            }catch (e:Exception){
+                errorMessage = e.cause.toString()
+                Log.d("errorMessage","$errorMessage")
+            }
+        }
+    }
 }

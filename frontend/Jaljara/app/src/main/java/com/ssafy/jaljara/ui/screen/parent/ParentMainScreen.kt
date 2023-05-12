@@ -37,10 +37,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.himanshoe.kalendar.component.day.config.KalendarDayColors
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.data.ChildInfo
-import com.ssafy.jaljara.data.ChildSleepInfo
-import com.ssafy.jaljara.data.DummyDataProvider
-import com.ssafy.jaljara.data.TodayMission
+import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.ui.component.ErrorScreen
 import com.ssafy.jaljara.ui.component.LoadingScreen
 import com.ssafy.jaljara.ui.screen.child.*
@@ -75,6 +72,8 @@ fun ParentMainView(parentViewModel: ParentViewModel,
 
 
         parentViewModel.getChildList(userId)
+        parentViewModel.getParentCode(userId)
+        val parentCode = parentViewModel.parentCode
         val childIdx = parentViewModel.selectedChildIdx
 
         val childList = parentViewModel.childList
@@ -88,7 +87,9 @@ fun ParentMainView(parentViewModel: ParentViewModel,
         val childSleepInfo = parentViewModel.childSleepResponse
         val todayMission = parentViewModel.todayMissionResponse
 
-        Children(parentViewModel, childList, userId)
+
+
+        Children(parentViewModel, childList, userId, parentCode)
             if(childSleepInfo.currentReward.isBlank()) CurrentRewardContainer(R.drawable.reward,"현재 보상", "보상을 입력해 주세요!")
             else CurrentRewardContainer(R.drawable.reward,"현재 보상", childSleepInfo.currentReward)
             CurrentRewardContainer(R.drawable.current_reward,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
@@ -110,7 +111,8 @@ fun ParentMainView(parentViewModel: ParentViewModel,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>, parentId: Long){
+fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>, parentId: Long, parentCode:ParentCode){
+    var showDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -133,10 +135,40 @@ fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>, parent
                         modifier = Modifier
                             .size(50.dp, 50.dp)
                             .clickable {
-                                Log.d("아이등록 API 요청", "여기다가 뭘할까")
+                                Log.d("부모 코드", "${parentCode.parentCode}")
+                                showDialog = true
                             }
                     )
                 }
+            }
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = { Text(text = "초대코드 : ${parentCode.parentCode}") },
+                    text = { Text(text = "해당 코드를 아이에게 제공해주세요") },
+                    confirmButton = {
+                        Text(
+                            text = "확인",
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                                .clickable {
+                                    showDialog = false
+                                },
+                            color = Color.Red,
+                        )
+                    },
+                    dismissButton = {
+                        Text(
+                            text = "취소",
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                                .clickable {
+                                    showDialog = false
+                                },
+                            color = Color.Blue,
+                        )
+                    }
+                )
             }
         }
     )
