@@ -44,8 +44,8 @@ spring:
 
   http:
     multipart:
-      maxFileSize: 100MB
-      maxRequestSize: 100MB
+      maxFileSize: 10GB
+      maxRequestSize: 10GB
 
   redis:
     host: 172.17.0.1
