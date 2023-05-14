@@ -2,11 +2,13 @@ package com.ssafy.jaljara.ui.screen.child
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,23 +33,26 @@ fun ContentsDetailView(contentsViewModel: ContentsViewModel = viewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-
         val soundIdx = contentsViewModel.selectedSoundIdx
         val videoIdx = contentsViewModel.selectedVideoIdx
 
         val contentsInfo =
-            if(soundIdx == -1){
+            if (soundIdx == -1) {
                 contentsViewModel.getVideoContentByIdx(videoIdx)
-            } else{
+            } else {
                 contentsViewModel.getSoundContentByIdx(soundIdx)
             }
 
         var youtubeUrlPath = contentsInfo.youtubeUrl
         youtubeUrlPath = youtubeUrlPath.split("v=")[1].split("&")[0]
         Log.d("youtubeId입니다.", "$youtubeUrlPath")
-//        Log.d("youtubeId입니다.", "$youtubeUrlPath")
-//        var
-
+//        var contentsTypeToString = ""
+        var contentsTypeToString = if (contentsInfo.contentType == "SOUND") {
+            "소리"
+        } else {
+            "영상"
+        }
+        Log.d("$contentsTypeToString", "$contentsTypeToString")
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -66,9 +71,14 @@ fun ContentsDetailView(contentsViewModel: ContentsViewModel = viewModel()) {
         }
         Row(modifier = Modifier.padding(10.dp)) {
 
-            Text(text = "카테고리: ", style = typography.bodyMedium, fontSize = 15.sp)
+            Text(
+                text = "카테고리 : ",
+                style = typography.bodyMedium,
+//                fontSize = 15.sp,
+                color = Color.White,
+            )
 
-            Text(text = contentsInfo.contentType, style = typography.bodySmall)
+            Text(text = contentsTypeToString, style = typography.bodySmall, color = Color.White)
         }
 
         AndroidView(factory = {
@@ -88,15 +98,18 @@ fun ContentsDetailView(contentsViewModel: ContentsViewModel = viewModel()) {
             text = contentsInfo.title,
             style = typography.bodyMedium,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(30.dp)
+            color = Color.White,
+            modifier = Modifier.padding(30.dp),
         )
 
         Text(
             text = contentsInfo.description,
             style = typography.bodyMedium,
             fontWeight = FontWeight.Normal,
+            color = Color.White,
             modifier = Modifier.padding(10.dp)
         )
+
 
     }
 
