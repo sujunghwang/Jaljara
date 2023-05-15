@@ -12,6 +12,7 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.activity.MainActivity
 import okhttp3.internal.notify
 
 class ChildAlarm : BroadcastReceiver() {
@@ -34,6 +35,9 @@ class ChildAlarm : BroadcastReceiver() {
             manager.createNotificationChannel(channel)
         }
 
+        val intent = Intent(context, MainActivity::class.java)
+        val clickPendingIntent = PendingIntent.getActivity(context,0,intent, PendingIntent.FLAG_MUTABLE)
+
         val builder = NotificationCompat.Builder(context, channelId)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentTitle(title)
@@ -41,6 +45,7 @@ class ChildAlarm : BroadcastReceiver() {
             .setSmallIcon(R.drawable.astronoutsleep)
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.astronoutsleep))
             .setDefaults(Notification.DEFAULT_VIBRATE)
+            .setContentIntent(clickPendingIntent)
 
         manager.notify(1, builder.build())
     }
