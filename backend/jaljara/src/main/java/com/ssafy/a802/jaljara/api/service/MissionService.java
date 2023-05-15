@@ -64,7 +64,7 @@ public class MissionService {
 
 	// cron "초 분 시 일 월 년"
 	@Transactional
-	@Scheduled(cron = "0 0 14 * * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
 	public void addMissionTodayChildren() {
 		List<User> allByUserType = userRepository.findAllByUserType(UserType.CHILD);
 		for (User user : allByUserType) {
@@ -85,7 +85,7 @@ public class MissionService {
 
 		//today date init
 		LocalDateTime localDateTime = LocalDateTime.now();
-		ZoneOffset offset = ZoneOffset.of("+09:00"); // 예시로 한국 표준시(+9:00)를 사용합니다.
+		ZoneOffset offset = ZoneOffset.of("+00:00"); // 예시로 한국 표준시(+9:00)를 사용합니다.
 		OffsetDateTime offsetDateTime = OffsetDateTime.of(localDateTime, offset);
 		Instant instant = offsetDateTime.toInstant();
 		Date date = Date.from(instant);
