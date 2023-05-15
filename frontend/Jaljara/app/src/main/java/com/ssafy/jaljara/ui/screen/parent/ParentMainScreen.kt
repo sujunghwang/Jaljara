@@ -35,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -348,10 +349,6 @@ fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: M
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-//                GlideImage(
-//                    model = img,
-//                    contentDescription = null,
-//                )
                 Image(painter = painterResource(id = img),
                     contentDescription = null,
                     modifier = Modifier
@@ -359,7 +356,7 @@ fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: M
                         .padding(15.dp)
                 )
                 Column() {
-                    Text(text = title, style = MaterialTheme.typography.titleMedium, color=Color.White)
+                    Text(text = title, style = MaterialTheme.typography.titleMedium, color=Color.White, fontSize = 40.sp)
                     Text(text = "$content",style = MaterialTheme.typography.titleSmall,)
                 }
             }
@@ -383,7 +380,7 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "$content", style = MaterialTheme.typography.titleMedium, color=Color.White)
+                Text(text = "$content", color=Color.White, fontSize = 60.sp, modifier = Modifier.height(50.dp).offset(y = -10.dp))
                 Text(text = title,style = MaterialTheme.typography.titleSmall,)
                 Image(painter = img,
                     contentDescription = null,
