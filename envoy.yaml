@@ -24,6 +24,8 @@ static_resources:
               routes:
               - match: { prefix: "/api" }
                 route: { cluster: jaljara_backend }
+              - match: { prefix: "/privacy"}
+                route: { cluster: jaljara_backend }
           http_filters:
           - name: envoy.filters.http.router
             typed_config:
@@ -60,6 +62,8 @@ static_resources:
               domains: ["jaljara.movebxeax.me"]
               routes:
               - match: { prefix: "/api" }
+                redirect: { https_redirect: true }
+              - match: { prefix: "/privacy"}
                 redirect: { https_redirect: true }
           http_filters:
           - name: envoy.filters.http.router
