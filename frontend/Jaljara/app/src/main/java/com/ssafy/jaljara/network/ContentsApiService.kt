@@ -1,21 +1,15 @@
 package com.ssafy.jaljara.network
 
+import android.content.Context
 import com.ssafy.jaljara.data.ContentsInfo
 import com.ssafy.jaljara.data.ContentsListUiState
 import com.ssafy.jaljara.data.ContentsUiState
+import com.ssafy.jaljara.utils.RetrofitUtil
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-
-private const val BASE_URL =
-    "https://jaljara.movebxeax.me"
-
-private val retrofit = Retrofit.Builder()
-    .addConverterFactory(GsonConverterFactory.create())
-    .baseUrl(BASE_URL)
-    .build()
 
 interface ContentsApiService {
     @GET("/api/contents")
@@ -27,22 +21,13 @@ interface ContentsApiService {
     @GET("/api/contents/type")
     suspend fun getContentsTypeList(@Query(value = "contentType") contentType: String) : List<ContentsInfo>
 
-    companion object{
-        var apiService:ContentsApiService? = null
-        fun getInstance() : ContentsApiService {
+    companion object {
+        var apiService: ContentsApiService? = null
+        fun getInstance(context: Context): ContentsApiService {
             if (apiService == null) {
-                apiService = Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build().create(ContentsApiService::class.java)
+                apiService = RetrofitUtil(context = context).getInstance().create(ContentsApiService::class.java)
             }
             return apiService!!
         }
     }
 }
-
-//object ContentsApi {
-//    val retrofitService: ContentsApiService by lazy{
-//        retrofit.create(ContentsApiService::class.java)
-//    }
-//}

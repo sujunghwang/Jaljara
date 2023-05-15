@@ -1,21 +1,14 @@
 package com.ssafy.jaljara.network
 
+import android.content.Context
 import com.ssafy.jaljara.data.ChildInfo
 import com.ssafy.jaljara.data.MissionLog
 import com.ssafy.jaljara.data.ParentCode
 import com.ssafy.jaljara.data.SleepLog
+import com.ssafy.jaljara.utils.RetrofitUtil
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-
-
-private const val BASE_URL =
-    "https://jaljara.movebxeax.me"
-
-private val retrofit = Retrofit.Builder()
-    .addConverterFactory(GsonConverterFactory.create())
-    .baseUrl(BASE_URL)
-    .build()
 
 interface ParentApiService {
     @GET("/api/sleeplogs/{childId}/{date}/simple")
@@ -45,10 +38,14 @@ interface ParentApiService {
 //        @Body childId: Long,
 //        @Body reward: String
     )
-}
 
-object ParentApi {
-    val retrofitService: ParentApiService by lazy {
-        retrofit.create(ParentApiService::class.java)
+    companion object {
+        var apiService: ParentApiService? = null
+        fun getInstance(context: Context): ParentApiService {
+            if (apiService == null) {
+                apiService = RetrofitUtil(context = context).getInstance().create(ParentApiService::class.java)
+            }
+            return apiService!!
+        }
     }
 }

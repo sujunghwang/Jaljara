@@ -1,24 +1,24 @@
 package com.ssafy.jaljara.ui.vm
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.*
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.network.ChildApiService
-import com.ssafy.jaljara.network.ParentApi
+import com.ssafy.jaljara.network.ParentApiService
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import retrofit2.http.Path
-import retrofit2.http.Query
-import java.io.IOException
 
-class ParentViewModel : ViewModel() {
+class ParentViewModel(application: Application) : AndroidViewModel(application) {
+    private val context = application
+    private val parentApiService = ParentApiService.getInstance(context)
     private val _uiState = MutableStateFlow(ParentUiState())
     val uiState: StateFlow<ParentUiState> = _uiState.asStateFlow()
 
@@ -35,7 +35,7 @@ class ParentViewModel : ViewModel() {
     var childSleepResponse: ChildSleepInfo by mutableStateOf(ChildSleepInfo())
     fun getChildSleepInfo(childId: Long){
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             try{
                 Log.d("아이 수면 목표 조회 API 호출 - childId","$childId")
                 val childSleepInfo = apiService.getChildSleepInfo(childId)
@@ -52,7 +52,7 @@ class ParentViewModel : ViewModel() {
     var todayMissionResponse: TodayMission by mutableStateOf(TodayMission())
     fun getTodayMission(childId: Long){
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             try{
                 Log.d("오늘의 미션 조회 API 호출 - childId","$childId")
                 val todayMission = apiService.getTodayMission(childId)
@@ -68,7 +68,7 @@ class ParentViewModel : ViewModel() {
 
     fun setTargetSleepTime(childId: Long, targetBedTime: String, targetWakeupTime: String){
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             try{
                 Log.d("목표 수면 시간 설정 API 호출","$childId, $targetBedTime, $targetWakeupTime")
                 apiService.setTargetSleepTime(TargetSleepInput(childId, targetBedTime, targetWakeupTime))
@@ -86,7 +86,7 @@ class ParentViewModel : ViewModel() {
         viewModelScope.launch {
             try{
                 UiState.Success(childList)
-                childListResponse = ParentApi.retrofitService.getChildList(parentId)
+                childListResponse = parentApiService.getChildList(parentId)
                 childList = childListResponse
             }catch (e:Exception){
                 errorMessage = e.message.toString()
@@ -102,7 +102,7 @@ class ParentViewModel : ViewModel() {
         viewModelScope.launch {
             try{
                 Log.d("아이 등록 해제 API 호출 - childId","$childId")
-                ParentApi.retrofitService.deleteChild(childId)
+                parentApiService.deleteChild(childId)
             }catch (e:Exception){
                 errorMessage = e.cause.toString()
                 Log.d("errorMessage","$errorMessage")
@@ -113,7 +113,7 @@ class ParentViewModel : ViewModel() {
     fun setMissionClear(childId: Long){
         viewModelScope.launch {
             try{
-                ParentApi.retrofitService.setMissionClear(childId)
+                parentApiService.setMissionClear(childId)
             }catch (e:Exception){
                 errorMessage = e.message.toString()
                 Log.d("errorMessage","$errorMessage")
@@ -125,7 +125,7 @@ class ParentViewModel : ViewModel() {
         viewModelScope.launch {
             try{
                 val map = mutableMapOf<String, Any>("childId" to childId, "reward" to reward)
-                ParentApi.retrofitService.setReward(map as HashMap<String, Any>)
+                parentApiService.setReward(map as HashMap<String, Any>)
             }catch (e:Exception){
                 errorMessage = e.message.toString()
                 Log.d("errorMessage","$errorMessage")
@@ -143,7 +143,7 @@ class ParentViewModel : ViewModel() {
         viewModelScope.launch {
             try{
                 Log.d("부모 코드 API 호출 - parentId","$parentId")
-                val parentCodeResponse = ParentApi.retrofitService.getParentCode(parentId)
+                val parentCodeResponse = parentApiService.getParentCode(parentId)
                 parentCode = parentCodeResponse
             }catch (e:Exception){
                 errorMessage = e.cause.toString()

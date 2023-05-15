@@ -25,4 +25,14 @@ class PreferenceUtil<T>(context: Context, name : String) {
     fun setValue(key:String, defVal: T) {
         perf.edit().putString(key, gson.toJson(defVal)).apply();
     }
+
+    fun deleteValue(key: String) : Boolean{
+        return when {
+            perf.contains(key) -> {
+                perf.edit().remove(key)
+                true
+            }
+            else -> true
+        }
+    }
 }

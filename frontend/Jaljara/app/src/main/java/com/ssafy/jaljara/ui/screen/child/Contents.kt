@@ -1,6 +1,7 @@
 package com.ssafy.jaljara.ui.screen.child
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.Log
@@ -266,7 +267,7 @@ fun ThumbnailImage(thumbnailImageUrl: String, modifier: Modifier = Modifier) {
 @Composable
 fun DefaultPreview() {
     val scrollState = rememberScrollState()
-    ContentsView(contentsViewModel = ContentsViewModel(), onClickContents = { it ->
+    ContentsView(contentsViewModel = ContentsViewModel(LocalContext.current as Application), onClickContents = { it ->
         Log.d("온클릭컨텐츠", "$it 클릭 됨 ㅋㅋ")
     })
 }

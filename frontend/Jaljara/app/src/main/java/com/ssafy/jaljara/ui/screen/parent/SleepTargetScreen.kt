@@ -1,5 +1,6 @@
 package com.ssafy.jaljara.ui.screen.parent
 
+import android.app.Application
 import android.os.Build
 import android.util.Log
 import android.widget.Space
@@ -314,5 +315,5 @@ fun SetTimeScreen(viewModel : ParentViewModel){
 @ExperimentalMaterial3Api
 @Preview(showSystemUi = true)
 fun preview_(){
-    SetTimeScreen(ParentViewModel())
+    SetTimeScreen(ParentViewModel(LocalContext.current as Application))
 }

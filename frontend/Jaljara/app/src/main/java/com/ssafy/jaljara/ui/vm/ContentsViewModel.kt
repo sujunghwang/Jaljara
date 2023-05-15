@@ -1,9 +1,11 @@
 package com.ssafy.jaljara.ui.vm
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.data.ContentsInfo
@@ -16,7 +18,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ContentsViewModel : ViewModel() {
+class ContentsViewModel(application: Application) : AndroidViewModel(application) {
+    private val context = application
     private val contentsListUiState = MutableStateFlow(ContentsListUiState())
     private val contentsUiState = MutableStateFlow(ContentsUiState())
 
@@ -37,7 +40,7 @@ class ContentsViewModel : ViewModel() {
     var contentsListResponse: ContentsListUiState by mutableStateOf(ContentsListUiState())
     fun getContentsList() {
         viewModelScope.launch {
-            val apiService = ContentsApiService.getInstance()
+            val apiService = ContentsApiService.getInstance(context)
             try {
                 Log.d("컨텐츠 리스트 API 호출", "g")
                     apiService.getContentsList()
@@ -55,7 +58,7 @@ class ContentsViewModel : ViewModel() {
 
     fun getContentsSoundList() {
         viewModelScope.launch {
-            val apiService = ContentsApiService.getInstance()
+            val apiService = ContentsApiService.getInstance(context)
 //            Log.d("컨텐츠 사운드 리스트 API 호출", "g123344444okjkl")
             try {
                 Log.d("컨텐츠 사운드 리스트 API 호출", "컨텐츠 사운드 리스트 api 호출")
@@ -78,7 +81,7 @@ class ContentsViewModel : ViewModel() {
 
     fun getContentsVideoList() {
         viewModelScope.launch {
-            val apiService = ContentsApiService.getInstance()
+            val apiService = ContentsApiService.getInstance(context)
 //            Log.d("컨텐츠 사운드 리스트 API 호출", "gq hfjnsadf")
             try {
                 Log.d("컨텐츠 비디오 리스트 API 호출", "컨텐츠 비디오 리스트 api 호출")
@@ -99,7 +102,7 @@ class ContentsViewModel : ViewModel() {
     var contentsResponse: ContentsUiState by mutableStateOf(ContentsUiState())
     fun getContents(contentsId: Long) {
         viewModelScope.launch {
-            val apiService = ContentsApiService.getInstance()
+            val apiService = ContentsApiService.getInstance(context)
             try {
                 Log.d("컨텐츠 개별 API 호출", "g")
                 apiService.getContents(contentsId)
