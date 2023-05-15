@@ -126,6 +126,7 @@ fun MissionTodayContainer(childViewModel: ChildViewModel,
                     modifier = Modifier
                         .padding(bottom = 20.dp)
                         .align(Alignment.CenterHorizontally)
+                    ,style = MaterialTheme.typography.titleSmall
                 )
             }
         )
@@ -138,7 +139,7 @@ fun reloadMissionButton(modifier: Modifier){
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        Text(text = "재설정")
+        Text(text = "재설정", style = MaterialTheme.typography.titleSmall)
         Image(
             painter = painterResource(id = R.drawable.ic_reload),
             contentDescription = null
@@ -186,8 +187,8 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
                 .size(100.dp, 100.dp)
                 .padding(11.dp)
         )
-        Text(text = title)
-        Text(text = setTime)
+        Text(text = title, style = MaterialTheme.typography.titleSmall)
+        Text(text = setTime, style = MaterialTheme.typography.titleSmall)
     }
 }
 
@@ -231,6 +232,7 @@ fun RewardStatusContainer(childSleepInfo: ChildSleepInfo, onClickCoupon: () -> U
                             .padding(start = 5.dp)
                     )
                     Text(text = "$remainText",
+                        style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier
                             .padding(16.dp)
                     )
