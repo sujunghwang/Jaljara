@@ -1,29 +1,33 @@
 package com.ssafy.jaljara.ui.vm
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.data.MissionLog
 import com.ssafy.jaljara.data.SleepLog
-import com.ssafy.jaljara.network.ParentApi
+import com.ssafy.jaljara.network.ParentApiService
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-class MissionDetailLogViewModel : ViewModel() {
+class MissionDetailLogViewModel(application: Application) : AndroidViewModel(application) {
     var detailSleepLogUiState: UiState<SleepLog> by mutableStateOf(UiState.Loading)
         private set
 
     var missionLogUiState: UiState<MissionLog> by mutableStateOf(UiState.Loading)
         private set
 
+    private val parentApiService = ParentApiService.getInstance(application)
+
     fun getDetailSleepLog(childId : Long, date : String){
         viewModelScope.launch {
             detailSleepLogUiState = try{
-                val sleepLog = ParentApi.retrofitService.getSleepLogDetail(childId, date)
+                val sleepLog = parentApiService.getSleepLogDetail(childId, date)
                 UiState.Success(sleepLog)
             }catch (e: IOException) {
                 e.printStackTrace()
@@ -41,7 +45,7 @@ class MissionDetailLogViewModel : ViewModel() {
     fun getMissionLog(userId : Long, date : String){
         viewModelScope.launch {
             missionLogUiState = try{
-                val missionLog = ParentApi.retrofitService.getMissionLog(userId, date)
+                val missionLog = parentApiService.getMissionLog(userId, date)
                 UiState.Success(missionLog)
             }catch (e: IOException) {
                 e.printStackTrace()

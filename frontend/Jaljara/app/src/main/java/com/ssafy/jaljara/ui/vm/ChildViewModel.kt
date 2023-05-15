@@ -1,5 +1,6 @@
 package com.ssafy.jaljara.ui.vm
 
+import android.app.Application
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
@@ -7,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.jaljara.data.*
@@ -25,7 +27,8 @@ import java.io.File
 import java.io.IOException
 
 
-class ChildViewModel : ViewModel() {
+class ChildViewModel(application: Application) : AndroidViewModel(application) {
+    private val context = application
     private val _uiState = MutableStateFlow(ParentUiState())
     val uiState: StateFlow<ParentUiState> = _uiState.asStateFlow()
 
@@ -42,7 +45,7 @@ class ChildViewModel : ViewModel() {
     var childSleepResponse: ChildSleepInfo by mutableStateOf(ChildSleepInfo())
     fun getChildSleepInfo(childId: Long){
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             try{
                 Log.d("아이 수면 목표 조회 API 호출 - childId","$childId")
                 val childSleepInfo = apiService.getChildSleepInfo(childId)
@@ -57,7 +60,7 @@ class ChildViewModel : ViewModel() {
 
     fun getReward(childId: Long){
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             try{
                 Log.d("보상 획득 API 호출 - childId","$childId")
                 apiService.getReward(childId)
@@ -74,7 +77,7 @@ class ChildViewModel : ViewModel() {
     fun getTodayMission(childId: Long) : TodayMission{
         var todayMission: TodayMission = TodayMission()
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             try{
                 Log.d("오늘의 미션 조회 API 호출 - childId","$childId")
                 todayMission = apiService.getTodayMission(childId)
@@ -91,7 +94,7 @@ class ChildViewModel : ViewModel() {
     var usedCouponResponse: List<UsedCoupon> by mutableStateOf(listOf())
     fun getUsedCoupon(childId: Long){
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             try{
                 Log.d("사용한 쿠폰 리스트 조회 API 호출 - childId","$childId")
                 val usedCoupon = apiService.getUsedCoupon(childId)
@@ -108,7 +111,7 @@ class ChildViewModel : ViewModel() {
     var notUsedCouponResponse: List<NotUsedCoupon> by mutableStateOf(listOf())
     fun getNotUsedCoupon(childId: Long){
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             try{
                 Log.d("사용하지 않은 쿠폰 리스트 조회 API 호출 - childId","$childId")
                 val notUsedCoupon = apiService.getNotUsedCoupon(childId)
@@ -123,7 +126,7 @@ class ChildViewModel : ViewModel() {
 
     fun setMissionResult(childId: Long, file : MultipartBody.Part, context: Context){
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             try{
                 Log.d("미션 수행 후 전송 API 호출 - childId","$childId, ${file.headers}")
                 apiService.setMissionResult(childId, file)
@@ -139,7 +142,7 @@ class ChildViewModel : ViewModel() {
 
     fun setCouponUsed(rewardId: Long){
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             try{
                 Log.d("쿠폰 사용 API 호출 - rewardId","$rewardId")
                 apiService.setCouponUsed(rewardId)
@@ -156,7 +159,7 @@ class ChildViewModel : ViewModel() {
     fun getMissionReroll(userId : Long){
         rerollUiState = UiState.Loading
         viewModelScope.launch{
-            val apiService = ChildApiService.getInstance()
+            val apiService = ChildApiService.getInstance(context)
             rerollUiState = try{
                 Log.d("미션 재설정 API 호출 - userId","$userId")
                 apiService.getMissionReroll(userId)

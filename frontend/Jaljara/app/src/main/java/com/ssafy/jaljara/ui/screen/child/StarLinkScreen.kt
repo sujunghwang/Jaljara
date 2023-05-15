@@ -1,5 +1,6 @@
 package com.ssafy.jaljara.ui.screen
 
+import android.app.Application
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -196,5 +197,5 @@ fun RewardDialog(reward: String, onDismiss: () -> Unit) {
 @Composable
 @Preview(showSystemUi = true)
 fun preview(){
-    StarLink(childViewModel = ChildViewModel())
+    StarLink(childViewModel = ChildViewModel(LocalContext.current as Application))
 }

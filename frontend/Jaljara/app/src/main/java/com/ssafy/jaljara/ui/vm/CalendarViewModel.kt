@@ -1,27 +1,27 @@
 package com.ssafy.jaljara.ui.vm
 
-import android.media.AudioAttributes
-import android.media.MediaPlayer
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafy.jaljara.network.ParentApi
-import com.ssafy.jaljara.ui.component.ErrorScreen
+import com.ssafy.jaljara.network.ParentApiService
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-class CalendarViewModel : ViewModel() {
+class CalendarViewModel(application: Application) : AndroidViewModel(application) {
     var calendarUiState: UiState<List<Int>> by mutableStateOf(UiState.Loading)
         private set
+
+    private val parentApiService = ParentApiService.getInstance(context = application)
 
     fun getSimpleSleepLog(childId : Long, date : String){
         viewModelScope.launch {
             calendarUiState = try{
-                val simpleSleepLog = ParentApi.retrofitService.getSleepLogSimple(childId, date)
+                val simpleSleepLog = parentApiService.getSleepLogSimple(childId, date)
                 UiState.Success(simpleSleepLog)
             }catch (e: IOException) {
                 e.printStackTrace()

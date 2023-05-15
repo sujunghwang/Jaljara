@@ -32,7 +32,7 @@ data class SignupErrorToast(
 
 class LandingViewModel(application: Application) : AndroidViewModel(application) {
     private val context = getApplication<Application>().applicationContext
-    private val apiService = UserApiService.getInstance()
+    private val apiService = UserApiService.getInstance(context = application)
     private var preferenceUtil = PreferenceUtil<UserInfoWithTokens>(context, "user")
 
     private val _uiState = MutableStateFlow(LandingUiState())

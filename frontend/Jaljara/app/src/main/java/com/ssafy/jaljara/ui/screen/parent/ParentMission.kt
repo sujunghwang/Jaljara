@@ -1,5 +1,6 @@
 package com.ssafy.jaljara.ui.screen.parent
 
+import android.app.Application
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.util.Log
@@ -170,5 +171,5 @@ fun ParentMission(viewModel: ParentViewModel){
 @Composable
 @Preview
 fun prev() {
-    ParentMission(viewModel = ParentViewModel())
+    ParentMission(viewModel = ParentViewModel(LocalContext.current as Application))
 }
