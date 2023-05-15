@@ -212,7 +212,7 @@ fun ChildApp(
 fun setAlarm(context: Context, targetBedTime:String){
     if(targetBedTime != ""){
         //    val timeSec = System.currentTimeMillis() + 5000
-//            val temp = "10:14"
+//            val temp = "11:09"
         Log.d("설정 수면 시간", targetBedTime)
         val now = LocalDateTime.now()
         val timeArr = targetBedTime.split(":")
