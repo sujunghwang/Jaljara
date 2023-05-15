@@ -1,11 +1,8 @@
 package com.ssafy.jaljara.network
 
 import android.content.Context
-import com.ssafy.jaljara.data.ChildSleepInfo
-import com.ssafy.jaljara.data.TargetSleepInput
-import com.ssafy.jaljara.data.NotUsedCoupon
-import com.ssafy.jaljara.data.TodayMission
-import com.ssafy.jaljara.data.UsedCoupon
+import com.google.android.gms.location.SleepSegmentEvent
+import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.utils.RetrofitUtil
 import okhttp3.MultipartBody
 import retrofit2.Retrofit
@@ -46,6 +43,9 @@ interface ChildApiService {
 
     @GET("/api/missions/{userId}/reroll")
     suspend fun getMissionReroll(@Path("userId") userId : Long)
+
+    @POST("/api/sleeplogs")
+    suspend fun sendSleepLog(@Body req: List<SleepSegmentEvent>)
 
     companion object {
         var apiService: ChildApiService? = null
