@@ -61,7 +61,7 @@ fun StarLink(childViewModel: ChildViewModel){
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(20.dp),
+                    .padding(start = 20.dp, end = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row(
@@ -100,18 +100,21 @@ fun StarLink(childViewModel: ChildViewModel){
                 ){
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.reward),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(60.dp)
-                                .padding(end = 6.dp)
+                                .size(70.dp)
+                                .padding(start = 10.dp, end = 5.dp)
+                                .offset(x = -20.dp)
                         )
                         Text(
                             text = "${childSleepInfo.streakCount} / 7",
                             fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp
+                            fontSize = 40.sp,
+                            modifier = Modifier.offset(x = -10.dp, y = 4.dp)
                         )
                     }
                     Icon(Icons.Filled.OpenInNew, null, Modifier.align(Alignment.TopEnd).size(24.dp).padding(4.dp))
@@ -138,7 +141,8 @@ fun StarLink(childViewModel: ChildViewModel){
                 ) {
                     Text(
                         text = "보상 획득",
-                        style = MaterialTheme.typography.titleSmall
+                        style = MaterialTheme.typography.titleSmall,
+                        fontSize = 30.sp
                     )
                 }
             }

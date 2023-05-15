@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ssafy.jaljara.R
@@ -65,7 +66,7 @@ fun ChildMission(childViewModel :ChildViewModel){
         Modifier
             .fillMaxHeight()
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.SpaceAround,
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         val mission = childViewModel.todayMissionResponse
@@ -73,20 +74,22 @@ fun ChildMission(childViewModel :ChildViewModel){
 //        val mission = todayMission2
 
         Row(
-            modifier = Modifier.fillMaxHeight(0.2f).padding(top = 20.dp),
+            modifier = Modifier.fillMaxHeight(0.12f).padding(top = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon")
+            Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon", modifier = Modifier.offset(x=-15.dp))
             Text(
                 text = "오늘의 미션",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                fontSize = 60.sp
             )
         }
 
         Text(
             text = mission.content,
             color = Color.White,
-            style = MaterialTheme.typography.titleSmall)
+            style = MaterialTheme.typography.titleSmall,
+            fontSize = 50.sp)
         if (mission.missionType=="IMAGE"){
             Box(){
                 Log.d("isFirst 상태", "$isFirst")
@@ -104,7 +107,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                     }?: Box(modifier = Modifier
                         .fillMaxWidth(0.7f)
                         .fillMaxHeight(0.8f)
-                        .background(color = Color.Gray))
+                        .background(color = Color.Gray.copy(0.3f)))
                 } else {
                     if(prevInfo){
                         AsyncImage(
@@ -198,7 +201,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                     prevInfo = false
                     isFirst = false
                 }) {
-                    Text("다시 찍기", color = Color.Red)
+                    Text("다시 찍기", color = Color(0xff5f72).copy(1f))
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
                 Button(onClick = {
@@ -208,7 +211,7 @@ fun ChildMission(childViewModel :ChildViewModel){
 
                     childViewModel.setMissionResult(1, filePart, context)
                 }) {
-                    Text("완료", color = Color.Green)
+                    Text("완료", color = Color(0x72ff6f).copy(1f))
                 }
             }
         } else {

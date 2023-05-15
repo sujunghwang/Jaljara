@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -47,7 +48,7 @@ fun ChildCouponNav(
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = item.name) },
-                label = { Text(item.title, style = MaterialTheme.typography.titleSmall) },
+                label = { Text(item.title, style = MaterialTheme.typography.titleSmall, overflow = TextOverflow.Clip) },
                 selected = selectedItem == index,
                 onClick = {
                     navController.navigate(item.name)

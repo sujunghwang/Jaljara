@@ -95,9 +95,9 @@ fun ContentsListView(
                 text = "수면에 도움이 되는 소리",
                 color = Color.White,
                 style = typography.titleSmall,
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier.padding(0.dp),
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp
+                fontSize = 40.sp
             )
             LazyRow() {
                 itemsIndexed(contentsSoundList) { index: Int, item: ContentsInfo ->
@@ -112,9 +112,9 @@ fun ContentsListView(
                 text = "수면에 도움이 되는 영상",
                 color = Color.White,
                 style = typography.titleSmall,
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier.padding(0.dp),
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp
+                fontSize = 40.sp
             )
             LazyRow() {
                 itemsIndexed(contentsVideoList) { index: Int, item: ContentsInfo ->
@@ -174,7 +174,7 @@ fun ContentsItemView(
                     text = "카테고리 : ",
                     style = typography.bodyMedium,
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(text = contentsTypeToString,
                     style = typography.bodyMedium,
