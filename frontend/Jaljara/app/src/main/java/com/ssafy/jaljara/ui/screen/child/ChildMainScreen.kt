@@ -28,10 +28,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.himanshoe.kalendar.component.day.config.KalendarDayColors
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.data.Content
-import com.ssafy.jaljara.data.ContentsInfo
-import com.ssafy.jaljara.data.DummyChildSleepInfo
-import com.ssafy.jaljara.data.DummyDataProvider
+import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.ui.component.ErrorScreen
 import com.ssafy.jaljara.ui.component.LoadingScreen
 import com.ssafy.jaljara.ui.screen.parent.JongSeokCalendar
@@ -67,7 +64,7 @@ fun ChildMainView(childViewModel: ChildViewModel,
         contentsViewModel.getContentsVideoList()
         MissionTodayContainer(childViewModel,todayMission.content, onClickMission,userId)
         SetSllepTimeContainer(childSleepInfo.targetBedTime,childSleepInfo.targetWakeupTime)
-        RewardStatusContainer(childSleepInfo.streakCount, onClickCoupon)
+        RewardStatusContainer(childSleepInfo, onClickCoupon)
         ContentContainer(contentsViewModel,soundContents,videoContents, onClickContent)
     }
 }
@@ -196,14 +193,18 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RewardStatusContainer(streakCount:Int, onClickCoupon: () -> Unit = {}) {
+fun RewardStatusContainer(childSleepInfo: ChildSleepInfo, onClickCoupon: () -> Unit = {}) {
     var remainText by remember { mutableStateOf("") }
-    if(streakCount<7) {
-        val remainCnt=7-streakCount
-        remainText = "${remainCnt}번만 성공하면 보상을 획득할 수 있어요!"
-    }
-    else {
-        remainText="지금 보상을 획득할 수 있어요 ☺"
+    if(childSleepInfo.currentReward == ""){
+        remainText = "보상 등록을 부모님께 요청해 보세요!"
+    }else{
+        if(childSleepInfo.streakCount<7) {
+            val remainCnt=7-childSleepInfo.streakCount
+            remainText = "${remainCnt}번만 성공하면 보상을 획득할 수 있어요!"
+        }
+        else {
+            remainText="지금 보상을 획득할 수 있어요 ☺"
+        }
     }
 
     Column() {
