@@ -1,34 +1,44 @@
 package com.ssafy.jaljara.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.ssafy.jaljara.R
+
+val customFont = FontFamily(
+    Font(R.font.dongle)
+)
 
 // Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
+val JaljaraTypography = Typography(
     titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
+        fontFamily = customFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 48.sp,
     ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+    titleMedium = TextStyle(
+        fontFamily = customFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 30.sp,
+        color = Color.Black
+    ),
+    titleSmall = TextStyle(
+        fontFamily = customFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = customFont,
+        fontSize = 22.sp,
+    ),
+    bodySmall = TextStyle(
+        fontFamily = customFont,
+        fontSize = 22.sp,
+        color = Color.Black
+    ),
+
 )

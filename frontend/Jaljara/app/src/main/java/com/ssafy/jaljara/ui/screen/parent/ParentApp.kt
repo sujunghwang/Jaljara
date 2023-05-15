@@ -5,24 +5,35 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.twotone.CalendarMonth
+import androidx.compose.material.icons.twotone.Home
+import androidx.compose.material.icons.twotone.KingBed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.ui.screen.ParentMain
+import com.ssafy.jaljara.ui.screen.ParentMainView
+import com.ssafy.jaljara.ui.theme.DarkNavy
 import com.ssafy.jaljara.ui.vm.ParentViewModel
+import kotlinx.datetime.toJavaLocalDate
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 /**
@@ -31,35 +42,49 @@ import com.ssafy.jaljara.ui.vm.ParentViewModel
  * 공통 bar가 사용됩니다.
  * */
 
-enum class ParentScreen(@StringRes val title : Int) {
-    Start(title = R.string.main),
-    SetSleepTime(title = R.string.time_setting),
-    SleepCalendar(title = R.string.calendar),
-    SleepLogDetail(title = 3)
+enum class ParentScreen(@StringRes val title : Int,  val url: String) {
+    Start(title = R.string.main, "/main"),
+    SetSleepTime(title = R.string.time_setting, "/set_sleep"),
+    SleepCalendar(title = R.string.calendar, "/calendar"),
+    SleepLogDetail(title = 3, "/sleep_detail"),
+    ParentMission(title = 4, "/parent_mission")
+
 }
 
+data class NavigationInfo(val route: ParentScreen, val icon: ImageVector)
 @Composable
 fun ParentNavigationBar(
-    items : List<ParentScreen> = listOf(ParentScreen.Start,ParentScreen.SetSleepTime,ParentScreen.SleepCalendar),
+
+    /** 원하는 아이콘을 찾아서 넣으세요 **/
+    items : List<NavigationInfo> = listOf(
+        NavigationInfo(ParentScreen.Start, Icons.TwoTone.Home),
+        NavigationInfo(ParentScreen.SetSleepTime, Icons.TwoTone.KingBed),
+        NavigationInfo(ParentScreen.SleepCalendar, Icons.TwoTone.CalendarMonth),
+    ),
     navController : NavController,
     selectedItem : Int,
+    onChangeNavIdx: (Int) -> Unit = {},
 ) {
-    NavigationBar {
+    NavigationBar(
+        modifier = Modifier.clip(shape = RoundedCornerShape(
+            topStart = CornerSize(50),
+            topEnd = CornerSize(50),
+            bottomEnd = CornerSize(0),
+            bottomStart = CornerSize(0)
+        )
+        ),
+        containerColor = DarkNavy
+    ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                icon = { Icon(Icons.Filled.Favorite, contentDescription = item.name) },
-                label = { Text(stringResource(id = item.title)) },
+                icon = { Icon(item.icon, contentDescription = item.route.name) },
+                label = { Text(stringResource(id = item.route.title), style = MaterialTheme.typography.titleSmall) },
                 selected = selectedItem == index,
                 onClick = {
-                    navController.navigate(item.name){
-                        /* 새로 렌더링 되는게 아니라
-                         이전 상태 저장*/
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
+                    navController.navigate(route = item.route.url){
+                        popUpTo(ParentScreen.Start.url)
                     }
+                    onChangeNavIdx(index)
                 }
             )
         }
@@ -70,8 +95,8 @@ fun ParentNavigationBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ParentApp(
-    modifier: Modifier = Modifier,
     viewModel: ParentViewModel = viewModel(),
+    modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
 
@@ -79,6 +104,8 @@ fun ParentApp(
     var navBarSelectedItem by rememberSaveable { mutableStateOf(0) }
 
     val uiState by viewModel.uiState.collectAsState()
+
+    viewModel.getChildSleepInfo(1)
 
     Scaffold(
         bottomBar = {
@@ -91,35 +118,54 @@ fun ParentApp(
 
         NavHost(
             navController = navController,
-            startDestination = ParentScreen.Start.name,
+            startDestination = ParentScreen.Start.url,
             modifier = modifier.padding(innerPadding)
         ) {
-            composable(route = ParentScreen.Start.name) {
+            composable(route = ParentScreen.Start.url) {
                 viewModel.setNavShow(true)
                 // 부모 메인 페이지
-                ParentMain()
+                ParentMainView(viewModel,
+                    onClickMissionParent = {
+                        navController.navigate(ParentScreen.ParentMission.url)
+                    },
+                    onClickSetTime ={
+                        navController.navigate(ParentScreen.SetSleepTime.url)
+                    },
+                    2//////parentId 바뀌면 넣는 부분,
+                )
                 navBarSelectedItem = 0
             }
-            composable(route = ParentScreen.SetSleepTime.name) {
+            composable(route = ParentScreen.SetSleepTime.url) {
                 viewModel.setNavShow(true)
                 // 목표 수면시간 설정
-                SetTimeScreen()
+                SetTimeScreen(viewModel)
                 navBarSelectedItem = 1
             }
-            composable(route = ParentScreen.SleepCalendar.name) {
+            composable(route = ParentScreen.SleepCalendar.url) {
                 viewModel.setNavShow(true)
                 // 내 아이 수면 달력
                 SleepCalenderScreen(onClickDay = {
-                    Log.d("캘린더 라우터 클릭", it)
-                    navController.navigate(ParentScreen.SleepLogDetail.name + "/"+it)
+                    day ->
+                    Log.d("캘린더 라우터 클릭", day.toString())
+
+                    val fomatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+
+                    val displayDate = day.toJavaLocalDate().format(fomatter)
+
+                    navController.navigate(ParentScreen.SleepLogDetail.url + "/"+displayDate)
                 })
                 navBarSelectedItem = 2
             }
-            composable(route = ParentScreen.SleepLogDetail.name + "/{formatDate}") {
+            composable(route = ParentScreen.SleepLogDetail.url + "/{formatDate}") {
                     backStackEntry ->
                 viewModel.setNavShow(false)
                 // 수면 기록 상세 페이지
-                SleepLogDetailScreen(backStackEntry.arguments?.getString("formatDate"))
+                SleepLogDetailScreen(formatDate = backStackEntry.arguments?.getString("formatDate")?:"20990513")
+            }
+            composable(route = ParentScreen.ParentMission.url) {
+                    backStackEntry ->
+                viewModel.setNavShow(true)
+                ParentMission(viewModel)
             }
         }
     }
