@@ -46,6 +46,7 @@ class ChildAlarm : BroadcastReceiver() {
             .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.astronoutsleep))
             .setDefaults(Notification.DEFAULT_VIBRATE)
             .setContentIntent(clickPendingIntent)
+            .setAutoCancel(true)
 
         manager.notify(1, builder.build())
     }
