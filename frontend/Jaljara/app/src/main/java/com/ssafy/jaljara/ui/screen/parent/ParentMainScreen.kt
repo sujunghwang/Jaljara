@@ -359,8 +359,8 @@ fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: M
                         .padding(15.dp)
                 )
                 Column() {
-                    Text(text = title, style = MaterialTheme.typography.titleSmall)
-                    Text(text = "$content")
+                    Text(text = title, style = MaterialTheme.typography.titleMedium, color=Color.White)
+                    Text(text = "$content",style = MaterialTheme.typography.titleSmall,)
                 }
             }
         }
@@ -383,8 +383,8 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "$content", style = MaterialTheme.typography.titleSmall)
-                Text(text = title)
+                Text(text = "$content", style = MaterialTheme.typography.titleMedium, color=Color.White)
+                Text(text = title,style = MaterialTheme.typography.titleSmall,)
                 Image(painter = img,
                     contentDescription = null,
                     modifier = Modifier
