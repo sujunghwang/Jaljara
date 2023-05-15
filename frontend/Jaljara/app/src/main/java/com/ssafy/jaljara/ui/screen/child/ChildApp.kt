@@ -212,17 +212,19 @@ fun ChildApp(
 fun setAlarm(context: Context, targetBedTime:String){
     if(targetBedTime != ""){
         //    val timeSec = System.currentTimeMillis() + 5000
-        //    val temp = "12:25"
+//            val temp = "10:14"
         Log.d("설정 수면 시간", targetBedTime)
         val now = LocalDateTime.now()
         val timeArr = targetBedTime.split(":")
         val hour = timeArr[0]
         val minute = timeArr[1]
-        val temptime = LocalDateTime.of(now.year, now.monthValue, now.dayOfMonth, hour.toInt(), minute.toInt(), 0)
+        var temptime = LocalDateTime.of(now.year, now.monthValue, now.dayOfMonth, hour.toInt(), minute.toInt(), 0)
+        if(now.isAfter(temptime)) temptime = temptime.plusDays(1)
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, ChildAlarm::class.java)
         val pendingIntent = PendingIntent.getBroadcast(context,0,intent, PendingIntent.FLAG_MUTABLE)
-        alarmManager.set(AlarmManager.RTC_WAKEUP, temptime.atZone(ZoneId.systemDefault()).toInstant()?.toEpochMilli() ?: 0, pendingIntent)
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, temptime.atZone(ZoneId.systemDefault()).toInstant()?.toEpochMilli() ?: 0, pendingIntent)
+        alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(temptime.atZone(ZoneId.systemDefault()).toInstant()?.toEpochMilli() ?: 0, pendingIntent), pendingIntent);
     }
 }
 
