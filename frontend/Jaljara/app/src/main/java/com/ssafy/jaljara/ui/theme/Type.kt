@@ -31,6 +31,11 @@ val JaljaraTypography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
     ),
+    bodyLarge = TextStyle(
+        fontFamily = customFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 48.sp,
+    ),
     bodyMedium = TextStyle(
         fontFamily = customFont,
         fontSize = 22.sp,

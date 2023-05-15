@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.NotUsedCoupon
@@ -101,12 +102,14 @@ fun NotUsedCoupon(childViewModel: ChildViewModel, coupon: NotUsedCoupon, modifie
 fun NotUsedCouponContent(content: String, getTime: String?, modifier: Modifier = Modifier){
     Text(
         text = content,
-        style = MaterialTheme.typography.titleMedium
+        style = MaterialTheme.typography.titleMedium,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
     )
     Row(modifier = modifier.padding(top = 8.dp)) {
         Text(
             text = "발급일 : " + getTime?.split("T")?.get(0) ?:"null 값입니다.",
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodySmall,
         )
     }
 
