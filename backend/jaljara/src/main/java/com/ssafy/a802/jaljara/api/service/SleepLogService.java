@@ -14,11 +14,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 
 @Slf4j
 @Service
@@ -28,45 +37,135 @@ public class SleepLogService {
     private final MissionLogRepository missionLogRepository;
     private final ChildInformationRepository childInformationRepository;
 
-    public void addSleepLog(SleepLogRequestDto.SleepLogInput sleepLogInput){
-        long childId = sleepLogInput.getUserId();
+    public void addSleepLogs(List<SleepLogRequestDto.SleepSegmentEvent> sleepSegmentEvents, long childId){
+
+        if(sleepSegmentEvents == null) throw new CustomException(HttpStatus.BAD_REQUEST, "저장할 수면 정보가 없습니다.");
+
         //해당 유저와 연결된 부모가 없는 경우
         ChildInformation childInformation = childInformationRepository.findByChildId(childId).orElseThrow(
                 () -> new CustomException(HttpStatus.NOT_FOUND,
                         "부모와 연결되지 않은 유저입니다. userId: " + childId));
 
-        //해당 날짜에 이미 수면 기록이 존재하는 경우
-        if(sleepLogRepository.existsByUserIdAndDate(childId, sleepLogInput.getDate()))
-            throw new CustomException(HttpStatus.CONFLICT,
-                    "해당 날짜에 수면기록이 이미 존재합니다. userId: " + childId + ", date: " + sleepLogInput.getDate());
+        LocalDateTime _now = LocalDateTime.now();
 
-        //수면달성도 계산
-        //목표취침,기상시간과 실제취침,기상시간을 분단위로 치환
+        log.info("오늘 날짜 : " + ZonedDateTime.of(_now, ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+        //목표취침,기상시간을 분단위로 치환
         int tBed = childInformation.getTargetBedTime().toLocalTime().getHour() * 60 + childInformation.getTargetBedTime().toLocalTime().getMinute();
         int tWake = childInformation.getTargetWakeupTime().toLocalTime().getHour() * 60 + childInformation.getTargetWakeupTime().toLocalTime().getMinute();
-        int bed = sleepLogInput.getBedTime().toLocalTime().getHour() * 60 + sleepLogInput.getBedTime().toLocalTime().getMinute();
-        int wake = sleepLogInput.getWakeupTime().toLocalTime().getHour() * 60 + sleepLogInput.getWakeupTime().toLocalTime().getMinute();
 
-        //항상 취침 < 기상이 되도록 조정
-        if(tBed >= tWake)
-            tBed -= 60 * 24;
-        if(bed >= wake)
-            bed -= 60 * 24;
 
-        //목표로 한 수면시간 중 실제로 수면을 취한 비율을 계산해 수면달성도로 저장
-        double sleepTime = Math.min(wake, tWake) - Math.max(bed, tBed);
-        if(sleepTime < 0)
-            sleepTime = 0;
-        double tSleepTime = tWake - tBed;
-        double sleepRate = sleepTime / tSleepTime;
+        // 이후의 모든 시간은 24시를 0으로 취급
 
-        //수면기록 저장
-        sleepLogRepository.save(SleepLog.builder()
-                .userId(sleepLogInput.getUserId())
-                .bedTime(sleepLogInput.getBedTime())
-                .wakeupTime(sleepLogInput.getWakeupTime())
-                .date(sleepLogInput.getDate())
-                .sleepRate(sleepRate).build());
+        // 오후 12시 이후 이면
+        // 12:00 ~ 23:59
+        // -12:00 ~ -00:01 음수로 convert
+        if(tBed >= 12*60) tBed -= 24 * 60;
+
+        int sleepLen = tWake - tBed;
+
+        for(SleepLogRequestDto.SleepSegmentEvent event: sleepSegmentEvents){
+            // 수면 status가 성공 or 데이터 유실인 경우
+            if(event.getStatus() == SleepLogRequestDto.SleepSegmentEvent.STATUS_SUCCESSFUL||
+                    event.getStatus() == SleepLogRequestDto.SleepSegmentEvent.STATUS_MISSING_DATA
+            ){
+                // 수면 세그먼트 감지 시작 시간
+                LocalDateTime start2LDT = LocalDateTime.ofInstant(Instant.ofEpochMilli(event.getStartTimeMillis()), ZoneId.systemDefault());
+
+                // 수면 세그먼트 감지 끝난 시간
+                LocalDateTime end2LDT = LocalDateTime.ofInstant(Instant.ofEpochMilli(event.getEndTimeMills()), ZoneId.systemDefault());
+
+                // 시작 시간 -> 분으로
+                int start2min = start2LDT.getHour() * 60 + start2LDT.getMinute();
+                if(start2min >= 12 * 60) start2min -= 24 * 60;
+
+                // 끝 시간 -> 분으로
+                int end2min = end2LDT.getHour() * 60 + end2LDT.getMinute();
+                if(end2min >= 12 * 60) end2min -= 24 * 60;
+
+                log.info("start2min : " + start2min + "end2min : " + end2min);
+
+                if(end2min >= tBed){
+                    int endMin = Math.min(end2min, tWake);
+                    int startMin = Math.max(start2min, tBed);
+                    double tRate = (1D * endMin - startMin)/sleepLen;
+
+                    // ~ 23:59 -> 오늘에 저장
+                    if(endMin < 0){
+                        Date dateToday = Timestamp.valueOf(end2LDT);
+
+                        log.info("오늘에 저장 : " + dateToday);
+                        Optional<SleepLog> optLog =  sleepLogRepository.findByUserIdAndDate(childId, dateToday);
+
+                        if(optLog.isEmpty()){
+                            sleepLogRepository.save(
+                                    SleepLog.builder()
+                                            .sleepRate(tRate)
+                                            .userId(childId)
+                                            .bedTime(min2Time(startMin))
+                                            .wakeupTime(min2Time(endMin))
+                                            .date(dateToday).build()
+                            );
+                        }else{
+                            SleepLog tlog = optLog.get();
+                            sleepLogRepository.save(
+                                    SleepLog.builder()
+                                            .id(tlog.getId())
+                                            .sleepRate(tlog.getSleepRate() + tRate)
+                                            .userId(tlog.getUserId())
+                                            .bedTime(tlog.getBedTime())
+                                            .wakeupTime(min2Time(endMin))
+                                            .date(dateToday).build()
+                            );
+                        }
+                    }else{ // 00:00 ~ 11:59 -> 어제 저장
+                        Date dateYesterDay = Timestamp.valueOf(end2LDT.minusDays(1));
+                        log.info("어제에 저장 : " + dateYesterDay);
+                        Optional<SleepLog> optLog = sleepLogRepository.findByUserIdAndDate(childId, dateYesterDay);
+                        if(optLog.isEmpty()){
+                            sleepLogRepository.save(
+                                    SleepLog.builder()
+                                            .sleepRate(tRate)
+                                            .userId(childId)
+                                            .bedTime(min2Time(startMin))
+                                            .wakeupTime(min2Time(endMin))
+                                            .date(dateYesterDay).build()
+                            );
+                        }else{
+                            SleepLog tlog = optLog.get();
+                            sleepLogRepository.save(
+                                    SleepLog.builder()
+                                            .id(tlog.getId())
+                                            .sleepRate(tlog.getSleepRate() + tRate)
+                                            .userId(tlog.getUserId())
+                                            .bedTime(tlog.getBedTime())
+                                            .wakeupTime(min2Time(endMin))
+                                            .date(dateYesterDay).build()
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Time min2Time(int min){
+        StringBuilder sb = new StringBuilder();
+
+        if(min <0 ) min += 60 * 24;
+
+        int hour = min/60;
+        if(hour < 10) sb.append(0);
+        sb.append(hour).append(':');
+
+        int minute = min%60;
+        if(minute < 10) sb.append(0);
+        sb.append(minute).append(':');
+
+        sb.append("00");
+
+        // Time.valueOf("22:00:00");
+        return Time.valueOf(sb.toString());
     }
 
     public List<Integer> findMissionCompleteDayListByMonth(long childId, String date) throws ParseException {
@@ -100,4 +199,6 @@ public class SleepLogService {
                 .date(sleepLog.getDate())
                 .sleepRate(sleepLog.getSleepRate()).build();
     }
+
+
 }
