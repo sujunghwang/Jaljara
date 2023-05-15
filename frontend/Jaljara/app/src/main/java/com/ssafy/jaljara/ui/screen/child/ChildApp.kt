@@ -119,11 +119,14 @@ fun ChildApp(
 ) {
     val activity = LocalContext.current as ComponentActivity
 
+    // userId
+    var userId = viewModel.test!!.userInfo.userId.toLong()
+
     // 하단 네비게이션 선택 애니메이션 용
     var navBarSelectedItem by rememberSaveable { mutableStateOf(0) }
 
     val sleepInfo = viewModel.childSleepResponse
-    viewModel.getChildSleepInfo(1)
+    viewModel.getChildSleepInfo(userId)
 
     setAlarm(LocalContext.current, sleepInfo.targetBedTime)
 
@@ -161,7 +164,8 @@ fun ChildApp(
                     },
                     onClickContent = {
                         navController.navigate(ChildScreen.ContentsDetail.url)
-                    }
+                    },
+                    userId = userId
                 )
 
                 navBarSelectedItem = 0
