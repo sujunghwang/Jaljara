@@ -33,15 +33,16 @@ class MainActivity : ComponentActivity() {
                 Manifest.permission.CAMERA,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.POST_NOTIFICATIONS
+                Manifest.permission.POST_NOTIFICATIONS,
+                Manifest.permission.SCHEDULE_EXACT_ALARM
             ),
             0
         )
         setContent {
             JaljaraTheme {
-//                ChildApp(childViewModel)
+                ChildApp(childViewModel)
 //                ParentApp(parentViewModel)
-                LandingApp(viewModel = landingViewModel)
+//                LandingApp(viewModel = landingViewModel)
             }
         }
     }
