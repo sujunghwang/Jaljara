@@ -124,7 +124,9 @@ fun ParentMainView(parentViewModel: ParentViewModel,
         AlertDialog(
             onDismissRequest = { showRewardDialog = false },
             title = { Text(text = "보상을 등록해주세요", style = MaterialTheme.typography.titleMedium, color = Color.White) },
-            text = { TextField(modifier = Modifier.fillMaxWidth().height(100.dp), value = reward, onValueChange = {reward = it}) },
+            text = { TextField(modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp), value = reward, onValueChange = {reward = it}) },
             confirmButton = {
                 Text(
                     text = "확인",
@@ -286,8 +288,8 @@ fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int, pare
                     contentScale = ContentScale.FillBounds,
                     contentDescription = null,
                     modifier = Modifier
-                        .size(50.dp,50.dp)
-                        .alpha(if(parentViewModel.selectedChildIdx == idx) 1f else 0.3f)
+                        .size(50.dp, 50.dp)
+                        .alpha(if (parentViewModel.selectedChildIdx == idx) 1f else 0.3f)
                 )
             } ?: Image(painter = painterResource(R.drawable.ic_no_person),
                 contentScale = ContentScale.FillBounds,
@@ -381,16 +383,28 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "$content", color=Color.White, fontSize = 40.sp, modifier = Modifier.offset(y = -5.dp))
-                Text(text = title,style = MaterialTheme.typography.titleSmall,)
-                Image(painter = img,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .size(100.dp, 100.dp)
-                        .padding(top = 10.dp)
+                Text(
+                    text = when (content.isNotEmpty()) {
+                        true -> content
+                        false -> "-- : --"
+                    },
+                    color = Color.White,
+                    modifier = Modifier.offset(y = -5.dp),
+                    fontSize = when (content.startsWith("수면설정")) {
+                        true -> 24.sp
+                        false -> 40.sp
+                    }
                 )
+                Text(text = title, style = MaterialTheme.typography.titleSmall)
             }
+            Image(
+                painter = img,
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .size(100.dp, 100.dp)
+                    .padding(top = 10.dp, bottom = 10.dp)
+            )
         }
     )
 }
