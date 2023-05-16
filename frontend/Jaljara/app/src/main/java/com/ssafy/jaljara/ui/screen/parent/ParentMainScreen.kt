@@ -33,8 +33,10 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -294,7 +296,7 @@ fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int, pare
                     .size(50.dp,50.dp)
             ) // 비트맵이 없다면
         }
-        Text(text = childInfo.name, style = MaterialTheme.typography.titleSmall)
+        Text(text = childInfo.name, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(5.dp))
     }
 
     if (showDialog) {
@@ -348,10 +350,6 @@ fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: M
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-//                GlideImage(
-//                    model = img,
-//                    contentDescription = null,
-//                )
                 Image(painter = painterResource(id = img),
                     contentDescription = null,
                     modifier = Modifier
@@ -359,8 +357,8 @@ fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: M
                         .padding(15.dp)
                 )
                 Column() {
-                    Text(text = title, style = MaterialTheme.typography.titleMedium, color=Color.White)
-                    Text(text = "$content",style = MaterialTheme.typography.titleSmall,)
+                    Text(text = title, style = MaterialTheme.typography.titleMedium, color=Color.White, fontSize = 28.sp)
+                    Text(text = "$content",style = MaterialTheme.typography.titleSmall, fontSize=16.sp)
                 }
             }
         }
@@ -383,14 +381,14 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "$content", style = MaterialTheme.typography.titleMedium, color=Color.White)
+                Text(text = "$content", color=Color.White, fontSize = 40.sp, modifier = Modifier.offset(y = -5.dp))
                 Text(text = title,style = MaterialTheme.typography.titleSmall,)
                 Image(painter = img,
                     contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.End)
-                        .size(100.dp, 105.dp)
-                        .padding(5.dp)
+                        .size(100.dp, 100.dp)
+                        .padding(top = 10.dp)
                 )
             }
         }
@@ -415,7 +413,7 @@ fun calTime(childSleepInfo: ChildSleepInfo): String {
 
     var sleepTime = LocalTime.of((wakeupTimeInt - bedTimeInt) / 60, (wakeupTimeInt - bedTimeInt) % 60)
 
-    var text = "${sleepTime.hour}H"
+    var text = "${sleepTime.hour}H ${sleepTime.minute}M"
 
     return text
 }

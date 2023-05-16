@@ -75,7 +75,8 @@ fun SettingTime(modifier: Modifier = Modifier, @DrawableRes draw: Int, descripti
         Image(
             modifier = Modifier
                 .weight(0.3f)
-                .fillMaxSize()
+                .width(100.dp)
+                .height(100.dp)
                 .padding(4.dp),
             painter = painterResource(draw),
             contentDescription = "settingImage"
@@ -86,8 +87,8 @@ fun SettingTime(modifier: Modifier = Modifier, @DrawableRes draw: Int, descripti
                 .weight(0.7f)
                 .padding(8.dp)
         ) {
-            Text(text = description, style = MaterialTheme.typography.titleSmall)
-            Text(text = time, textAlign = TextAlign.Center, style = MaterialTheme.typography.bodyMedium)
+            Text(text = description, style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center)
+            Text(text = time, textAlign = TextAlign.Center, fontSize = 30.sp, modifier = Modifier.offset(y=-5.dp))
         }
     }
 }
@@ -400,23 +401,27 @@ fun SleepLogDetailScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .padding(start = 20.dp, end = 10.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
                     text = "$displayDate ${getWeekBydayOfWeekNumber(dayOfWeekNumber).korean}",
                     modifier = Modifier
-                        .fillMaxHeight(0.1f)
-                        .padding(16.dp),
+                        .fillMaxHeight(0.08f)
+                        .padding(start = 10.dp, top = 10.dp),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge
+                    fontSize = 30.sp
                 )
-                Row() {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .weight(1f)
                             .padding(8.dp)
                     ) {
-                        Text(text = "수면시간", style = MaterialTheme.typography.titleSmall)
+                        Text(text = "수면시간", fontSize = 30.sp, textAlign = TextAlign.Center)
                         SleepTimeCircleClock(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -452,7 +457,7 @@ fun SleepLogDetailScreen(
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(16.dp)
+                            .padding(10.dp)
                     ) {
                         Text(text = "수면달성도", style = MaterialTheme.typography.titleSmall)
                         ArtBox(
@@ -463,14 +468,14 @@ fun SleepLogDetailScreen(
                             Text(
                                 text = "${(sleepLog.sleepRate * 100).toInt()}%",
                                 modifier = modifier,
-                                fontSize = 64.sp
+                                fontSize = 40.sp
                             )
                         }
                     }
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .padding(16.dp)
+                            .padding(10.dp)
                     ) {
                         Text(text = "미션달성", style = MaterialTheme.typography.titleSmall)
                         ArtBox(
@@ -479,9 +484,9 @@ fun SleepLogDetailScreen(
                                 .height(pageSize / 4)
                         ) { modifier ->
                             if (missionLog.isSuccess) {
-                                Text(text = "COMPLETE!", modifier = modifier)
+                                Text(text = "COMPLETE!", modifier = modifier, fontSize = 20.sp)
                             } else {
-                                Text(text = "NOT YET..", modifier = modifier)
+                                Text(text = "NOT YET..", modifier = modifier, fontSize = 20.sp)
                             }
                         }
                     }

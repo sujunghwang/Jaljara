@@ -65,7 +65,7 @@ fun LandingScreen(
                     Spacer(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 80.dp)
+                            .padding(top = 50.dp)
                     )
 
                     AnimatedVisibility(
@@ -83,7 +83,7 @@ fun LandingScreen(
                                 .fillMaxWidth()
                                 .padding(start = TEXT_START_PAD),
                             textAlign = TextAlign.Left,
-                            fontSize = 36.sp,
+                            fontSize = 50.sp,
                             fontWeight = FontWeight.ExtraBold,
                             text = "잘자라", color = Color.White
                         )
@@ -102,7 +102,7 @@ fun LandingScreen(
                                 .fillMaxWidth()
                                 .padding(start = TEXT_START_PAD, top = 0.dp),
                             textAlign = TextAlign.Left,
-                            fontSize = 16.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
                             text = "Sleep Well, Grow Well",
                             color = Color.White
@@ -207,7 +207,9 @@ fun LandingScreen(
                                 Text(
                                     text = "회원가입", modifier = Modifier
                                         .padding(6.dp)
-                                        .wrapContentWidth(Alignment.CenterHorizontally)
+                                        .wrapContentWidth(Alignment.CenterHorizontally),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontSize = 16.sp
                                 )
                             }
 
@@ -225,7 +227,9 @@ fun LandingScreen(
                                 Text(
                                     text = "로그인", modifier = Modifier
                                         .padding(6.dp)
-                                        .wrapContentWidth(Alignment.CenterHorizontally)
+                                        .wrapContentWidth(Alignment.CenterHorizontally),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontSize = 16.sp
                                 )
                             }
                         }

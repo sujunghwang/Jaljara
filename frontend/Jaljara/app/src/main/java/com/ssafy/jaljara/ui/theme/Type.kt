@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.sp
 import com.ssafy.jaljara.R
 
 val customFont = FontFamily(
-    Font(R.font.dongle)
+    Font(R.font.cutelively)
 )
 
 // Set of Material typography styles to start with
@@ -18,27 +18,30 @@ val JaljaraTypography = Typography(
     titleLarge = TextStyle(
         fontFamily = customFont,
         fontWeight = FontWeight.Bold,
-        fontSize = 48.sp,
+        fontSize = 40.sp,
     ),
     titleMedium = TextStyle(
         fontFamily = customFont,
         fontWeight = FontWeight.Bold,
-        fontSize = 30.sp,
-        color = Color.Black
+        fontSize = 24.sp
     ),
     titleSmall = TextStyle(
         fontFamily = customFont,
         fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
+        fontSize = 16.sp,
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = customFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 40.sp,
     ),
     bodyMedium = TextStyle(
         fontFamily = customFont,
-        fontSize = 22.sp,
+        fontSize = 18.sp,
     ),
     bodySmall = TextStyle(
         fontFamily = customFont,
-        fontSize = 22.sp,
-        color = Color.Black
+        fontSize = 12.sp,
     ),
 
 )

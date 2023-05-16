@@ -52,7 +52,6 @@ fun ContentsView(
         contentsSoundList,
         contentsVideoList,
         onClickContents = onClickContents,
-        //navigateToContentsDetail = navigateToContentsDetail
         scrollState = scrollState
     )
 }
@@ -63,7 +62,6 @@ fun ContentsListView(
     contentsSoundList: List<ContentsInfo>,
     contentsVideoList: List<ContentsInfo>,
     onClickContents: (ContentsInfo) -> Unit,
-    //navigateToContentsDetail: (ContentsInfo) -> Unit
     scrollState: ScrollState
 ) {
     val typography = MaterialTheme.typography
@@ -96,8 +94,8 @@ fun ContentsListView(
             Text(
                 text = "수면에 도움이 되는 소리",
                 color = Color.White,
-                style = typography.titleSmall,
-                modifier = Modifier.padding(10.dp),
+                style = typography.titleMedium,
+                modifier = Modifier.padding(0.dp),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
             )
@@ -114,7 +112,7 @@ fun ContentsListView(
                 text = "수면에 도움이 되는 영상",
                 color = Color.White,
                 style = typography.titleSmall,
-                modifier = Modifier.padding(10.dp),
+                modifier = Modifier.padding(0.dp),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 20.sp
             )
@@ -148,12 +146,12 @@ fun ContentsItemView(
 ) {
     val typography = MaterialTheme.typography
     Log.d("contents info", "${contentsInfo.title}")
-//    Log.d("contents info", "${contentsInfo.title}")
 
     Card(
         modifier = modifier
             .padding(10.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(240.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.tertiary
@@ -177,7 +175,7 @@ fun ContentsItemView(
                     text = "카테고리 : ",
                     style = typography.bodyMedium,
                     color = Color.White,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Text(text = contentsTypeToString,
                     style = typography.bodyMedium,
@@ -189,12 +187,11 @@ fun ContentsItemView(
             ThumbnailImage(
                 thumbnailImageUrl = contentsInfo.thumbnailImageUrl,
                 modifier = Modifier
-//                    .padding(5.dp)
                     .clip(RoundedCornerShape(20.dp))
             )
 
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(start=10.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.Start,
@@ -236,7 +233,6 @@ fun ThumbnailImage(thumbnailImageUrl: String, modifier: Modifier = Modifier) {
     //현재 컨텍스트 가져오기
     //이걸 비트맵으로 받겠다
     //어떤 URL인데
-    //
     Glide.with(LocalContext.current).asBitmap().load(thumbnailImageUrl)
         .into(object : CustomTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {

@@ -30,9 +30,12 @@ import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 @Composable
-fun StarLink(childViewModel: ChildViewModel){
+fun StarLink(
+    childViewModel: ChildViewModel,
+    childId : Long = 1L
+){
     var getBtnValid = false
-    childViewModel.getChildSleepInfo(1)
+    childViewModel.getChildSleepInfo(childId)
     var childSleepInfo = childViewModel.childSleepResponse
 
     if(childSleepInfo.streakCount >= 7)
@@ -61,11 +64,11 @@ fun StarLink(childViewModel: ChildViewModel){
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(20.dp),
+                    .padding(start = 20.dp, end = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row(
-                    modifier = Modifier.fillParentMaxHeight(0.2f),
+                    modifier = Modifier.fillParentMaxHeight(0.18f),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon")
@@ -100,21 +103,23 @@ fun StarLink(childViewModel: ChildViewModel){
                 ){
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.reward),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(60.dp)
-                                .padding(end = 6.dp)
+                                .size(70.dp)
+                                .padding(start = 10.dp, end = 5.dp)
+                                .offset(x = -16.dp)
                         )
                         Text(
                             text = "${childSleepInfo.streakCount} / 7",
                             fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp
+                            fontSize = 28.sp,
                         )
                     }
-                    Icon(Icons.Filled.OpenInNew, null, Modifier.align(Alignment.TopEnd).size(24.dp).padding(4.dp))
+                    Icon(Icons.Filled.OpenInNew, null, Modifier.align(Alignment.TopEnd).size(20.dp).padding(4.dp))
                 }
 
                 Button(
@@ -122,7 +127,7 @@ fun StarLink(childViewModel: ChildViewModel){
                         if(childSleepInfo.currentReward == "")
                             failToast.show()
                         else{
-                            childViewModel.getReward(1)
+                            childViewModel.getReward(childId)
                             successToast.show()
                         }
                     },
@@ -138,7 +143,8 @@ fun StarLink(childViewModel: ChildViewModel){
                 ) {
                     Text(
                         text = "보상 획득",
-                        style = MaterialTheme.typography.titleSmall
+                        style = MaterialTheme.typography.titleSmall,
+                        fontSize = 24.sp
                     )
                 }
             }

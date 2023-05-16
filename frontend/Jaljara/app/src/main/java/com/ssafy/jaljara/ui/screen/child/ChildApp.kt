@@ -1,18 +1,13 @@
 package com.ssafy.jaljara.ui.screen.child
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
-import android.app.AlertDialog
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
-import android.widget.TextView
 import androidx.activity.ComponentActivity
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
@@ -30,7 +25,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -38,10 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.manager.SleepManager
-import com.ssafy.jaljara.manager.SleepManager.registerForSleepUpdates
 import com.ssafy.jaljara.ui.screen.StarLink
-import com.ssafy.jaljara.ui.screen.parent.ParentScreen
 import com.ssafy.jaljara.ui.theme.DarkNavy
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import java.time.LocalDateTime
@@ -119,11 +110,14 @@ fun ChildApp(
 ) {
     val activity = LocalContext.current as ComponentActivity
 
+    // userId
+    var userId = viewModel.test!!.userInfo.userId.toLong()
+
     // 하단 네비게이션 선택 애니메이션 용
     var navBarSelectedItem by rememberSaveable { mutableStateOf(0) }
 
     val sleepInfo = viewModel.childSleepResponse
-    viewModel.getChildSleepInfo(1)
+    viewModel.getChildSleepInfo(userId)
 
     setAlarm(LocalContext.current, sleepInfo.targetBedTime)
 
@@ -161,7 +155,8 @@ fun ChildApp(
                     },
                     onClickContent = {
                         navController.navigate(ChildScreen.ContentsDetail.url)
-                    }
+                    },
+                    userId = userId
                 )
 
                 navBarSelectedItem = 0
@@ -170,7 +165,7 @@ fun ChildApp(
 
                 viewModel.setNavShow(true)
 
-                StarLink(viewModel)
+                StarLink(viewModel, userId)
 
                 navBarSelectedItem = 1
             }
@@ -189,13 +184,13 @@ fun ChildApp(
             composable(route = ChildScreen.Coupon.url) {
                 viewModel.setNavShow(true)
                 // 쿠폰 함수
-                CouponScreen(viewModel)
+                CouponScreen(viewModel, userId=userId)
                 navBarSelectedItem = 3
             }
             composable(route = ChildScreen.Mission.url) {
                 viewModel.setNavShow(true)
                 // 미션 함수
-                ChildMission(viewModel)
+                ChildMission(viewModel, userId=userId)
                 navBarSelectedItem = 4
             }
             composable(route = ChildScreen.ContentsDetail.url) {

@@ -53,7 +53,8 @@ fun UsedCoupon(coupon: UsedCoupon, modifier: Modifier = Modifier){
                 Row(modifier = modifier.padding(top = 8.dp)) {
                     Text(
                         text = "사용일 : " + coupon.usedTime?.split("T")?.get(0) ?:"",
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Black
                     )
                 }
 

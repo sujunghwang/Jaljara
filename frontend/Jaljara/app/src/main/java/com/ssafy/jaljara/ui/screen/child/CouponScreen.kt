@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -47,7 +48,7 @@ fun ChildCouponNav(
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = item.name) },
-                label = { Text(item.title, style = MaterialTheme.typography.titleSmall) },
+                label = { Text(item.title, style = MaterialTheme.typography.titleSmall, overflow = TextOverflow.Clip) },
                 selected = selectedItem == index,
                 onClick = {
                     navController.navigate(item.name)
@@ -67,7 +68,8 @@ fun CouponScreen(
     childViewModel : ChildViewModel,
     modifier: Modifier = Modifier,
     viewModel: ParentViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    userId: Long
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = CouponStatus.valueOf("UsedCoupon")
@@ -96,7 +98,7 @@ fun CouponScreen(
             composable(route = CouponStatus.Coupon.name) {
                 LazyColumn() {
                     val coupons = childViewModel.notUsedCouponResponse
-                    childViewModel.getNotUsedCoupon(1)
+                    childViewModel.getNotUsedCoupon(userId)
                     items(coupons){
                         NotUsedCoupon(childViewModel = childViewModel, coupon = it)
                     }
@@ -105,7 +107,7 @@ fun CouponScreen(
             composable(route = CouponStatus.UsedCoupon.name) {
                 LazyColumn() {
                     val coupons = childViewModel.usedCouponResponse
-                    childViewModel.getUsedCoupon(1)
+                    childViewModel.getUsedCoupon(userId)
                     items(coupons){
                         UsedCoupon(coupon = it)
                     }

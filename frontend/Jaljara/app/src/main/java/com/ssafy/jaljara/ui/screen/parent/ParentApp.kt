@@ -99,13 +99,14 @@ fun ParentApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
+    // userId
+    var userId = viewModel.test!!.userInfo.userId.toLong()
+    Log.d("userId","$userId")
 
     // 하단 네비게이션 선택 애니메이션 용
     var navBarSelectedItem by rememberSaveable { mutableStateOf(0) }
 
     val uiState by viewModel.uiState.collectAsState()
-
-    viewModel.getChildSleepInfo(1)
 
     Scaffold(
         bottomBar = {
@@ -131,14 +132,14 @@ fun ParentApp(
                     onClickSetTime ={
                         navController.navigate(ParentScreen.SetSleepTime.url)
                     },
-                    2//////parentId 바뀌면 넣는 부분,
+                    userId
                 )
                 navBarSelectedItem = 0
             }
             composable(route = ParentScreen.SetSleepTime.url) {
                 viewModel.setNavShow(true)
                 // 목표 수면시간 설정
-                SetTimeScreen(viewModel)
+                SleepTargetScreen(viewModel)
                 navBarSelectedItem = 1
             }
             composable(route = ParentScreen.SleepCalendar.url) {

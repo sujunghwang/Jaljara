@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
@@ -41,15 +42,14 @@ fun ChildMainView(childViewModel: ChildViewModel,
                   contentsViewModel: ContentsViewModel,
                   onClickMission: () -> Unit,
                   onClickCoupon: () -> Unit,
-                  onClickContent: (ContentsInfo)->Unit
+                  onClickContent: (ContentsInfo)->Unit,
+                  userId: Long
 ){
     val scrollState = rememberScrollState()
     var childSleepInfo = childViewModel.childSleepResponse
     var todayMission = childViewModel.todayMissionResponse
     val soundContents = contentsViewModel.contentsSoundListResponse
     val videoContents = contentsViewModel.contentsVideoListResponse
-    val userId =1L
-
 
     Column(
         modifier = Modifier
@@ -125,8 +125,9 @@ fun MissionTodayContainer(childViewModel: ChildViewModel,
                     text = "$todayMission",
                     modifier = Modifier
                         .padding(bottom = 20.dp)
-                        .align(Alignment.CenterHorizontally)
-                    ,style = MaterialTheme.typography.titleSmall
+                        .align(Alignment.CenterHorizontally),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontSize = 24.sp
                 )
             }
         )
@@ -137,10 +138,11 @@ fun MissionTodayContainer(childViewModel: ChildViewModel,
 fun reloadMissionButton(modifier: Modifier){
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
+        modifier = modifier.padding(top = 8.dp, end = 8.dp)
     ) {
-        Text(text = "재설정", style = MaterialTheme.typography.titleSmall)
+        Text(text = "재설정", style = MaterialTheme.typography.titleSmall, fontSize = 12.sp)
         Image(
+            modifier = modifier.height(18.dp).padding(start = 4.dp),
             painter = painterResource(id = R.drawable.ic_reload),
             contentDescription = null
         )
@@ -178,17 +180,18 @@ fun SetSllepTimeContainer(targetBedTime: String, targetWakeupTime:String) {
 fun SetTimeContainer(img : Painter, title : String, setTime : String) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
-            .padding(10.dp)
+            .padding(8.dp).width(160.dp)
     ) {
         Image(painter = img,
             contentDescription = null,
             modifier = Modifier
                 .size(100.dp, 100.dp)
-                .padding(11.dp)
+                .padding(top = 10.dp)
         )
-        Text(text = title, style = MaterialTheme.typography.titleSmall)
-        Text(text = setTime, style = MaterialTheme.typography.titleSmall)
+        Text(text = title, style = MaterialTheme.typography.titleSmall, fontSize = 18.sp)
+        Text(text = setTime, style = MaterialTheme.typography.bodyLarge, fontSize = 32.sp)
     }
 }
 
@@ -228,13 +231,14 @@ fun RewardStatusContainer(childSleepInfo: ChildSleepInfo, onClickCoupon: () -> U
                     Image(painter = painterResource(id = R.drawable.reward),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(95.dp, 100.dp)
-                            .padding(start = 5.dp)
+                            .size(90.dp, 90.dp)
+                            .padding(start = 10.dp, top= 10.dp, bottom= 10.dp)
                     )
                     Text(text = "$remainText",
                         style = MaterialTheme.typography.titleSmall,
+                        fontSize = 16.sp,
                         modifier = Modifier
-                            .padding(16.dp)
+                            .padding(start = 10.dp, end = 10.dp)
                     )
                 }
             }
@@ -333,6 +337,7 @@ fun ChildMainScreenView() {
         contentsViewModel = viewModel(),
         onClickCoupon = {},
         onClickMission = {},
-        onClickContent = {}
+        onClickContent = {},
+        userId = 1
     )
 }

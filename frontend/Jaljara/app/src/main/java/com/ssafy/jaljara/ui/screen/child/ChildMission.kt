@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ssafy.jaljara.R
@@ -55,7 +56,7 @@ import java.io.IOException
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun ChildMission(childViewModel :ChildViewModel){
+fun ChildMission(childViewModel :ChildViewModel, userId:Long){
     var prevInfo by rememberSaveable { mutableStateOf(false) }
     var isFirst by rememberSaveable { mutableStateOf(true) }
     var path by rememberSaveable { mutableStateOf("") }
@@ -65,46 +66,56 @@ fun ChildMission(childViewModel :ChildViewModel){
         Modifier
             .fillMaxHeight()
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.SpaceAround,
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         val mission = childViewModel.todayMissionResponse
-//        childViewModel.getTodayMission(1)
+        childViewModel.getTodayMission(userId)
+
+        Log.d("mission 상태","$mission")
+        if(mission.missionTodayId==0L) {
+
+        } else{
+
+        }
 //        val mission = todayMission2
 
         Row(
-            modifier = Modifier.fillMaxHeight(0.2f).padding(top = 20.dp),
+            modifier = Modifier.fillMaxHeight(0.12f).padding(top = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon")
+            Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon", modifier = Modifier.offset(x=-15.dp))
             Text(
                 text = "오늘의 미션",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
+                fontSize = 30.sp
             )
         }
 
         Text(
             text = mission.content,
             color = Color.White,
-            style = MaterialTheme.typography.titleSmall)
+            style = MaterialTheme.typography.titleSmall,
+            fontSize = 20.sp)
         if (mission.missionType=="IMAGE"){
             Box(){
                 Log.d("isFirst 상태", "$isFirst")
                 // 미션 수행 기록이 있으면 그 사진으로 대체
 
+                Log.d("userId 상태","$mission")
                 if(isFirst){
                     mission.url?.let {
                         AsyncImage(
                             model = mission.url,
                             contentDescription = null,
                             modifier = Modifier
-                                .fillMaxWidth(0.7f)
+                                .fillMaxWidth()
                                 .fillMaxHeight(0.8f)
                         )
                     }?: Box(modifier = Modifier
-                        .fillMaxWidth(0.7f)
+                        .fillMaxWidth()
                         .fillMaxHeight(0.8f)
-                        .background(color = Color.Gray))
+                        .background(color = Color.Gray.copy(0.3f)))
                 } else {
                     if(prevInfo){
                         AsyncImage(
@@ -114,7 +125,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                                 .build(),
                             contentDescription = null,
                             modifier = Modifier
-                                .fillMaxWidth(0.7f)
+                                .fillMaxWidth()
                                 .fillMaxHeight(0.8f)
                         )
                         Log.d("path 경로",path)
@@ -131,12 +142,12 @@ fun ChildMission(childViewModel :ChildViewModel){
                             isPinchToZoomEnabled = true, // default is true
                             camSelector = camSelector,
                             modifier = Modifier
-                                .fillMaxWidth(0.7f)
+                                .fillMaxWidth()
                                 .fillMaxHeight(0.8f)
                         ) {
                             Column(
                                 modifier = Modifier
-                                    .fillMaxWidth(0.7f)
+                                    .fillMaxWidth()
                                     .fillMaxHeight(0.8f),
                                 verticalArrangement = Arrangement.Bottom,
                                 horizontalAlignment = Alignment.CenterHorizontally
@@ -166,7 +177,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                             }
                             Column(
                                 modifier = Modifier
-                                    .fillMaxWidth(0.7f)
+                                    .fillMaxWidth()
                                     .fillMaxHeight(0.8f)
                                     .padding(end = 10.dp),
                                 verticalArrangement = Arrangement.Bottom,
@@ -198,7 +209,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                     prevInfo = false
                     isFirst = false
                 }) {
-                    Text("다시 찍기", color = Color.Red)
+                    Text("다시 찍기", color = Color(0xff5f72).copy(1f))
                 }
                 Spacer(modifier = Modifier.padding(20.dp))
                 Button(onClick = {
@@ -206,9 +217,9 @@ fun ChildMission(childViewModel :ChildViewModel){
                     val requestBody: RequestBody = file.asRequestBody("image/jpg".toMediaTypeOrNull())
                     val filePart: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
 
-                    childViewModel.setMissionResult(1, filePart, context)
+                    childViewModel.setMissionResult(userId, filePart, context)
                 }) {
-                    Text("완료", color = Color.Green)
+                    Text("완료", color = Color(0x72ff6f).copy(1f))
                 }
             }
         } else {
@@ -375,7 +386,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                 val requestBody: RequestBody = file.asRequestBody("audio/mp3".toMediaTypeOrNull())
                 val filePart: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
 
-                childViewModel.setMissionResult(1, filePart, context)
+                childViewModel.setMissionResult(userId, filePart, context)
             }) {
                 Text("완료", color = Color.Green)
             }

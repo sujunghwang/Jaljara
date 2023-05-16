@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 import java.time.LocalTime
@@ -32,8 +35,9 @@ import kotlin.math.roundToInt
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalMaterial3Api
 @Composable
-fun SetTimeScreen(viewModel : ParentViewModel){
+fun SleepTargetScreen(viewModel : ParentViewModel){
     var sliderPosition by remember { mutableStateOf(-180f..360f) }
+
     var bedTime by remember {
         mutableStateOf(LocalTime.of(21,0))
     }
@@ -51,7 +55,8 @@ fun SetTimeScreen(viewModel : ParentViewModel){
     val toast = Toast.makeText(LocalContext.current, "목표 수면 시간 설정 완료", Toast.LENGTH_SHORT)
 
     LaunchedEffect(Unit){
-        viewModel.getChildSleepInfo(1)
+        viewModel.getChildIdByIdx()
+        viewModel.getChildSleepInfo(viewModel.selectedChildId)
     }
 
     LaunchedEffect(viewModel.childSleepResponse){
@@ -91,22 +96,23 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 // 페이지 타이틀
                 Row(
-                    modifier = Modifier.fillParentMaxHeight(0.2f),
+                    modifier = Modifier.fillParentMaxHeight(0.12f),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon")
+                    Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon", modifier = Modifier.offset(x = -15.dp))
                     Text(
                         text = "목표 수면 시간",
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
 
                 if(!tipClosed){
-                    //첫 번째 박스 (미정)
+                    //첫 번째 박스 (꿀팁)
                     Box(
                         modifier = Modifier
                             .background(
@@ -116,16 +122,20 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                             .fillMaxWidth()
                             .fillParentMaxHeight(0.2f)
                     ){
-                        Text(text = "x", modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(end = 8.dp)
-                            .clickable {
-                                tipClosed = true
-                            })
+                        Icon(
+                            imageVector = Icons.Rounded.Close, 
+                            contentDescription = null, 
+                            modifier = Modifier.
+                                align(Alignment.TopEnd).
+                                padding(top=5.dp, end = 5.dp).
+                                clickable {
+                                    tipClosed = true
+                                })
                         Text(text = "학동기(6~12세) 권장 수면 시간은 10 ~ 11시간\n" +
                                 "청소년기(12~18세) 권장 수면 시간은 9 ~ 9.25시간",
                             modifier = Modifier.align(Alignment.Center),
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = 14.sp
                         )
                     }
 
@@ -140,11 +150,12 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                         .fillParentMaxHeight(0.16f)
                 ){
                     Box(modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(12.dp)){
+                        .align(Alignment.TopCenter)
+                        .padding(12.dp, top=16.dp)){
                         Text(
                             text = "수면 시간 설정",
                             style = MaterialTheme.typography.titleSmall,
+                            fontSize = 24.sp
                         )
                     }
                     Column(modifier = Modifier
@@ -209,11 +220,10 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                                 modifier = circleModifier
                             )
                             Text(
-                                text = "취침 시간", style = MaterialTheme.typography.titleSmall
+                                text = "취침 시간", style = MaterialTheme.typography.titleSmall, fontSize = 16.sp
                             )
                             Text(
-                                text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                                style = MaterialTheme.typography.bodyMedium
+                                text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm")), fontSize = 30.sp
                             )
                         }
                     }
@@ -233,11 +243,10 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                                 modifier = circleModifier
                             )
                             Text(
-                                text = "기상 시간", style = MaterialTheme.typography.titleSmall
+                                text = "기상 시간", style = MaterialTheme.typography.titleSmall, fontSize = 16.sp
                             )
                             Text(
-                                text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                                style = MaterialTheme.typography.bodyMedium
+                                text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm")), fontSize = 30.sp
                             )
                         }
                     }
@@ -252,7 +261,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(start = 6.dp, end = 12.dp),
+                            .padding(start = 12.dp, end = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
@@ -262,9 +271,9 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                         )
                         Text(
                             text = "목표 수면 시간",
-                            style = MaterialTheme.typography.titleSmall,
+                            fontSize = 16.sp,
                             modifier = Modifier
-                                .padding(start = 6.dp)
+                                .padding(start = 12.dp)
                                 .weight(1f)
                         )
 
@@ -274,15 +283,21 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                         if(sleepTimeH != 0){
                             Text(
                                 text = "${sleepTimeH}시간",
-                                style = MaterialTheme.typography.titleSmall,
-                                textAlign = TextAlign.End
+                                fontSize = 30.sp,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.padding(
+                                    end = when(sleepTimeM) {
+                                        0 -> 10.dp
+                                        else -> 0.dp
+                                    })
                             )
                         }
                         if(sleepTimeM != 0)
                             Text(
                                 text = " %02d분".format(sleepTimeM),
-                                style = MaterialTheme.typography.titleSmall,
-                                textAlign = TextAlign.End
+                                fontSize = 30.sp,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.padding(end = 10.dp)
                             )
                     }
                 }
@@ -290,7 +305,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                 //설정 버튼
                 Button(
                     onClick = {
-                        viewModel.setTargetSleepTime(1, bedTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")), wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+                        viewModel.setTargetSleepTime(bedTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")), wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
                         toast.show()
                     },
                     contentPadding = PaddingValues(12.dp),
@@ -302,7 +317,8 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                 ) {
                     Text(
                         text = "설정 완료",
-                        style = MaterialTheme.typography.titleSmall
+                        style = MaterialTheme.typography.titleSmall,
+                        fontSize = 24.sp
                     )
                 }
             }
@@ -315,5 +331,5 @@ fun SetTimeScreen(viewModel : ParentViewModel){
 @ExperimentalMaterial3Api
 @Preview(showSystemUi = true)
 fun preview_(){
-    SetTimeScreen(ParentViewModel(LocalContext.current as Application))
+    SleepTargetScreen(ParentViewModel(LocalContext.current as Application))
 }
