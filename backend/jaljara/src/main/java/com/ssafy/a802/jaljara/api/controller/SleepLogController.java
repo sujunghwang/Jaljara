@@ -2,11 +2,13 @@ package com.ssafy.a802.jaljara.api.controller;
 
 import com.ssafy.a802.jaljara.api.dto.request.SleepLogRequestDto;
 import com.ssafy.a802.jaljara.api.dto.response.SleepLogResponseDto;
+import com.ssafy.a802.jaljara.api.dto.response.UserResponseDto;
 import com.ssafy.a802.jaljara.api.service.SleepLogService;
 import com.ssafy.a802.jaljara.common.annotation.ValidChild;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -22,9 +24,10 @@ public class SleepLogController {
 
     @PostMapping()
     @ValidChild
-    public ResponseEntity<?> addSleepLog(@RequestBody SleepLogRequestDto.SleepLogInput sleepLogInput){
-        sleepLogService.addSleepLog(sleepLogInput);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<?> addSleepLogs(@RequestBody List<SleepLogRequestDto.SleepSegmentEvent> sleepSegmentEvents){
+        UserResponseDto.SimpleUserInfo userInfo = (UserResponseDto.SimpleUserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        sleepLogService.addSleepLogs(sleepSegmentEvents, userInfo.getUserId());
+        return ResponseEntity.ok("Sleep log created");
     }
 
     @GetMapping("/{childId}/{date}/simple")

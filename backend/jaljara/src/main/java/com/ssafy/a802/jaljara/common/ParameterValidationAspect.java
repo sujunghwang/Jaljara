@@ -56,7 +56,7 @@ public class ParameterValidationAspect {
     }
 
     @Before("@annotation(com.ssafy.a802.jaljara.common.annotation.ValidChild) && args(sleepLogInput, ..)")
-    public void validationChild(SleepLogRequestDto.SleepLogInput sleepLogInput) {
+    public void validationChild(SleepLogRequestDto.SleepSegmentEvent sleepLogInput) {
         validationChild(sleepLogInput.getUserId());
     }
 

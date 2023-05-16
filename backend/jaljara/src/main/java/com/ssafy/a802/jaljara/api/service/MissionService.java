@@ -42,10 +42,12 @@ import com.ssafy.a802.jaljara.exception.CustomException;
 import com.ssafy.a802.jaljara.exception.ExceptionFactory;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class MissionService {
 	private final static int DEFAULT_REROLL_COUNT = 2;
 
@@ -64,7 +66,7 @@ public class MissionService {
 
 	// cron "초 분 시 일 월 년"
 	@Transactional
-	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 0 11 * * *", zone = "Asia/Seoul")
 	public void addMissionTodayChildren() {
 		List<User> allByUserType = userRepository.findAllByUserType(UserType.CHILD);
 		for (User user : allByUserType) {
@@ -85,10 +87,12 @@ public class MissionService {
 
 		//today date init
 		LocalDateTime localDateTime = LocalDateTime.now();
-		ZoneOffset offset = ZoneOffset.of("+00:00"); // 예시로 한국 표준시(+9:00)를 사용합니다.
+		ZoneOffset offset = ZoneOffset.of("+09:00"); // 예시로 한국 표준시(+9:00)를 사용합니다.
 		OffsetDateTime offsetDateTime = OffsetDateTime.of(localDateTime, offset);
 		Instant instant = offsetDateTime.toInstant();
 		Date date = Date.from(instant);
+		// Date date = Date.from(localDateTime);
+		log.error("들어가는 시간입니다." + date);
 
 		// if user mission today first
 		if (Objects.isNull(findMissionToday)) {

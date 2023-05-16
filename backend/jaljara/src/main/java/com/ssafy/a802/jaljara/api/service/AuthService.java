@@ -55,6 +55,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final ParentCodeRepository parentCodeRepository;
     private final NetHttpTransport netHttpTransport = new NetHttpTransport();
+    private final MissionService missionService;
 
 
     @Value("${auth.google_api_id}")
@@ -139,19 +140,21 @@ public class AuthService {
 
     public User signupWithAnyProvider(UserLoginRequestDto userLoginRequestDto, UserType userType) {
         Payload payload = tokenVerifier(userLoginRequestDto.getProvider(), userLoginRequestDto.getToken());
-
         if (payload != null) {
             String sub = payload.getSub();
             if(userRepository.findBySub(sub).isEmpty())
             {
-                return userRepository.save(User.builder()
-                        .name(payload.getName())
-                        .email(payload.getEmail())
-                        .sub(payload.getSub())
-                        .profileImageUrl(payload.getProfilePictureUrl())
-                        .provider(userLoginRequestDto.getProvider().name())
-                        .userType(userType)
-                        .build());
+                User saveUser = userRepository.save(User.builder()
+                    .name(payload.getName())
+                    .email(payload.getEmail())
+                    .sub(payload.getSub())
+                    .profileImageUrl(payload.getProfilePictureUrl())
+                    .provider(userLoginRequestDto.getProvider().name())
+                    .userType(userType)
+                    .build());
+                missionService.addMissionToday(saveUser.getId());
+
+                return saveUser;
             }
 
             throw ExceptionFactory.userAlreadyExists();

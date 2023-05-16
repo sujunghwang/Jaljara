@@ -30,7 +30,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
       use-new-id-generator-mappings: false
     show-sql: false
     properties:
