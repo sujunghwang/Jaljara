@@ -42,15 +42,14 @@ fun ChildMainView(childViewModel: ChildViewModel,
                   contentsViewModel: ContentsViewModel,
                   onClickMission: () -> Unit,
                   onClickCoupon: () -> Unit,
-                  onClickContent: (ContentsInfo)->Unit
+                  onClickContent: (ContentsInfo)->Unit,
+                  userId: Long
 ){
     val scrollState = rememberScrollState()
     var childSleepInfo = childViewModel.childSleepResponse
     var todayMission = childViewModel.todayMissionResponse
     val soundContents = contentsViewModel.contentsSoundListResponse
     val videoContents = contentsViewModel.contentsVideoListResponse
-    val userId =1L
-
 
     Column(
         modifier = Modifier
@@ -338,6 +337,7 @@ fun ChildMainScreenView() {
         contentsViewModel = viewModel(),
         onClickCoupon = {},
         onClickMission = {},
-        onClickContent = {}
+        onClickContent = {},
+        userId = 1
     )
 }
