@@ -138,7 +138,7 @@ fun ParentApp(
             composable(route = ParentScreen.SetSleepTime.url) {
                 viewModel.setNavShow(true)
                 // 목표 수면시간 설정
-                SetTimeScreen(viewModel)
+                SleepTargetScreen(viewModel)
                 navBarSelectedItem = 1
             }
             composable(route = ParentScreen.SleepCalendar.url) {
