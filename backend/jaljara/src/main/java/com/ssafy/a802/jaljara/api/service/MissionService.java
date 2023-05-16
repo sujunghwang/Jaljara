@@ -6,12 +6,14 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.joda.time.Days;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -66,7 +68,7 @@ public class MissionService {
 
 	// cron "초 분 시 일 월 년"
 	@Transactional
-	@Scheduled(cron = "0 0 11 * * *", zone = "Asia/Seoul")
+	@Scheduled(cron = "0 0 12 * * *", zone = "Asia/Seoul")
 	public void addMissionTodayChildren() {
 		List<User> allByUserType = userRepository.findAllByUserType(UserType.CHILD);
 		for (User user : allByUserType) {
@@ -106,12 +108,20 @@ public class MissionService {
 				.build());
 
 		} else {
+			Date missionDate = findMissionToday.getMissionDate();
+			LocalDateTime localDateTimeYesterday = LocalDateTime.ofInstant(missionDate.toInstant(), ZoneId.systemDefault());
+			localDateTimeYesterday = localDateTimeYesterday.minusDays(1);
+			OffsetDateTime offsetDateTime2 = OffsetDateTime.of(localDateTimeYesterday, offset);
+			Instant instant2 = offsetDateTime.toInstant();
+			Date yesterday = Date.from(instant2);
+
 			//move exist mission today to mission log
 			MissionLog savedMissionLog = missionLogRepository.save(MissionLog.builder()
 				.user(findUser)
 				.content(findMissionToday.getMission().getContent())
 				.isSuccess(findMissionToday.isClear())
-				.missionDate(findMissionToday.getMissionDate())
+				// .missionDate(findMissionToday.getMissionDate())
+				.missionDate(yesterday)
 				.build());
 
 			//if missionToday isSuccessed true then save missionLog Attachement
