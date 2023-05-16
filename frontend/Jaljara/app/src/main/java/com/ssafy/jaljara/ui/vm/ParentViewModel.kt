@@ -74,12 +74,12 @@ class ParentViewModel(application: Application) : AndroidViewModel(application) 
     }
 
 
-    fun setTargetSleepTime(childId: Long, targetBedTime: String, targetWakeupTime: String){
+    fun setTargetSleepTime(targetBedTime: String, targetWakeupTime: String){
         viewModelScope.launch{
             val apiService = ChildApiService.getInstance(context)
             try{
-                Log.d("목표 수면 시간 설정 API 호출","$childId, $targetBedTime, $targetWakeupTime")
-                apiService.setTargetSleepTime(TargetSleepInput(childId, targetBedTime, targetWakeupTime))
+                Log.d("목표 수면 시간 설정 API 호출","$selectedChildId, $targetBedTime, $targetWakeupTime")
+                apiService.setTargetSleepTime(TargetSleepInput(selectedChildId, targetBedTime, targetWakeupTime))
             }
             catch (e:Exception){
                 errorMessage = e.cause.toString()

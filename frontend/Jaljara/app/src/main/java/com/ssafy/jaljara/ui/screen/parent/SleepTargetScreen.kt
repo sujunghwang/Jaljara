@@ -35,8 +35,9 @@ import kotlin.math.roundToInt
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalMaterial3Api
 @Composable
-fun SetTimeScreen(viewModel : ParentViewModel){
+fun SleepTargetScreen(viewModel : ParentViewModel){
     var sliderPosition by remember { mutableStateOf(-180f..360f) }
+
     var bedTime by remember {
         mutableStateOf(LocalTime.of(21,0))
     }
@@ -54,7 +55,8 @@ fun SetTimeScreen(viewModel : ParentViewModel){
     val toast = Toast.makeText(LocalContext.current, "목표 수면 시간 설정 완료", Toast.LENGTH_SHORT)
 
     LaunchedEffect(Unit){
-        viewModel.getChildSleepInfo(1)
+        viewModel.getChildIdByIdx()
+        viewModel.getChildSleepInfo(viewModel.selectedChildId)
     }
 
     LaunchedEffect(viewModel.childSleepResponse){
@@ -110,7 +112,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                 }
 
                 if(!tipClosed){
-                    //첫 번째 박스 (미정)
+                    //첫 번째 박스 (꿀팁)
                     Box(
                         modifier = Modifier
                             .background(
@@ -120,13 +122,15 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                             .fillMaxWidth()
                             .fillParentMaxHeight(0.2f)
                     ){
-                        /*Text(text = "p", modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(end = 8.dp)
-                            .clickable {
-                                tipClosed = true
-                            })*/
-                        Icon(imageVector = Icons.Rounded.Close, contentDescription = null, modifier = Modifier.align(Alignment.TopEnd).padding(top=5.dp, end = 5.dp))
+                        Icon(
+                            imageVector = Icons.Rounded.Close, 
+                            contentDescription = null, 
+                            modifier = Modifier.
+                                align(Alignment.TopEnd).
+                                padding(top=5.dp, end = 5.dp).
+                                clickable {
+                                    tipClosed = true
+                                })
                         Text(text = "학동기(6~12세) 권장 수면 시간은 10 ~ 11시간\n" +
                                 "청소년기(12~18세) 권장 수면 시간은 9 ~ 9.25시간",
                             modifier = Modifier.align(Alignment.Center),
@@ -301,7 +305,7 @@ fun SetTimeScreen(viewModel : ParentViewModel){
                 //설정 버튼
                 Button(
                     onClick = {
-                        viewModel.setTargetSleepTime(1, bedTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")), wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+                        viewModel.setTargetSleepTime(bedTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")), wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm:ss")))
                         toast.show()
                     },
                     contentPadding = PaddingValues(12.dp),
@@ -327,5 +331,5 @@ fun SetTimeScreen(viewModel : ParentViewModel){
 @ExperimentalMaterial3Api
 @Preview(showSystemUi = true)
 fun preview_(){
-    SetTimeScreen(ParentViewModel(LocalContext.current as Application))
+    SleepTargetScreen(ParentViewModel(LocalContext.current as Application))
 }
