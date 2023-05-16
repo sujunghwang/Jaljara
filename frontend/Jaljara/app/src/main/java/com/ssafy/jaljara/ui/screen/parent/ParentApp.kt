@@ -105,8 +105,6 @@ fun ParentApp(
 
     val uiState by viewModel.uiState.collectAsState()
 
-    viewModel.getChildSleepInfo(1)
-
     Scaffold(
         bottomBar = {
             if(uiState.showNavigation){ParentNavigationBar(
