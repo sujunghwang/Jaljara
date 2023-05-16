@@ -165,7 +165,7 @@ fun ChildApp(
 
                 viewModel.setNavShow(true)
 
-                StarLink(viewModel)
+                StarLink(viewModel, userId)
 
                 navBarSelectedItem = 1
             }
