@@ -68,7 +68,8 @@ fun CouponScreen(
     childViewModel : ChildViewModel,
     modifier: Modifier = Modifier,
     viewModel: ParentViewModel = viewModel(),
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    userId: Long
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = CouponStatus.valueOf("UsedCoupon")
@@ -97,7 +98,7 @@ fun CouponScreen(
             composable(route = CouponStatus.Coupon.name) {
                 LazyColumn() {
                     val coupons = childViewModel.notUsedCouponResponse
-                    childViewModel.getNotUsedCoupon(1)
+                    childViewModel.getNotUsedCoupon(userId)
                     items(coupons){
                         NotUsedCoupon(childViewModel = childViewModel, coupon = it)
                     }
@@ -106,7 +107,7 @@ fun CouponScreen(
             composable(route = CouponStatus.UsedCoupon.name) {
                 LazyColumn() {
                     val coupons = childViewModel.usedCouponResponse
-                    childViewModel.getUsedCoupon(1)
+                    childViewModel.getUsedCoupon(userId)
                     items(coupons){
                         UsedCoupon(coupon = it)
                     }

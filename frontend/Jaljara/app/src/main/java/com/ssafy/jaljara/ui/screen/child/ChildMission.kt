@@ -56,7 +56,7 @@ import java.io.IOException
 
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
-fun ChildMission(childViewModel :ChildViewModel){
+fun ChildMission(childViewModel :ChildViewModel, userId:Long){
     var prevInfo by rememberSaveable { mutableStateOf(false) }
     var isFirst by rememberSaveable { mutableStateOf(true) }
     var path by rememberSaveable { mutableStateOf("") }
@@ -70,7 +70,14 @@ fun ChildMission(childViewModel :ChildViewModel){
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         val mission = childViewModel.todayMissionResponse
-//        childViewModel.getTodayMission(1)
+        childViewModel.getTodayMission(userId)
+
+        Log.d("mission 상태","$mission")
+        if(mission.missionTodayId==0L) {
+
+        } else{
+
+        }
 //        val mission = todayMission2
 
         Row(
@@ -95,17 +102,18 @@ fun ChildMission(childViewModel :ChildViewModel){
                 Log.d("isFirst 상태", "$isFirst")
                 // 미션 수행 기록이 있으면 그 사진으로 대체
 
+                Log.d("userId 상태","$mission")
                 if(isFirst){
                     mission.url?.let {
                         AsyncImage(
                             model = mission.url,
                             contentDescription = null,
                             modifier = Modifier
-                                .fillMaxWidth(0.7f)
+                                .fillMaxWidth()
                                 .fillMaxHeight(0.8f)
                         )
                     }?: Box(modifier = Modifier
-                        .fillMaxWidth(0.7f)
+                        .fillMaxWidth()
                         .fillMaxHeight(0.8f)
                         .background(color = Color.Gray.copy(0.3f)))
                 } else {
@@ -117,7 +125,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                                 .build(),
                             contentDescription = null,
                             modifier = Modifier
-                                .fillMaxWidth(0.7f)
+                                .fillMaxWidth()
                                 .fillMaxHeight(0.8f)
                         )
                         Log.d("path 경로",path)
@@ -134,12 +142,12 @@ fun ChildMission(childViewModel :ChildViewModel){
                             isPinchToZoomEnabled = true, // default is true
                             camSelector = camSelector,
                             modifier = Modifier
-                                .fillMaxWidth(0.7f)
+                                .fillMaxWidth()
                                 .fillMaxHeight(0.8f)
                         ) {
                             Column(
                                 modifier = Modifier
-                                    .fillMaxWidth(0.7f)
+                                    .fillMaxWidth()
                                     .fillMaxHeight(0.8f),
                                 verticalArrangement = Arrangement.Bottom,
                                 horizontalAlignment = Alignment.CenterHorizontally
@@ -169,7 +177,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                             }
                             Column(
                                 modifier = Modifier
-                                    .fillMaxWidth(0.7f)
+                                    .fillMaxWidth()
                                     .fillMaxHeight(0.8f)
                                     .padding(end = 10.dp),
                                 verticalArrangement = Arrangement.Bottom,
@@ -209,7 +217,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                     val requestBody: RequestBody = file.asRequestBody("image/jpg".toMediaTypeOrNull())
                     val filePart: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
 
-                    childViewModel.setMissionResult(1, filePart, context)
+                    childViewModel.setMissionResult(userId, filePart, context)
                 }) {
                     Text("완료", color = Color(0x72ff6f).copy(1f))
                 }
@@ -378,7 +386,7 @@ fun ChildMission(childViewModel :ChildViewModel){
                 val requestBody: RequestBody = file.asRequestBody("audio/mp3".toMediaTypeOrNull())
                 val filePart: MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestBody)
 
-                childViewModel.setMissionResult(1, filePart, context)
+                childViewModel.setMissionResult(userId, filePart, context)
             }) {
                 Text("완료", color = Color.Green)
             }
