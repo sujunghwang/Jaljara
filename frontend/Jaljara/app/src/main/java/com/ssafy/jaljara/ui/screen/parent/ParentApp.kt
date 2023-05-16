@@ -99,6 +99,9 @@ fun ParentApp(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
+    // userId
+    var userId = viewModel.test!!.userInfo.userId.toLong()
+    Log.d("userId","$userId")
 
     // 하단 네비게이션 선택 애니메이션 용
     var navBarSelectedItem by rememberSaveable { mutableStateOf(0) }
@@ -131,7 +134,7 @@ fun ParentApp(
                     onClickSetTime ={
                         navController.navigate(ParentScreen.SetSleepTime.url)
                     },
-                    2//////parentId 바뀌면 넣는 부분,
+                    userId
                 )
                 navBarSelectedItem = 0
             }
