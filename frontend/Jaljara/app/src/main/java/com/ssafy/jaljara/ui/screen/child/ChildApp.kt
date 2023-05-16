@@ -184,13 +184,13 @@ fun ChildApp(
             composable(route = ChildScreen.Coupon.url) {
                 viewModel.setNavShow(true)
                 // 쿠폰 함수
-                CouponScreen(viewModel)
+                CouponScreen(viewModel, userId=userId)
                 navBarSelectedItem = 3
             }
             composable(route = ChildScreen.Mission.url) {
                 viewModel.setNavShow(true)
                 // 미션 함수
-                ChildMission(viewModel)
+                ChildMission(viewModel, userId=userId)
                 navBarSelectedItem = 4
             }
             composable(route = ChildScreen.ContentsDetail.url) {
