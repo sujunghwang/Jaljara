@@ -16,11 +16,7 @@ object SleepManager {
 
     private fun createSleepReceiverPendingIntent(context: Context): PendingIntent {
         // Prepare intent flags
-        val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        } else {
-            PendingIntent.FLAG_CANCEL_CURRENT
-        }
+        val flags = PendingIntent.FLAG_MUTABLE
         // Create the PendingIntent
         return PendingIntent.getBroadcast(
             context,
