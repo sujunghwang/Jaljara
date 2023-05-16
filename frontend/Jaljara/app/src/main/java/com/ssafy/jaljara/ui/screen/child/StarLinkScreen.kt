@@ -30,9 +30,12 @@ import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 
 @Composable
-fun StarLink(childViewModel: ChildViewModel){
+fun StarLink(
+    childViewModel: ChildViewModel,
+    childId : Long = 1L
+){
     var getBtnValid = false
-    childViewModel.getChildSleepInfo(1)
+    childViewModel.getChildSleepInfo(childId)
     var childSleepInfo = childViewModel.childSleepResponse
 
     if(childSleepInfo.streakCount >= 7)
@@ -125,7 +128,7 @@ fun StarLink(childViewModel: ChildViewModel){
                         if(childSleepInfo.currentReward == "")
                             failToast.show()
                         else{
-                            childViewModel.getReward(1)
+                            childViewModel.getReward(childId)
                             successToast.show()
                         }
                     },
