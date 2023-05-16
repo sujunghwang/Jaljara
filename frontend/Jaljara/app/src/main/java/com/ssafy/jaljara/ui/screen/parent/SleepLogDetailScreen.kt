@@ -215,13 +215,15 @@ fun AudioSlider(modifier: Modifier = Modifier, player : MediaPlayer?) {
                         modifier = Modifier
                             .align(Alignment.BottomStart)
                             .padding(top = 4.dp, start = 6.dp),
-                        text = "$displayedPosition"
+                        text = "$displayedPosition",
+                        fontSize = 10.sp
                     )
                     Text(
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(top = 4.dp, end = 6.dp),
-                        text = "$displayedDuration"
+                        text = "$displayedDuration",
+                        fontSize = 10.sp
                     )
                     Slider(
                         modifier = Modifier
@@ -514,8 +516,8 @@ fun SleepLogDetailScreen(
                 ) {
                     Text(
                         text = missionLog.content,
-                        fontSize = 24.sp,
-                        modifier = Modifier.padding(bottom = 16.dp)
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(bottom = 4.dp)
                     )
                     if (missionLog.missionType == Mission.IMAGE.name) {
                         MissionLogImageDetail(
