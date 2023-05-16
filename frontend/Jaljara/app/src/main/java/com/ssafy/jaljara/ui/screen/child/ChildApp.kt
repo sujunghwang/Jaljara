@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Environment
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.annotation.RequiresApi
@@ -39,6 +40,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 import com.ssafy.jaljara.ui.vm.ContentsViewModel
+import java.io.File
 
 
 /**
@@ -122,6 +124,10 @@ fun ChildApp(
     setAlarm(LocalContext.current, sleepInfo.targetBedTime)
 
     val uiState by viewModel.uiState.collectAsState()
+
+//    val file = File(activity.filesDir, "child_app.txt")
+//    if(!file.exists()) file.createNewFile()
+//    file.appendText(text = "차일드 앱 저장됨?\n")
 
     Scaffold(
         bottomBar = {
