@@ -18,7 +18,7 @@ public class MissionAttachment {
 	@Column(nullable = false)
 	private String url;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "mission_log_id", nullable = false, updatable = false)
 	private MissionLog missionLog;
 
