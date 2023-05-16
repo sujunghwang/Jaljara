@@ -145,7 +145,7 @@ fun ParentApp(
             composable(route = ParentScreen.SleepCalendar.url) {
                 viewModel.setNavShow(true)
                 // 내 아이 수면 달력
-                SleepCalenderScreen(onClickDay = {
+                SleepCalenderScreen(viewModel = viewModel, onClickDay = {
                     day ->
                     Log.d("캘린더 라우터 클릭", day.toString())
 
@@ -161,7 +161,10 @@ fun ParentApp(
                     backStackEntry ->
                 viewModel.setNavShow(false)
                 // 수면 기록 상세 페이지
-                SleepLogDetailScreen(formatDate = backStackEntry.arguments?.getString("formatDate")?:"20990513")
+                SleepLogDetailScreen(
+                    viewModel = viewModel,
+                    formatDate = backStackEntry.arguments?.getString("formatDate")?:"20990513"
+                )
             }
             composable(route = ParentScreen.ParentMission.url) {
                     backStackEntry ->

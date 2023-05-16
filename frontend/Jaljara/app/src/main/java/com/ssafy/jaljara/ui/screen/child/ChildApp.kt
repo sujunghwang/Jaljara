@@ -125,10 +125,6 @@ fun ChildApp(
 
     val uiState by viewModel.uiState.collectAsState()
 
-//    val file = File(activity.filesDir, "child_app.txt")
-//    if(!file.exists()) file.createNewFile()
-//    file.appendText(text = "차일드 앱 저장됨?\n")
-
     Scaffold(
         bottomBar = {
             if(uiState.showNavigation){ChildNavigationBar(

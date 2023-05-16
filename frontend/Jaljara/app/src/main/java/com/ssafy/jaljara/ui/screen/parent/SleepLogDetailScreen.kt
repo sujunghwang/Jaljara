@@ -42,6 +42,7 @@ import com.ssafy.jaljara.ui.component.LoadingScreen
 import com.ssafy.jaljara.ui.enumType.Mission
 import com.ssafy.jaljara.ui.enumType.getWeekBydayOfWeekNumber
 import com.ssafy.jaljara.ui.vm.MissionDetailLogViewModel
+import com.ssafy.jaljara.ui.vm.ParentViewModel
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.delay
 import kotlinx.datetime.DayOfWeek
@@ -199,23 +200,33 @@ fun AudioSlider(modifier: Modifier = Modifier, player : MediaPlayer?) {
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = modifier.fillMaxSize().padding(bottom = 8.dp)
+            modifier = modifier
+                .fillMaxSize()
+                .padding(bottom = 8.dp)
         ) {
             Column(
                 modifier = modifier.padding(0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(modifier = modifier.padding(start = 16.dp, end = 16.dp).fillMaxSize()){
+                Box(modifier = modifier
+                    .padding(start = 16.dp, end = 16.dp)
+                    .fillMaxSize()){
                     Text(
-                        modifier = Modifier.align(Alignment.BottomStart).padding(top = 4.dp, start = 6.dp),
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(top = 4.dp, start = 6.dp),
                         text = "$displayedPosition"
                     )
                     Text(
-                        modifier = Modifier.align(Alignment.BottomEnd).padding(top = 4.dp, end = 6.dp),
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(top = 4.dp, end = 6.dp),
                         text = "$displayedDuration"
                     )
                     Slider(
-                        modifier = Modifier.align(Alignment.TopCenter).padding(bottom = 4.dp),
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(bottom = 4.dp),
                         value = position,
                         valueRange = 0F..player.duration.toFloat(),
                         onValueChange = {
@@ -340,7 +351,7 @@ fun MissionLog(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SleepLogDetailScreen(
-    childId : Long = 1,
+    viewModel: ParentViewModel,
     formatDate : String =  "20230502"
 ){
     val date: LocalDate = LocalDate.parse(formatDate, DateTimeFormatter.ofPattern("yyyyMMdd"))
@@ -355,14 +366,18 @@ fun SleepLogDetailScreen(
 
     var expanded by remember{ mutableStateOf(false) }
 
+    LaunchedEffect(Unit){
+        viewModel.getChildIdByIdx()
+    }
+
     val missionDetailLogViewModel : MissionDetailLogViewModel = viewModel()
 
-    missionDetailLogViewModel.getMissionLog(childId, formatDate)
-    missionDetailLogViewModel.getDetailSleepLog(childId, formatDate)
+    missionDetailLogViewModel.getMissionLog(viewModel.selectedChildId, formatDate)
+    missionDetailLogViewModel.getDetailSleepLog(viewModel.selectedChildId, formatDate)
 
     var sleepLog by remember{ mutableStateOf(
         SleepLog(
-            userId = 1,
+            userId = viewModel.selectedChildId,
             date = "-",
             bedTime = "-",
             wakeupTime = "-",
@@ -373,7 +388,7 @@ fun SleepLogDetailScreen(
     var missionLog by remember{ mutableStateOf(
         MissionLog(
             missionLogId = -1,
-            userId = childId,
+            userId = viewModel.selectedChildId,
             missionDate = displayDate,
             missionType = "RECORD",
             content = "미션 없는 경우 기본 값",
@@ -521,5 +536,5 @@ fun SleepLogDetailScreen(
 @Composable
 @Preview(showSystemUi = true, showBackground = true)
 fun sleepDetailPreview(){
-    SleepLogDetailScreen(1,"20230426")
+    SleepLogDetailScreen(viewModel = viewModel(),"20230426")
 }
