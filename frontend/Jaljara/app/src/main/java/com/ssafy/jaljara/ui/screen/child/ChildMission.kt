@@ -88,7 +88,7 @@ fun ChildMission(childViewModel :ChildViewModel, userId:Long){
             Text(
                 text = "오늘의 미션",
                 style = MaterialTheme.typography.titleLarge,
-                fontSize = 60.sp
+                fontSize = 30.sp
             )
         }
 
@@ -96,7 +96,7 @@ fun ChildMission(childViewModel :ChildViewModel, userId:Long){
             text = mission.content,
             color = Color.White,
             style = MaterialTheme.typography.titleSmall,
-            fontSize = 50.sp)
+            fontSize = 20.sp)
         if (mission.missionType=="IMAGE"){
             Box(){
                 Log.d("isFirst 상태", "$isFirst")

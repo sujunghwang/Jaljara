@@ -127,7 +127,7 @@ fun MissionTodayContainer(childViewModel: ChildViewModel,
                         .padding(bottom = 20.dp)
                         .align(Alignment.CenterHorizontally),
                     style = MaterialTheme.typography.titleSmall,
-                    fontSize = 35.sp
+                    fontSize = 24.sp
                 )
             }
         )
@@ -140,9 +140,9 @@ fun reloadMissionButton(modifier: Modifier){
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.padding(top = 8.dp, end = 8.dp)
     ) {
-        Text(text = "재설정", style = MaterialTheme.typography.titleSmall, fontSize = 15.sp)
+        Text(text = "재설정", style = MaterialTheme.typography.titleSmall, fontSize = 12.sp)
         Image(
-            modifier = modifier.height(18.dp),
+            modifier = modifier.height(18.dp).padding(start = 4.dp),
             painter = painterResource(id = R.drawable.ic_reload),
             contentDescription = null
         )
@@ -182,16 +182,16 @@ fun SetTimeContainer(img : Painter, title : String, setTime : String) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
-            .padding(0.dp).width(160.dp)
+            .padding(8.dp).width(160.dp)
     ) {
         Image(painter = img,
             contentDescription = null,
             modifier = Modifier
                 .size(100.dp, 100.dp)
-                .padding(top = 20.dp)
+                .padding(top = 10.dp)
         )
-        Text(text = title, style = MaterialTheme.typography.titleSmall, fontSize = 30.sp)
-        Text(text = setTime, style = MaterialTheme.typography.bodyLarge, fontSize = 70.sp, modifier = Modifier.offset(y = -16.dp).height(60.dp))
+        Text(text = title, style = MaterialTheme.typography.titleSmall, fontSize = 18.sp)
+        Text(text = setTime, style = MaterialTheme.typography.bodyLarge, fontSize = 32.sp)
     }
 }
 
@@ -236,7 +236,7 @@ fun RewardStatusContainer(childSleepInfo: ChildSleepInfo, onClickCoupon: () -> U
                     )
                     Text(text = "$remainText",
                         style = MaterialTheme.typography.titleSmall,
-                        fontSize = 28.sp,
+                        fontSize = 16.sp,
                         modifier = Modifier
                             .padding(start = 10.dp, end = 10.dp)
                     )

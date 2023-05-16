@@ -104,12 +104,14 @@ fun NotUsedCouponContent(content: String, getTime: String?, modifier: Modifier =
         text = content,
         style = MaterialTheme.typography.titleMedium,
         maxLines = 1,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        color = Color.Black
     )
     Row(modifier = modifier.padding(top = 8.dp)) {
         Text(
             text = "발급일 : " + getTime?.split("T")?.get(0) ?:"null 값입니다.",
             style = MaterialTheme.typography.bodySmall,
+            color = Color.Black
         )
     }
 
