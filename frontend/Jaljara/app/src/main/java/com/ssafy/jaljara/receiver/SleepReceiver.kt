@@ -9,6 +9,8 @@ import androidx.annotation.RequiresApi
 import com.google.android.gms.location.SleepClassifyEvent
 import com.google.android.gms.location.SleepSegmentEvent
 import com.ssafy.jaljara.network.ChildApiService
+import com.ssafy.jaljara.network.Result
+import com.ssafy.jaljara.network.safeApiCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -36,7 +38,10 @@ class SleepReceiver : BroadcastReceiver() {
             // 서버에 수면 기록 전송
             val childApi = ChildApiService.getInstance(context = context)
             scope.launch{
-                childApi.sendSleepLog(sleepSegmentEvents)
+                when(val result = safeApiCall {childApi.sendSleepLog(sleepSegmentEvents)} ){
+                    is Result.Success ->{ Log.e(TAG, "SleepLog Send Success") }
+                    is Result.Error -> { Log.e(TAG, "SleepLog Send Fail") }
+                }
                 val file = File(context.filesDir, "sleep_segment_log.txt")
                 if(!file.exists()) file.createNewFile()
                 for(sleep in sleepSegmentEvents){
