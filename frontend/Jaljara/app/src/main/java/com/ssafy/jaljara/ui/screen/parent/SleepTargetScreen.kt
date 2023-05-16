@@ -107,7 +107,7 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                     Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon", modifier = Modifier.offset(x = -15.dp))
                     Text(
                         text = "목표 수면 시간",
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
 
@@ -135,7 +135,7 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                                 "청소년기(12~18세) 권장 수면 시간은 9 ~ 9.25시간",
                             modifier = Modifier.align(Alignment.Center),
                             style = MaterialTheme.typography.bodyMedium,
-                            fontSize = 24.sp
+                            fontSize = 14.sp
                         )
                     }
 
@@ -151,11 +151,11 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                 ){
                     Box(modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(12.dp)){
+                        .padding(12.dp, top=16.dp)){
                         Text(
                             text = "수면 시간 설정",
                             style = MaterialTheme.typography.titleSmall,
-                            fontSize = 40.sp
+                            fontSize = 24.sp
                         )
                     }
                     Column(modifier = Modifier
@@ -220,10 +220,10 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                                 modifier = circleModifier
                             )
                             Text(
-                                text = "취침 시간", style = MaterialTheme.typography.titleSmall, fontSize = 20.sp
+                                text = "취침 시간", style = MaterialTheme.typography.titleSmall, fontSize = 16.sp
                             )
                             Text(
-                                text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm")), fontSize = 50.sp, modifier = Modifier.height(45.dp).offset(y=-10.dp)
+                                text = bedTime.format(DateTimeFormatter.ofPattern("HH:mm")), fontSize = 30.sp
                             )
                         }
                     }
@@ -243,10 +243,10 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                                 modifier = circleModifier
                             )
                             Text(
-                                text = "기상 시간", style = MaterialTheme.typography.titleSmall, fontSize = 20.sp
+                                text = "기상 시간", style = MaterialTheme.typography.titleSmall, fontSize = 16.sp
                             )
                             Text(
-                                text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm")), fontSize = 50.sp, modifier = Modifier.height(45.dp).offset(y=-10.dp)
+                                text = wakeupTime.format(DateTimeFormatter.ofPattern("HH:mm")), fontSize = 30.sp
                             )
                         }
                     }
@@ -271,9 +271,9 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                         )
                         Text(
                             text = "목표 수면 시간",
-                            fontSize = 30.sp,
+                            fontSize = 16.sp,
                             modifier = Modifier
-                                .padding(start = 10.dp)
+                                .padding(start = 12.dp)
                                 .weight(1f)
                         )
 
@@ -283,7 +283,7 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                         if(sleepTimeH != 0){
                             Text(
                                 text = "${sleepTimeH}시간",
-                                fontSize = 50.sp,
+                                fontSize = 30.sp,
                                 textAlign = TextAlign.End,
                                 modifier = Modifier.padding(
                                     end = when(sleepTimeM) {
@@ -295,7 +295,7 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                         if(sleepTimeM != 0)
                             Text(
                                 text = " %02d분".format(sleepTimeM),
-                                fontSize = 50.sp,
+                                fontSize = 30.sp,
                                 textAlign = TextAlign.End,
                                 modifier = Modifier.padding(end = 10.dp)
                             )
@@ -318,7 +318,7 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                     Text(
                         text = "설정 완료",
                         style = MaterialTheme.typography.titleSmall,
-                        fontSize = 30.sp
+                        fontSize = 24.sp
                     )
                 }
             }

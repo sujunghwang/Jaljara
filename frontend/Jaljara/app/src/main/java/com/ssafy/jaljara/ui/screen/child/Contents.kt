@@ -94,10 +94,10 @@ fun ContentsListView(
             Text(
                 text = "수면에 도움이 되는 소리",
                 color = Color.White,
-                style = typography.titleSmall,
+                style = typography.titleMedium,
                 modifier = Modifier.padding(0.dp),
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 40.sp
+                fontSize = 20.sp
             )
             LazyRow() {
                 itemsIndexed(contentsSoundList) { index: Int, item: ContentsInfo ->
@@ -114,7 +114,7 @@ fun ContentsListView(
                 style = typography.titleSmall,
                 modifier = Modifier.padding(0.dp),
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 40.sp
+                fontSize = 20.sp
             )
             LazyRow() {
                 itemsIndexed(contentsVideoList) { index: Int, item: ContentsInfo ->
@@ -150,7 +150,8 @@ fun ContentsItemView(
     Card(
         modifier = modifier
             .padding(10.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(240.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.tertiary
@@ -190,7 +191,7 @@ fun ContentsItemView(
             )
 
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(start=10.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.Start,

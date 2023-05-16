@@ -68,7 +68,7 @@ fun StarLink(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Row(
-                    modifier = Modifier.fillParentMaxHeight(0.2f),
+                    modifier = Modifier.fillParentMaxHeight(0.18f),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Image(painter = painterResource(id = R.drawable.astronoutsleep), contentDescription = "icon")
@@ -111,16 +111,15 @@ fun StarLink(
                             modifier = Modifier
                                 .size(70.dp)
                                 .padding(start = 10.dp, end = 5.dp)
-                                .offset(x = -20.dp)
+                                .offset(x = -16.dp)
                         )
                         Text(
                             text = "${childSleepInfo.streakCount} / 7",
                             fontWeight = FontWeight.Bold,
-                            fontSize = 40.sp,
-                            modifier = Modifier.offset(x = -10.dp, y = 4.dp)
+                            fontSize = 28.sp,
                         )
                     }
-                    Icon(Icons.Filled.OpenInNew, null, Modifier.align(Alignment.TopEnd).size(24.dp).padding(4.dp))
+                    Icon(Icons.Filled.OpenInNew, null, Modifier.align(Alignment.TopEnd).size(20.dp).padding(4.dp))
                 }
 
                 Button(
@@ -145,7 +144,7 @@ fun StarLink(
                     Text(
                         text = "보상 획득",
                         style = MaterialTheme.typography.titleSmall,
-                        fontSize = 30.sp
+                        fontSize = 24.sp
                     )
                 }
             }

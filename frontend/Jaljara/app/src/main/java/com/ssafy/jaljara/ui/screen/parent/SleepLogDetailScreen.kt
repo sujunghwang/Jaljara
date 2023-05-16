@@ -88,7 +88,7 @@ fun SettingTime(modifier: Modifier = Modifier, @DrawableRes draw: Int, descripti
                 .padding(8.dp)
         ) {
             Text(text = description, style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center)
-            Text(text = time, textAlign = TextAlign.Center, fontSize = 50.sp, modifier = Modifier.offset(y=-10.dp))
+            Text(text = time, textAlign = TextAlign.Center, fontSize = 30.sp, modifier = Modifier.offset(y=-5.dp))
         }
     }
 }
@@ -401,7 +401,7 @@ fun SleepLogDetailScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 10.dp, end = 10.dp)
+                    .padding(start = 20.dp, end = 10.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
@@ -410,18 +410,18 @@ fun SleepLogDetailScreen(
                         .fillMaxHeight(0.08f)
                         .padding(start = 10.dp, top = 10.dp),
                     textAlign = TextAlign.Center,
-                    fontSize = 60.sp
-
+                    fontSize = 30.sp
                 )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .weight(1f)
                             .padding(8.dp)
                     ) {
-                        Text(text = "수면시간", fontSize = 50.sp)
+                        Text(text = "수면시간", fontSize = 30.sp, textAlign = TextAlign.Center)
                         SleepTimeCircleClock(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -468,7 +468,7 @@ fun SleepLogDetailScreen(
                             Text(
                                 text = "${(sleepLog.sleepRate * 100).toInt()}%",
                                 modifier = modifier,
-                                fontSize = 64.sp
+                                fontSize = 40.sp
                             )
                         }
                     }
@@ -484,9 +484,9 @@ fun SleepLogDetailScreen(
                                 .height(pageSize / 4)
                         ) { modifier ->
                             if (missionLog.isSuccess) {
-                                Text(text = "COMPLETE!", modifier = modifier, fontSize = 40.sp)
+                                Text(text = "COMPLETE!", modifier = modifier, fontSize = 20.sp)
                             } else {
-                                Text(text = "NOT YET..", modifier = modifier, fontSize = 40.sp)
+                                Text(text = "NOT YET..", modifier = modifier, fontSize = 20.sp)
                             }
                         }
                     }

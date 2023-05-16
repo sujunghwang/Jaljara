@@ -296,7 +296,7 @@ fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int, pare
                     .size(50.dp,50.dp)
             ) // 비트맵이 없다면
         }
-        Text(text = childInfo.name, style = MaterialTheme.typography.titleSmall)
+        Text(text = childInfo.name, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(5.dp))
     }
 
     if (showDialog) {
@@ -357,8 +357,8 @@ fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: M
                         .padding(15.dp)
                 )
                 Column() {
-                    Text(text = title, style = MaterialTheme.typography.titleMedium, color=Color.White, fontSize = 40.sp)
-                    Text(text = "$content",style = MaterialTheme.typography.titleSmall,)
+                    Text(text = title, style = MaterialTheme.typography.titleMedium, color=Color.White, fontSize = 28.sp)
+                    Text(text = "$content",style = MaterialTheme.typography.titleSmall, fontSize=16.sp)
                 }
             }
         }
@@ -381,14 +381,14 @@ fun ChildSetTimeCard(img : Painter,title:String, content: String, modifier: Modi
                     .padding(10.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = "$content", color=Color.White, fontSize = 60.sp, modifier = Modifier.height(50.dp).offset(y = -10.dp))
+                Text(text = "$content", color=Color.White, fontSize = 40.sp, modifier = Modifier.offset(y = -5.dp))
                 Text(text = title,style = MaterialTheme.typography.titleSmall,)
                 Image(painter = img,
                     contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.End)
-                        .size(100.dp, 105.dp)
-                        .padding(5.dp)
+                        .size(100.dp, 100.dp)
+                        .padding(top = 10.dp)
                 )
             }
         }

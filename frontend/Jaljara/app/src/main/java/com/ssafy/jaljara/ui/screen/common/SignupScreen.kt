@@ -25,6 +25,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -37,6 +38,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -112,6 +116,7 @@ fun SignupScreen(
                     .addFocusCleaner(focusManager)
             ) {
                 OutlinedTextField(
+                    textStyle = TextStyle(fontFamily = FontFamily(Font(R.font.cutelively)), fontSize = 24.sp),
                     value = userName,
                     onValueChange = { userName = it; Log.e("OVC", it) },
                     label = { Text("성함이 어떻게 되세요?") },
@@ -187,7 +192,11 @@ fun SignupScreen(
                                 shape = RoundedCornerShape(6.dp),
                                 modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                             ) {
-                                Text(text = it)
+                                Text(
+                                    text = it,
+                                    fontSize = 12.sp,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                )
                             }
                         }
                     }
@@ -203,6 +212,7 @@ fun SignupScreen(
                     modifier = Modifier
                 ) {
                     OutlinedTextField(
+                        textStyle = TextStyle(fontFamily = FontFamily(Font(R.font.cutelively)), fontSize = 24.sp),
                         value = parentCode,
                         onValueChange = { parentCode = it },
                         label = { Text("인증번호를 입력해주세요") },
