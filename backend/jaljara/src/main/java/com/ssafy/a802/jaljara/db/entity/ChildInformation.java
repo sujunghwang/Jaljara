@@ -1,6 +1,7 @@
 package com.ssafy.a802.jaljara.db.entity;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -39,18 +40,21 @@ public class ChildInformation {
 
 	@Column(nullable = false)
 	@Builder.Default
+	@ColumnDefault("''")
 	private String currentReward = "";
 
 	@Column(nullable = false, columnDefinition = "SMALLINT")
 	@Builder.Default
+	@ColumnDefault("0")
 	private int streakCount = 0;
 
 	@Column(nullable = false)
 	@Builder.Default
+	@ColumnDefault("'22:00:00'")
 	private Time targetBedTime = Time.valueOf("22:00:00");
 
 	@Column(nullable = false)
 	@Builder.Default
-	private Time targetWakeupTime = Time.valueOf("08:00:00");;
-
+	@ColumnDefault("'08:00:00'")
+	private Time targetWakeupTime = Time.valueOf("08:00:00");
 }
