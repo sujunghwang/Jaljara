@@ -65,10 +65,10 @@ public class SleepLogService {
                     || event.getStatus() == SleepLogRequestDto.SleepSegmentEvent.STATUS_MISSING_DATA
             ){
                 // 수면 세그먼트 감지 시작 시간
-                LocalDateTime start2LDT = ZonedDateTime.ofInstant(Instant.ofEpochSecond(event.getStartTimeMillis()), ZoneId.of("Asia/Seoul")).toLocalDateTime();
+                LocalDateTime start2LDT = ZonedDateTime.ofInstant(Instant.ofEpochMilli(event.getStartTimeMillis()), ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
                 // 수면 세그먼트 감지 끝난 시간
-                LocalDateTime end2LDT = ZonedDateTime.ofInstant(Instant.ofEpochSecond(event.getEndTimeMills()), ZoneId.of("Asia/Seoul")).toLocalDateTime();
+                LocalDateTime end2LDT = ZonedDateTime.ofInstant(Instant.ofEpochMilli(event.getEndTimeMills()), ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
                 log.info("감지 시작 시간 : " + start2LDT + " 감지 끝난 시간 : " + end2LDT);
 
