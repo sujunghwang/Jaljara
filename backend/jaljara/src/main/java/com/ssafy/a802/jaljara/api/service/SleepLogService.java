@@ -18,10 +18,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -169,20 +166,22 @@ public class SleepLogService {
     }
 
     public List<Integer> findMissionCompleteDayListByMonth(long childId, String date) throws ParseException {
-        //입력된 달의 1일부터 31일 중 저장된 모든 미션기록 조회
+        //그 달의 마지막 날 구하기
+        String days = Integer.toString(LocalDate.parse(date.concat("01"), DateTimeFormatter.ofPattern("yyyyMMdd")).lengthOfMonth());
+
+        //입력된 달의 1일부터 그 달의 마지막 일 중 미션 성공한 날 조회
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
         List<MissionLog> missionLogs = missionLogRepository.findAllByUserIdAndMissionDateBetweenAndIsSuccess(
                 childId,
                 formatter.parse(date.concat("01")),
-                formatter.parse(date.concat("31")),
+                formatter.parse(date.concat(days)),
                 true);
 
         List<Integer> daysExistsLog = new ArrayList<>();
-        //미션기록이 저장된 날의 일(day)만 List에 저장
+        //성공한 미션기록이 저장된 날의 일(day)만 List에 저장
         for(MissionLog missionLog : missionLogs)
             daysExistsLog.add(missionLog.getMissionDate().getDate());
 
-        //중복을 제거하여 return
         return daysExistsLog;
     }
 
