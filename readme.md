@@ -25,11 +25,10 @@ git clone https://lab.ssafy.com/s08-final/S08P31A802.git
 
 ````
 ## 시스템 아키텍처
-![image](https://github.com/sujunghwang/androidLearning/assets/64738942/b4a406bc-68c4-4955-a391-da6eb5b6a17a)
+<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/64738942/48c59dfb-f186-454d-b235-201fc75ff6bb" title="시스템 아키텍처"/>
 
 ## 개발환경
-![image](https://github.com/sujunghwang/androidLearning/assets/64738942/b6690978-ced9-418c-8ce2-317930c4f9a0)
-
+<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/64738942/a815d69c-d80a-4a87-b593-183125e7966d" title="개발환경"/>
 
 ## 📂디렉토리 구조
 
@@ -125,7 +124,7 @@ git clone https://lab.ssafy.com/s08-final/S08P31A802.git
 ## 📜 API 설계서
 
 <a href="https://www.notion.so/3a578dcf522548628c7175fcb87e572f?v=93cfbff1d0e847348aee8c74faffd9f0">
-    <img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/49721857/6d0c5931-cc8a-435e-a650-18b60e89a750" title="API 설계서로 이동"/>
+    <img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/64738942/5bfdfeb9-f337-495a-b9ec-a46afe5c049d" title="API 설계서로 이동"/>
 </a>
 
 
