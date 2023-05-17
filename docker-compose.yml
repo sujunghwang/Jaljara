@@ -1,0 +1,44 @@
+version: "3.7"
+
+services:
+  jaljara_backend:
+    container_name: jaljara_backend
+    build:
+      context: ./backend/jaljara/
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
+    stdin_open: true
+    tty: true
+    networks:
+      - default
+      - jaljara_net
+
+  redis:
+    image: redis
+    command: ["redis-server", "--appendonly", "yes",  "--replica-read-only", "no",  "--requirepass", "tXBUXtFK6zjrL3vPcyl8NoKgyTPjZ7Ss"]
+    ports:
+      - "6379:6379"
+    networks:
+      - default
+      - jaljara_net
+    logging:
+      options:
+        max-size: "1024m"
+        max-file: "50"
+
+  envoy:
+    image: envoyproxy/envoy-dev
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      ENVOY_UID: 0
+    volumes:
+      - ./envoy.yaml:/etc/envoy/envoy.yaml
+      - /etc/letsencrypt/live/jaljara.movebxeax.me/privkey.pem:/etc/letsencrypt/live/jaljara.movebxeax.me/privkey.pem
+      - /etc/letsencrypt/live/jaljara.movebxeax.me/fullchain.pem:/etc/letsencrypt/live/jaljara.movebxeax.me/fullchain.pem
+
+networks:
+  jaljara_net:
+    driver: bridge

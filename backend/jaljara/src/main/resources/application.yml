@@ -1,0 +1,78 @@
+server:
+  port: 8080
+
+  servlet:
+    context-path: /
+    encoding:
+      charset: utf-8
+      enabled: true
+
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-type: PKCS12
+    key-store-password: 7zCcNo6EzBSvIoe4DESDNfo6I0LIDCjm
+
+spring:
+  datasource:
+    #    ec2 db
+       url: jdbc:mysql://blahblah-database.c0ojtysqxjes.ap-northeast-2.rds.amazonaws.com:3306/jaljara?useUnicode=true&characterEncoding=utf-8
+       username: jaljara
+       password: tXBUXtFK6zjrL3vPcyl8NoKgyTPjZ7Ss
+       driver-class-name: com.mysql.cj.jdbc.Driver
+
+    #    local
+#     url: jdbc:mysql://localhost:3306/jaljara?useUnicode=true&characterEncoding=utf-8
+#     username: root
+#     password: ssafy
+#     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  output.ansi.enabled: always
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      use-new-id-generator-mappings: false
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Asia/Seoul
+
+  servlet:
+    multipart:
+      maxFileSize: 10MB
+      maxRequestSize: 10MB
+
+  redis:
+    host: 172.17.0.1
+    port: 6379
+    password: tXBUXtFK6zjrL3vPcyl8NoKgyTPjZ7Ss
+
+logging.level:
+  org.hibernate.SQL: debug
+  #org.hibernate.type: trace
+
+jwt:
+  secret: yfJbwc6Mhfwc8GPlCg3Tft579JtMPIb8
+  # 7 days for access token
+  access_exp_time: 604800000
+  # 30 days for refresh token
+  refresh_exp_time: 2592000000
+  issuer: https://jaljara.movebxeax.me
+
+auth:
+  google_api_id: 693682333355-lklamagdho01dqjbph9l6c4ing39173q.apps.googleusercontent.com
+
+cloud:
+  aws:
+    credentials:
+      secretKey: fxJVaPPyLDosdhIjIBITBjvwGOs3i+vRSLpVHSIM
+      accessKey: AKIA5GZGTYMPY3FGEPZI
+    s3:
+      bucket: jaljara
+    region:
+      static: ap-northeast-2
