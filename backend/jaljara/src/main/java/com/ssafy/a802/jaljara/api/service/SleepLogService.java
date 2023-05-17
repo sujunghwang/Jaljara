@@ -197,7 +197,7 @@ public class SleepLogService {
                 .sleepRate(sleepLog.getSleepRate()).build();
     }
 
-    @Scheduled(cron = "0 15 6 * * *")
+    @Scheduled(cron = "0 23 6 * * *")
     public void checkGoodSleep(){
         List<ChildInformation> childInformations = childInformationRepository.findAll();
 
