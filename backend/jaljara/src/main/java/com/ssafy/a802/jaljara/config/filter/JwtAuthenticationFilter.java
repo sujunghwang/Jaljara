@@ -19,7 +19,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         try {
             String validToken = resolveToken(request);
-            String path = request.getRequestURI();
 
             if (validToken != null && JwtUtil.isValidToken(validToken)) {
                 Authentication authentication = JwtUtil.getAuthentication(validToken);
