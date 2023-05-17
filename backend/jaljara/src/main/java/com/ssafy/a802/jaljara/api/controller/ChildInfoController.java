@@ -55,13 +55,6 @@ public class ChildInfoController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/streakCnt/{childId}")
-    @ValidChild
-    public ResponseEntity<?> modifyStreakCnt(@PathVariable long childId){
-        childInformationService.modifyStreakCntPlus(childId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @DeleteMapping("/{childId}")
     @ValidChild
     public ResponseEntity<?> removeChild(@PathVariable long childId){
