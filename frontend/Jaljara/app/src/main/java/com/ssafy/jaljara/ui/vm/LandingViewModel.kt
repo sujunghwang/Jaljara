@@ -82,7 +82,7 @@ class LandingViewModel(application: Application) : AndroidViewModel(application)
                     }
 
                     is Result.Error -> {
-                        Log.e("loginWithExternalToken", "api call fail")
+                        HandleError(result.code)
                     }
                 }
             } catch (e: Exception) {

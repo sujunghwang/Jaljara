@@ -44,6 +44,7 @@ import com.ssafy.jaljara.ui.component.ErrorScreen
 import com.ssafy.jaljara.ui.component.LoadingScreen
 import com.ssafy.jaljara.ui.theme.JaljaraTheme
 import com.ssafy.jaljara.ui.vm.CalendarViewModel
+import com.ssafy.jaljara.ui.vm.ParentViewModel
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
@@ -267,7 +268,7 @@ fun JongSeokCalendar(
                                 kalendarEvents = kalendarEvents,
                                 isCurrentDay = isCurrentDay,
                                 onCurrentDayClick = { kalendarDay, events ->
-                                    if(isSleepLog) onClickDay(kalendarDay.localDate)
+                                    onClickDay(kalendarDay.localDate)
                                 },
                                 selectedKalendarDay = selectedKalendarDate.value,
                                 kalendarDayColors = kalendarDayColors,
@@ -309,8 +310,7 @@ private fun getGeneratedDay(day: Int, currentMonth: Month, currentYear: Int): Lo
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SleepCalenderScreen(
-    // 아이의 pk
-    childId : Long = 1,
+    viewModel: ParentViewModel,
     onClickDay : (LocalDate) -> Unit
 ){
 
@@ -322,7 +322,12 @@ fun SleepCalenderScreen(
 
     val calendarViewModel : CalendarViewModel = viewModel()
 
-    calendarViewModel.getSimpleSleepLog(childId, convert2yyyyMM(tYear, tMonth))
+    LaunchedEffect(Unit){
+        viewModel.getChildIdByIdx()
+    }
+
+    Log.d("슬립 캘린더","선택 된 놈 : ${viewModel.selectedChildId}")
+    calendarViewModel.getSimpleSleepLog(viewModel.selectedChildId, convert2yyyyMM(tYear, tMonth))
 
     val calendarState = calendarViewModel.calendarUiState
 
@@ -388,7 +393,7 @@ private fun convert2yyyyMM(year: Int, month: Int): String{
 @Preview(showSystemUi = true)
 fun prevcal(){
     JaljaraTheme{
-        SleepCalenderScreen(1){
+        SleepCalenderScreen(viewModel = viewModel()){
                 day -> Log.d("클릭 날짜", day.toString())
         }
     }
