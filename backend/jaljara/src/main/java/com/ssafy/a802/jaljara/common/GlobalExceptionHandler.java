@@ -25,12 +25,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<?> handleException(Exception e) {
-        log.error(e.getMessage());
+        log.error("글로벌 핸들러 : " + e.getMessage());
+        e.printStackTrace();
         return new ResponseEntity<>(
                 ErrorResponse.builder()
                         .message("글로벌 핸들러 : " + e.getMessage())
                         .timestamp(Timestamp.from(Instant.now()).toString())
-                        .build(), HttpStatus.BAD_REQUEST
+                        .build(), HttpStatus.INTERNAL_SERVER_ERROR
         );
     }
 }
