@@ -60,8 +60,12 @@ public class SleepLogService {
         int sleepLen = tWake - tBed;
 
         for(SleepLogRequestDto.SleepSegmentEvent event: sleepSegmentEvents){
-            // 수면 status가 성공
-            if(event.getStatus() == SleepLogRequestDto.SleepSegmentEvent.STATUS_SUCCESSFUL
+
+            int eventStatus = event.getStatus();
+
+            // 수면 status가 성공이거나 데이터 유실인 경우
+            if(eventStatus == SleepLogRequestDto.SleepSegmentEvent.STATUS_SUCCESSFUL
+                    || eventStatus == SleepLogRequestDto.SleepSegmentEvent.STATUS_MISSING_DATA
             ){
                 // 수면 세그먼트 감지 시작 시간
                 LocalDateTime start2LDT = ZonedDateTime.ofInstant(Instant.ofEpochMilli(event.getStartTimeMillis()), ZoneId.of("Asia/Seoul")).toLocalDateTime();
@@ -105,18 +109,6 @@ public class SleepLogService {
                                             .date(dateToday).build()
                             );
                         }
-//                        else{
-//                            SleepLog tlog = optLog.get();
-//                            sleepLogRepository.save(
-//                                    SleepLog.builder()
-//                                            .id(tlog.getId())
-//                                            .sleepRate(tlog.getSleepRate() + tRate)
-//                                            .userId(tlog.getUserId())
-//                                            .bedTime(tlog.getBedTime())
-//                                            .wakeupTime(min2Time(endMin))
-//                                            .date(dateToday).build()
-//                            );
-//                        }
                     }else{ // 00:00 ~ 11:59 -> 어제 저장
                         Date dateYesterDay = Timestamp.valueOf(end2LDT.minusDays(1));
                         log.info("어제에 저장 : " + dateYesterDay);
@@ -131,18 +123,6 @@ public class SleepLogService {
                                             .date(dateYesterDay).build()
                             );
                         }
-//                        else{
-//                            SleepLog tlog = optLog.get();
-//                            sleepLogRepository.save(
-//                                    SleepLog.builder()
-//                                            .id(tlog.getId())
-//                                            .sleepRate(tlog.getSleepRate() + tRate)
-//                                            .userId(tlog.getUserId())
-//                                            .bedTime(tlog.getBedTime())
-//                                            .wakeupTime(min2Time(endMin))
-//                                            .date(dateYesterDay).build()
-//                            );
-//                        }
                     }
                 }
             }
