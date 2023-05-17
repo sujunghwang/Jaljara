@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.android.gms.location.SleepClassifyEvent
 import com.google.android.gms.location.SleepSegmentEvent
+import com.ssafy.jaljara.data.request.SleepSegmentEventDto
 import com.ssafy.jaljara.network.ChildApiService
 import com.ssafy.jaljara.network.Result
 import com.ssafy.jaljara.network.safeApiCall
@@ -37,8 +38,20 @@ class SleepReceiver : BroadcastReceiver() {
             Log.d(TAG, "SleepSegmentEvent List: $sleepSegmentEvents")
             // 서버에 수면 기록 전송
             val childApi = ChildApiService.getInstance(context = context)
+            val events:MutableList<SleepSegmentEventDto> = mutableListOf()
+
+            for(event in sleepSegmentEvents) events.add(
+                SleepSegmentEventDto(
+                    userId = null,
+                    startTimeMillis = event.startTimeMillis,
+                    endTimeMills = event.endTimeMillis,
+                    segmentDurationMillis = event.segmentDurationMillis,
+                    status = event.status
+                )
+            )
+
             scope.launch{
-                when(val result = safeApiCall {childApi.sendSleepLog(sleepSegmentEvents)} ){
+                when(val result = safeApiCall {childApi.sendSleepLog(events)} ){
                     is Result.Success ->{ Log.e(TAG, "SleepLog Send Success") }
                     is Result.Error -> { Log.e(TAG, "SleepLog Send Fail") }
                 }
@@ -47,7 +60,7 @@ class SleepReceiver : BroadcastReceiver() {
                 for(sleep in sleepSegmentEvents){
                     val startTime = Instant.ofEpochMilli(sleep.startTimeMillis).atZone(ZoneId.systemDefault()).toLocalDateTime()
                     val endTime = Instant.ofEpochMilli(sleep.endTimeMillis).atZone(ZoneId.systemDefault()).toLocalDateTime()
-                    file.writeText(text = "status : ${sleep.status} 시작시간 : ${startTime} 끝난 시간 : ${endTime}\n")
+                    file.appendText(text = "status : ${sleep.status} 시작시간 : ${startTime} 끝난 시간 : ${endTime}\n")
                 }
             }
         } else if (SleepClassifyEvent.hasEvents(intent)) {
