@@ -30,19 +30,20 @@ import com.ssafy.jaljara.R
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import kotlin.math.roundToInt
 
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalMaterial3Api
 @Composable
 fun SleepTargetScreen(viewModel : ParentViewModel){
-    var sliderPosition by remember { mutableStateOf(-180f..360f) }
+    var sliderPosition by remember { mutableStateOf(-120f..480f) }
 
     var bedTime by remember {
-        mutableStateOf(LocalTime.of(21,0))
+        mutableStateOf(LocalTime.of(22,0))
     }
     var wakeupTime by remember {
-        mutableStateOf(LocalTime.of(6,0))
+        mutableStateOf(LocalTime.of(8,0))
     }
     var sleepTimeInt by remember {
         mutableStateOf(0)
@@ -61,8 +62,14 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
 
     LaunchedEffect(viewModel.childSleepResponse){
 
-        bedTime = LocalTime.parse(viewModel.childSleepResponse.targetBedTime, DateTimeFormatter.ofPattern("HH:mm"))
-        wakeupTime = LocalTime.parse(viewModel.childSleepResponse.targetWakeupTime, DateTimeFormatter.ofPattern("HH:mm"))
+        try {
+            bedTime = LocalTime.parse(viewModel.childSleepResponse.targetBedTime, DateTimeFormatter.ofPattern("HH:mm"))
+            wakeupTime = LocalTime.parse(viewModel.childSleepResponse.targetWakeupTime, DateTimeFormatter.ofPattern("HH:mm"))
+        }
+        catch (e: DateTimeParseException){
+            bedTime = LocalTime.of(22,0)
+            wakeupTime = LocalTime.of(8,0)
+        }
 
         Log.d("베드타임", bedTime.toString())
         Log.d("웨이크업타임", wakeupTime.toString())
@@ -163,7 +170,7 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                         .padding(bottom = 8.dp)) {
                         RangeSlider(
                             modifier = Modifier,
-                            steps = 287,
+                            steps = 215,
                             values = sliderPosition,
                             colors = SliderDefaults.colors(
                                 thumbColor = Color.White,
@@ -191,7 +198,7 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                                 bedTime = LocalTime.of(bedTimeInt / 60, bedTimeInt % 60)
                                 wakeupTime = LocalTime.of(wakeupTimeInt / 60, wakeupTimeInt % 60)
                             },
-                            valueRange = -360f..1080f,
+                            valueRange = -360f..720f,
                         )
                     }
                 }

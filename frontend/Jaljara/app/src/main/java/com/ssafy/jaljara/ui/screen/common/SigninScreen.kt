@@ -64,9 +64,7 @@ fun LoginScreen(
                     Box(
                         modifier = Modifier
                             .height(500.dp)
-                    ) {
-                        Text(text = "Top Padding")
-                    }
+                    )
 
                     Button(
                         onClick = { kakaoLoginHelper(context, viewModel) },
