@@ -250,7 +250,7 @@ fun RewardStatusContainer(childSleepInfo: ChildSleepInfo, onClickCoupon: () -> U
 @Composable
 fun ContentContainer(contentsViewModel: ContentsViewModel, soundContents: List<ContentsInfo>, videoContents: List<ContentsInfo>,onClickContent: (ContentsInfo) -> Unit = {} ) {
     Column() {
-        Text(text = "컨텐츠 바로가기", style = MaterialTheme.typography.titleSmall)
+        Text(text = "꿈나라 탐험하기", style = MaterialTheme.typography.titleSmall)
         Column() {
             LazyRow() {
                 itemsIndexed(soundContents) { index: Int, item: ContentsInfo ->
