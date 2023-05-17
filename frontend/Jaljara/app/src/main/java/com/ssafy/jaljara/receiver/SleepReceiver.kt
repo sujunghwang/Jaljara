@@ -58,8 +58,8 @@ class SleepReceiver : BroadcastReceiver() {
                 val file = File(context.filesDir, "sleep_segment_log.txt")
                 if(!file.exists()) file.createNewFile()
                 for(sleep in sleepSegmentEvents){
-                    val startTime = Instant.ofEpochMilli(sleep.startTimeMillis).atZone(ZoneId.systemDefault()).toLocalDateTime()
-                    val endTime = Instant.ofEpochMilli(sleep.endTimeMillis).atZone(ZoneId.systemDefault()).toLocalDateTime()
+                    val startTime = Instant.ofEpochMilli(sleep.startTimeMillis).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime()
+                    val endTime = Instant.ofEpochMilli(sleep.endTimeMillis).atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime()
                     file.appendText(text = "status : ${sleep.status} 시작시간 : ${startTime} 끝난 시간 : ${endTime}\n")
                 }
             }
