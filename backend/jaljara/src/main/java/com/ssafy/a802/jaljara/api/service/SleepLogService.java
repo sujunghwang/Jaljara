@@ -197,7 +197,7 @@ public class SleepLogService {
                 .sleepRate(sleepLog.getSleepRate()).build();
     }
 
-    @Scheduled(cron = "0 0 15 * * *")
+    @Scheduled(cron = "0 10 15 * * *", zone = "Asia/Seoul")
     public void checkGoodSleep(){
         List<ChildInformation> childInformations = childInformationRepository.findAll();
 
@@ -208,6 +208,8 @@ public class SleepLogService {
             calendar.setTime(new Date());
             calendar.add(Calendar.DAY_OF_MONTH, -1);
             Date yesterday = calendar.getTime();
+
+            log.debug(String.valueOf(yesterday));
 
             SleepLog sleepLog = sleepLogRepository.findByUserIdAndDate(childId, yesterday).orElse(null);
             MissionLog missionLog = missionLogRepository.findByUserIdAndMissionDate(childId, yesterday).orElse(null);
