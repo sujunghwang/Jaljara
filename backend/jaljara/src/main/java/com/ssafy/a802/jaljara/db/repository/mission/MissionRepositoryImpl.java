@@ -19,7 +19,7 @@ public class MissionRepositoryImpl {
 	public MissionLogRequestDto findMissionLogWithMissionAttachment(Long userId, Date missionDate) {
 			return em.createQuery(
 				"select new com.ssafy.a802.jaljara.api.dto.response.MissionLogRequestDto"
-					+ "(ml.id, ml.user.id, ml.isSuccess, ml.missionDate, ma.missionType, ml.content, ma.url)"
+					+ "(ml.id, ml.user.id, ml.isSuccess, ml.missionDate, ml.missionType, ml.content, ma.url)"
 					+ " from MissionLog ml"
 					+ " left join MissionAttachment ma"
 					+ " on ml.id = ma.missionLog.id"

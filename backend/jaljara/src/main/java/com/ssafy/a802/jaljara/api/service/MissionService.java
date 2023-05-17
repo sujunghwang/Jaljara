@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -108,17 +109,17 @@ public class MissionService {
 				.build());
 
 		} else {
-			Date missionDate = findMissionToday.getMissionDate();
-			LocalDateTime localDateTimeYesterday = LocalDateTime.ofInstant(missionDate.toInstant(), ZoneId.systemDefault());
-			localDateTimeYesterday = localDateTimeYesterday.minusDays(1);
-			OffsetDateTime offsetDateTime2 = OffsetDateTime.of(localDateTimeYesterday, offset);
-			Instant instant2 = offsetDateTime.toInstant();
-			Date yesterday = Date.from(instant2);
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(new Date());
+			calendar.add(Calendar.DAY_OF_MONTH, -1);
+			Date yesterday = calendar.getTime();
+			log.error("어제 날짜입니다 : " + yesterday);
 
 			//move exist mission today to mission log
 			MissionLog savedMissionLog = missionLogRepository.save(MissionLog.builder()
 				.user(findUser)
 				.content(findMissionToday.getMission().getContent())
+				.missionType(findMissionToday.getMission().getMissionType())
 				.isSuccess(findMissionToday.isClear())
 				// .missionDate(findMissionToday.getMissionDate())
 				.missionDate(yesterday)
@@ -223,7 +224,6 @@ public class MissionService {
 
 		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
 			ExceptionFactory.userMissionTodayNotFound(userId));
-
 
 		//ex) https://jaljara.s3.ap-northeast-1.amazonaws.com/randomUUID
 

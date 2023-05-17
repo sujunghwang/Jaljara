@@ -28,6 +28,10 @@ public class MissionLog {
 	@Column(nullable = false)
 	private String content;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private MissionType missionType;
+
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date missionDate;
@@ -36,9 +40,10 @@ public class MissionLog {
 	private boolean isSuccess;
 
 	@Builder
-	public MissionLog(User user, String content, Date missionDate, boolean isSuccess) {
+	public MissionLog(User user, String content, MissionType missionType, Date missionDate, boolean isSuccess) {
 		this.user = user;
 		this.content = content;
+		this.missionType = missionType;
 		this.missionDate = missionDate;
 		this.isSuccess = isSuccess;
 	}
