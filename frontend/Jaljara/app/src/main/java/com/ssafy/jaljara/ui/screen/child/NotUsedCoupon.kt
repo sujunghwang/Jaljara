@@ -26,46 +26,51 @@ import com.ssafy.jaljara.ui.vm.ChildViewModel
 fun NotUsedCoupon(childViewModel: ChildViewModel, coupon: NotUsedCoupon, modifier: Modifier = Modifier) {
     var showDialog by remember { mutableStateOf(false) }
 
-    Card(
-        modifier = modifier
-            .padding(vertical = 8.dp, horizontal = 20.dp)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = {
-                        showDialog = true
-                        Log.d("아이등록해제모달 요청","$showDialog")
-                    },
-                )
-            },
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
-        ),
-        colors = CardDefaults.cardColors(Color.White)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically
+    var couponUsing by remember { mutableStateOf(false) }
+
+    if(!couponUsing){
+        Card(
+            modifier = modifier
+                .padding(vertical = 8.dp, horizontal = 20.dp)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            showDialog = true
+                            Log.d("아이등록해제모달 요청","$showDialog")
+                        },
+                    )
+                },
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 10.dp
+            ),
+            colors = CardDefaults.cardColors(Color.White)
         ) {
-            Image(
-                modifier = modifier
-                    .size(64.dp)
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(50)),
-                painter = painterResource(id = R.drawable.rabbit),
-                contentDescription = null
-            )
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                NotUsedCouponContent(coupon.content, coupon.getTime)
+                Image(
+                    modifier = modifier
+                        .size(64.dp)
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(50)),
+                    painter = painterResource(id = R.drawable.rabbit),
+                    contentDescription = null
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    NotUsedCouponContent(coupon.content, coupon.getTime)
+                }
             }
         }
     }
+
 
     if (showDialog) {
         AlertDialog(
@@ -79,6 +84,7 @@ fun NotUsedCoupon(childViewModel: ChildViewModel, coupon: NotUsedCoupon, modifie
                         .padding(end = 8.dp)
                         .clickable {
                             childViewModel.setCouponUsed(coupon.rewardId)
+                            couponUsing = true
                             showDialog=false
                         },
                     color = Color.Red,
