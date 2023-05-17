@@ -8,5 +8,4 @@ import java.util.Optional;
 
 public interface SleepLogRepository extends JpaRepository<SleepLog, Long> {
     Optional<SleepLog> findByUserIdAndDate(long userId, Date date);
-    boolean existsByUserIdAndDate(long userId, Date date);
 }

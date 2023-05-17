@@ -12,6 +12,7 @@ import com.ssafy.a802.jaljara.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
@@ -20,10 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Slf4j
@@ -199,5 +197,29 @@ public class SleepLogService {
                 .sleepRate(sleepLog.getSleepRate()).build();
     }
 
+    @Scheduled(cron = "0 0 15 * * *")
+    public void checkGoodSleep(){
+        List<ChildInformation> childInformations = childInformationRepository.findAll();
+
+        for(ChildInformation childInformation : childInformations){
+            long childId = childInformation.getChildId();
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.DAY_OF_MONTH, -1);
+            Date yesterday = calendar.getTime();
+
+            SleepLog sleepLog = sleepLogRepository.findByUserIdAndDate(childId, yesterday).orElse(null);
+            MissionLog missionLog = missionLogRepository.findByUserIdAndMissionDate(childId, yesterday).orElse(null);
+
+            if(sleepLog != null && missionLog != null && sleepLog.getSleepRate() >= 0.8 && missionLog.isSuccess()){
+                childInformationRepository.save(
+                        childInformation.toBuilder()
+                                .streakCount(childInformation.getStreakCount() + 1)
+                                .build());
+            }
+
+        }
+    }
 
 }
