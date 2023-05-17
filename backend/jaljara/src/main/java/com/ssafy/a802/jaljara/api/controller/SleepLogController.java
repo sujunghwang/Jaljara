@@ -6,6 +6,7 @@ import com.ssafy.a802.jaljara.api.dto.response.UserResponseDto;
 import com.ssafy.a802.jaljara.api.service.SleepLogService;
 import com.ssafy.a802.jaljara.common.annotation.ValidChild;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/sleeplogs")
 @RequiredArgsConstructor
+@Slf4j
 public class SleepLogController {
     private final SleepLogService sleepLogService;
 

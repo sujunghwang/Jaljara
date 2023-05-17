@@ -41,9 +41,9 @@ public class SleepLogService {
                 () -> new CustomException(HttpStatus.NOT_FOUND,
                         "부모와 연결되지 않은 유저입니다. userId: " + childId));
 
-        LocalDateTime _now = LocalDateTime.now();
+        LocalDateTime _now = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
-        log.info("오늘 날짜 : " + ZonedDateTime.of(_now, ZoneId.systemDefault()).toInstant().toEpochMilli());
+        log.info("오늘 날짜 : " + _now);
 
         //목표취침,기상시간을 분단위로 치환
         int tBed = childInformation.getTargetBedTime().toLocalTime().getHour() * 60 + childInformation.getTargetBedTime().toLocalTime().getMinute();
@@ -60,15 +60,17 @@ public class SleepLogService {
         int sleepLen = tWake - tBed;
 
         for(SleepLogRequestDto.SleepSegmentEvent event: sleepSegmentEvents){
-            // 수면 status가 성공 or 데이터 유실인 경우
-            if(event.getStatus() == SleepLogRequestDto.SleepSegmentEvent.STATUS_SUCCESSFUL||
-                    event.getStatus() == SleepLogRequestDto.SleepSegmentEvent.STATUS_MISSING_DATA
+            // 수면 status가 성공인 경우 || 데이터 유실인 경우
+            if(event.getStatus() == SleepLogRequestDto.SleepSegmentEvent.STATUS_SUCCESSFUL
+                    || event.getStatus() == SleepLogRequestDto.SleepSegmentEvent.STATUS_MISSING_DATA
             ){
                 // 수면 세그먼트 감지 시작 시간
-                LocalDateTime start2LDT = LocalDateTime.ofInstant(Instant.ofEpochMilli(event.getStartTimeMillis()), ZoneId.systemDefault());
+                LocalDateTime start2LDT = ZonedDateTime.ofInstant(Instant.ofEpochSecond(event.getStartTimeMillis()), ZoneId.of("Asia/Seoul")).toLocalDateTime();
 
                 // 수면 세그먼트 감지 끝난 시간
-                LocalDateTime end2LDT = LocalDateTime.ofInstant(Instant.ofEpochMilli(event.getEndTimeMills()), ZoneId.systemDefault());
+                LocalDateTime end2LDT = ZonedDateTime.ofInstant(Instant.ofEpochSecond(event.getEndTimeMills()), ZoneId.of("Asia/Seoul")).toLocalDateTime();
+
+                log.info("감지 시작 시간 : " + start2LDT + " 감지 끝난 시간 : " + end2LDT);
 
                 // 시작 시간 -> 분으로
                 int start2min = start2LDT.getHour() * 60 + start2LDT.getMinute();
@@ -80,6 +82,8 @@ public class SleepLogService {
 
                 log.info("start2min : " + start2min + "end2min : " + end2min);
 
+                // 낮잠 잔거 거르는 로직
+                // 일어난 시간이 설정 취침 시간 보다 큰 경우
                 if(end2min >= tBed){
                     int endMin = Math.min(end2min, tWake);
                     int startMin = Math.max(start2min, tBed);
