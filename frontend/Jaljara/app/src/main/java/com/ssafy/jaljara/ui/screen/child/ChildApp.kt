@@ -196,7 +196,7 @@ fun ChildApp(
                 navBarSelectedItem = 4
             }
             composable(route = ChildScreen.ContentsDetail.url) {
-                viewModel.setNavShow(false)
+                viewModel.setNavShow(true)
                 ContentsDetailView(viewModelContents)
             }
         }
