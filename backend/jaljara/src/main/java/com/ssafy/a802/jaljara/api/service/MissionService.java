@@ -119,6 +119,7 @@ public class MissionService {
 			MissionLog savedMissionLog = missionLogRepository.save(MissionLog.builder()
 				.user(findUser)
 				.content(findMissionToday.getMission().getContent())
+				.missionType(findMissionToday.getMission().getMissionType())
 				.isSuccess(findMissionToday.isClear())
 				// .missionDate(findMissionToday.getMissionDate())
 				.missionDate(yesterday)
@@ -223,7 +224,6 @@ public class MissionService {
 
 		MissionToday findMissionToday = missionTodayRepository.findByUserId(userId).orElseThrow(() ->
 			ExceptionFactory.userMissionTodayNotFound(userId));
-
 
 		//ex) https://jaljara.s3.ap-northeast-1.amazonaws.com/randomUUID
 
