@@ -53,13 +53,13 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun MissionNotYet(modifier: Modifier = Modifier){
-    Text(text = "아직 전송 된 미션이 없어요.")
-    Image(
-        painter = painterResource(R.drawable.today_mission),
-        contentScale = ContentScale.Fit,
-        contentDescription = "default image",
-        modifier = modifier.fillMaxSize(0.5f)
-    )
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "미션 기록이 없어요")
+    }
 }
 
 @Composable
@@ -511,9 +511,7 @@ fun SleepLogDetailScreen(
                                 .height(pageSize / 4)
                         ) { modifier ->
                             if (missionLog.isSuccess) {
-                                Text(text = "COMPLETE!", modifier = modifier, fontSize = 20.sp)
-                            } else {
-                                Text(text = "NOT YET..", modifier = modifier, fontSize = 20.sp)
+                                Image(painter = painterResource(id = R.drawable.mission_completed), contentDescription = null, modifier = modifier.fillMaxSize())
                             }
                         }
                     }
