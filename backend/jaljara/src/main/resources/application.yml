@@ -52,9 +52,13 @@ spring:
     port: 6379
     password: tXBUXtFK6zjrL3vPcyl8NoKgyTPjZ7Ss
 
-logging.level:
+#logging.level:
 #  org.hibernate.SQL: debug
   #org.hibernate.type: trace
+
+logging:
+  pattern:
+    dateformat: "\"yyyy-MM-dd'T'HH:mm:ss,SSSXXX\", Asia/Seoul"
 
 jwt:
   secret: yfJbwc6Mhfwc8GPlCg3Tft579JtMPIb8
