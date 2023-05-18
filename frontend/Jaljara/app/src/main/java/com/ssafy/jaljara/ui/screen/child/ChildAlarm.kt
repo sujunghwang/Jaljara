@@ -1,19 +1,15 @@
 package com.ssafy.jaljara.ui.screen.child
 
-import android.annotation.SuppressLint
 import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Picture
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.activity.MainActivity
-import okhttp3.internal.notify
 
 class ChildAlarm : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {

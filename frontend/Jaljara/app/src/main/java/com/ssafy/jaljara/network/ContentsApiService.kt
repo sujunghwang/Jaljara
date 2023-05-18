@@ -5,8 +5,6 @@ import com.ssafy.jaljara.data.ContentsInfo
 import com.ssafy.jaljara.data.ContentsListUiState
 import com.ssafy.jaljara.data.ContentsUiState
 import com.ssafy.jaljara.utils.RetrofitUtil
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

@@ -7,14 +7,11 @@ import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.reflect.TypeToken
 import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.network.ChildApiService
-import com.ssafy.jaljara.network.ContentsApiService
 import com.ssafy.jaljara.utils.PreferenceUtil
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,8 +21,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import retrofit2.HttpException
-import retrofit2.http.Path
-import java.io.File
 import java.io.IOException
 
 

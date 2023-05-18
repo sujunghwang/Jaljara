@@ -15,7 +15,6 @@ import com.ssafy.jaljara.network.safeApiCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
 import java.io.File
 import java.time.Instant
 import java.time.ZoneId

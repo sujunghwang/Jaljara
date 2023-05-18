@@ -7,8 +7,6 @@ import com.ssafy.jaljara.data.ParentCode
 import com.ssafy.jaljara.data.SleepLog
 import com.ssafy.jaljara.utils.RetrofitUtil
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 
 interface ParentApiService {

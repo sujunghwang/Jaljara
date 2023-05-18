@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -27,12 +26,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.himanshoe.kalendar.component.day.config.KalendarDayColors
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.*
-import com.ssafy.jaljara.ui.component.ErrorScreen
 import com.ssafy.jaljara.ui.component.LoadingScreen
-import com.ssafy.jaljara.ui.screen.parent.JongSeokCalendar
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ssafy.jaljara.ui.vm.ContentsViewModel
 import com.ssafy.jaljara.utils.UiState
