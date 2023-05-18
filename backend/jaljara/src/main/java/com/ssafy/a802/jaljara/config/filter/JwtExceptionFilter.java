@@ -20,8 +20,10 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             filterChain.doFilter(request,response);
         }catch (Exception e){
             try {
+                e.printStackTrace();
                 response.sendError(ExceptionFactory.jwtAuthenticateFail().getStatus().value(), ExceptionFactory.jwtAuthenticateFail().getMessage());
             } catch (IOException ex) {
+                ex.printStackTrace();
                 throw new RuntimeException(ex);
             }
         }
