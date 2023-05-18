@@ -268,7 +268,8 @@ fun JongSeokCalendar(
                                 kalendarEvents = kalendarEvents,
                                 isCurrentDay = isCurrentDay,
                                 onCurrentDayClick = { kalendarDay, events ->
-                                    onClickDay(kalendarDay.localDate)
+                                    if(kalendarDay.localDate.compareTo(currentDay) < 0)
+                                        onClickDay(kalendarDay.localDate)
                                 },
                                 selectedKalendarDay = selectedKalendarDate.value,
                                 kalendarDayColors = kalendarDayColors,
