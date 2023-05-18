@@ -28,6 +28,10 @@ public class SleepLogController {
     @ValidChild
     public ResponseEntity<?> addSleepLogs(@RequestBody List<SleepLogRequestDto.SleepSegmentEvent> sleepSegmentEvents){
         UserResponseDto.SimpleUserInfo userInfo = (UserResponseDto.SimpleUserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        log.info("슬립로그 컨트롤러 : 유저 몇번 이니? : " +userInfo.getUserId());
+        log.info("슬립로그 컨트롤러 : 슬립 로그 : " + sleepSegmentEvents.toString());
+
         sleepLogService.addSleepLogs(sleepSegmentEvents, userInfo.getUserId());
         return ResponseEntity.ok("Sleep log created");
     }

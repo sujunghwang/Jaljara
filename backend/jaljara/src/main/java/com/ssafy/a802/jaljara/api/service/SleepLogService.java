@@ -83,7 +83,7 @@ public class SleepLogService {
                 int end2min = end2LDT.getHour() * 60 + end2LDT.getMinute();
                 if(end2min >= 12 * 60) end2min -= 24 * 60;
 
-                log.info("start2min : " + start2min + "end2min : " + end2min);
+                log.info("부모님이 설정한 수면 시간 : " + tBed + " 자기 시작한 시간 : " + start2min + "일어난 시간 : " + end2min);
 
                 // 낮잠 잔거 거르는 로직
                 // 일어난 시간이 설정 취침 시간 보다 큰 경우
