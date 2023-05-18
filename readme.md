@@ -117,7 +117,7 @@ git clone https://lab.ssafy.com/s08-final/S08P31A802.git
 |회원가입| 로그인 | 미션 수행 |
 | :---: |  :---: | :---: |
 |<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/d34387a8-124a-48c3-aa2f-5dace9007cf9" width="100%" height="100%"/> |<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/5e27a39e-6d15-4932-a1a6-a6ca9f1b9292" width="100%" height="100%"/>|<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/6d5ccf14-99ed-4ef2-a2b4-8a18a947f18f" width="100%" height="100%"/>|
-|구글과 카카오로 회원가입을 할 수 있습니다.|구글 혹은 카카오로 로그인을 할 수 있습니다.|오늘의 미션을 확인하고, 미셔 리롤, 미션을 수행을 할 수 있습니다.|
+|구글과 카카오로 회원가입을 할 수 있습니다.|구글 혹은 카카오로 로그인을 할 수 있습니다.|오늘의 미션을 확인하고, 미션 리롤, 미션을 수행을 할 수 있습니다.|
 
 <br/>
 
