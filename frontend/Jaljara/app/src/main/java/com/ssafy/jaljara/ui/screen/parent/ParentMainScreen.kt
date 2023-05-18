@@ -122,8 +122,7 @@ fun ParentMainView(parentViewModel: ParentViewModel,
             onDismissRequest = { showRewardDialog = false },
             title = { Text(text = "보상을 등록해주세요", style = MaterialTheme.typography.titleMedium, color = Color.White) },
             text = { TextField(modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp), value = reward, onValueChange = {reward = it}) },
+                .fillMaxWidth(), maxLines = 1, value = reward, onValueChange = {reward = it}) },
             confirmButton = {
                 Text(
                     text = "확인",
@@ -137,7 +136,9 @@ fun ParentMainView(parentViewModel: ParentViewModel,
                             parentViewModel.setReward(parentViewModel.selectedChildId, reward)
                             showRewardDialog = false
                         },
-                    color = Color.Red,
+                    color = Color(0x72ff6f).copy(1f),
+                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 20.sp
                 )
             },
             dismissButton = {
@@ -148,7 +149,9 @@ fun ParentMainView(parentViewModel: ParentViewModel,
                         .clickable {
                             showRewardDialog = false
                         },
-                    color = Color.Blue,
+                    color = Color(0xff5f72).copy(1f),
+                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 20.sp
                 )
             }
         )

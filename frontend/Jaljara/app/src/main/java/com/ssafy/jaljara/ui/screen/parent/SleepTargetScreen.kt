@@ -147,7 +147,7 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                     }
                     Column(modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 8.dp)) {
+                        .padding(start = 10.dp, end = 10.dp, bottom = 8.dp)) {
                         RangeSlider(
                             modifier = Modifier,
                             steps = 215,
