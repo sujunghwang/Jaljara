@@ -24,8 +24,20 @@ git clone https://lab.ssafy.com/s08-final/S08P31A802.git
 이후 exec폴더의 포팅메뉴얼을 따라 진행
 
 ````
-## 시스템 아키텍처
-<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/64738942/48c59dfb-f186-454d-b235-201fc75ff6bb" title="시스템 아키텍처"/>
+
+## 📱 기술 스택
+
+### Frontend
+
+<img width="665" alt="front" src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/f6ed52da-f265-4495-b293-1d7bf6fc8456">
+
+### Backend
+
+<img width="1222" alt="backend" src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/b5f6dab2-4ccc-4b4f-92f9-db8aa51e4b81">
+
+### CI/CD
+
+![KakaoTalk_Photo_2023-05-18-16-14-03](https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/7efa6260-b790-47b5-b442-4aad4cfbe789)
 
 ## 개발환경
 <img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/64738942/a815d69c-d80a-4a87-b593-183125e7966d" title="개발환경"/>
@@ -102,7 +114,47 @@ git clone https://lab.ssafy.com/s08-final/S08P31A802.git
 
 ### 아이페이지
 
+|회원가입| 로그인 | 미션 수행 |
+| :---: |  :---: | :---: |
+|<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/d34387a8-124a-48c3-aa2f-5dace9007cf9" width="100%" height="100%"/> |<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/5e27a39e-6d15-4932-a1a6-a6ca9f1b9292" width="100%" height="100%"/>|<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/6d5ccf14-99ed-4ef2-a2b4-8a18a947f18f" width="100%" height="100%"/>|
+|구글과 카카오로 회원가입을 할 수 있습니다.|구글 혹은 카카오로 로그인을 할 수 있습니다.|오늘의 미션을 확인하고, 미셔 리롤, 미션을 수행을 할 수 있습니다.|
+
+<br/>
+
+|보상 등록 전| 보상 등록 후| 보상 획득 |
+| :---: |  :---: | :---: |
+|<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/1d0a80ac-240b-459d-b5f6-4c2d03f873d6" width="100%" height="100%"/> |<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/6651e9f2-1265-4732-9e5d-0d9f1cb6c052" width="100%" height="100%"/>|<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/cdace5ba-79c8-4a44-9689-b0d5cd70c09d" width="100%" height="100%"/>|
+|부모가 보상을 등록하기 전 화면입니다.| 부모가 보상을 등록했을 시 화면입니다.|보상 획득이 가능하고 보상이 등록되어있으면, 보상(쿠폰)을 획득합니다.|
+
+
+<br/>
+
+|쿠폰 사용 화면| 컨텐츠 화면 | 수면 시간 알림 |
+| :---: |  :---: | :---: |
+|<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/4ecf29f2-0fa5-4336-9340-d57311bbe3ba" width="100%" height="100%"/> |<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/2822c692-414f-41e5-a4fe-2652a054c502" width="100%" height="100%"/> | <img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/9c678d1a-f73c-4e30-bef7-d03a201cc5a7" width="100%" height="100%"/> |
+|획득한 보상을 쿠폰함에서 확인이 가능하고 사용할 수 있습니다.| 수면에 도움이 되는 영상을 시청할 수 있습니다.| 아이에게 설정된 수면시간이 되면 알림을 통해 어플에 접속할 수 있습니다. |
+
+<br/>
+
+
+
 ### 부모페이지
+
+</br>
+
+
+|로그인| 자녀 초대 | 아이 미션 승인|
+| :---: |  :---: | :---: |
+|<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/8d3fe45e-2cac-4f0f-bb08-13eacd0d3cf3" width="100%" height="100%"/> |<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/2b6929ae-ed52-4ddd-a423-b8b48de10c9c" width="100%" height="100%"/>|<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/3b333667-6a58-44f8-8027-485ac33dbc02" width="100%" height="100%"/>|
+|구글과 카카오로 로그인할 수 있습니다.|자녀가 회원가입시 부모의 코드를 입력하면 부모와 자녀가 연결됩니다.|아이별 수행한 미션을 확인하고 수행할 수 있습니다.|
+
+</br>
+
+
+|자녀 보상 등록| 자녀 수면 시간 설정 | 자녀 수면 기록 확인|
+| :---: |  :---: | :---: |
+|<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/63650440-5d2c-43c4-b0cc-ca8e8643a3cc" width="100%" height="100%"/> |<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/8d7b9bbf-06f3-486f-a0dd-63f3392ae999" width="100%" height="100%"/>|<img src="https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/cab3ad35-80a5-4be8-a847-8e1d469e2926" width="100%" height="100%"/>|
+|부모는 자녀에게 보상을 등록할 수 있습니다.|자녀의 수면 시간을 설정할 수 있습니다.|아이 수면 기록을 달력에서 확인할 수 있습니다. 해당 화면에서 그날의 수면 기록과 수행한 미션을 확인할 수 있습니다.|
 
 
 ## 🎨 화면 설계서
