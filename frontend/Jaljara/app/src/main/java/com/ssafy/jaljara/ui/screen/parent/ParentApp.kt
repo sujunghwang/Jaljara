@@ -22,11 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.ChildInfo
 import com.ssafy.jaljara.ui.screen.ParentMainView
@@ -34,7 +32,6 @@ import com.ssafy.jaljara.ui.theme.DarkNavy
 import com.ssafy.jaljara.ui.vm.ParentViewModel
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.datetime.toJavaLocalDate
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
