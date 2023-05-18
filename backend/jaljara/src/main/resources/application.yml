@@ -35,7 +35,7 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        format_sql: true
+#        format_sql: true
 
   jackson:
     serialization:
@@ -53,7 +53,7 @@ spring:
     password: tXBUXtFK6zjrL3vPcyl8NoKgyTPjZ7Ss
 
 logging.level:
-  org.hibernate.SQL: debug
+#  org.hibernate.SQL: debug
   #org.hibernate.type: trace
 
 jwt:
