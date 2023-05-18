@@ -3,18 +3,14 @@ package com.ssafy.jaljara.ui.screen.parent
 import android.app.Application
 import android.os.Build
 import android.util.Log
-import android.widget.Space
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -47,10 +43,6 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
     }
     var sleepTimeInt by remember {
         mutableStateOf(0)
-    }
-
-    var tipClosed by remember {
-        mutableStateOf(false)
     }
 
     val toast = Toast.makeText(LocalContext.current, "목표 수면 시간 설정 완료", Toast.LENGTH_SHORT)
@@ -118,37 +110,25 @@ fun SleepTargetScreen(viewModel : ParentViewModel){
                     )
                 }
 
-                if(!tipClosed){
-                    //첫 번째 박스 (꿀팁)
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                color = Color(0x403828B7),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .fillMaxWidth()
-                            .fillParentMaxHeight(0.2f)
-                    ){
-                        Icon(
-                            imageVector = Icons.Rounded.Close, 
-                            contentDescription = null, 
-                            modifier = Modifier.
-                                align(Alignment.TopEnd).
-                                padding(top=5.dp, end = 5.dp).
-                                clickable {
-                                    tipClosed = true
-                                })
-                        Text(text = "학동기(6~12세) 권장 수면 시간은 10 ~ 11시간\n" +
-                                "청소년기(12~18세) 권장 수면 시간은 9 ~ 9.25시간",
-                            modifier = Modifier.align(Alignment.Center),
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontSize = 14.sp
+                //첫 번째 박스 (꿀팁)
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = Color(0x403828B7),
+                            shape = RoundedCornerShape(12.dp)
                         )
-                    }
-
-                    Spacer(modifier = Modifier.fillParentMaxHeight(0.02f))
+                        .fillMaxWidth()
+                        .fillParentMaxHeight(0.2f)
+                ){
+                    Text(text = "학동기(6~12세) 권장 수면 시간은 10 ~ 11시간\n\n" +
+                            "청소년기(12~18세) 권장 수면 시간은 9 ~ 9.25시간",
+                        modifier = Modifier.align(Alignment.Center),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontSize = 14.sp
+                    )
                 }
 
+                Spacer(modifier = Modifier.fillParentMaxHeight(0.02f))
 
                 //수면 시간 설정 박스(range slider)
                 Box(

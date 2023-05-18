@@ -8,7 +8,6 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,9 +15,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PauseCircleOutline
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,17 +23,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ssafy.jaljara.R
-import com.ssafy.jaljara.data.todayMission2
 import com.ssafy.jaljara.ui.screen.parent.convertMiliSecToMinSec
 import com.ssafy.jaljara.ui.vm.ChildViewModel
 import com.ujizin.camposer.CameraPreview
@@ -441,11 +435,13 @@ fun AudioSlider(modifier: Modifier = Modifier, player : MediaPlayer?) {
                 Box(modifier = modifier.fillMaxWidth(0.8f)){
                     Text(
                         modifier = Modifier.align(Alignment.BottomStart).padding(top = 4.dp, start = 6.dp),
-                        text = "$displayedPosition"
+                        text = "$displayedPosition",
+                        fontSize = 10.sp
                     )
                     Text(
                         modifier = Modifier.align(Alignment.BottomEnd).padding(top = 4.dp, end = 6.dp),
-                        text = "$displayedDuration"
+                        text = "$displayedDuration",
+                        fontSize = 10.sp
                     )
                     Slider(
                         modifier = Modifier.align(Alignment.TopCenter).padding(bottom = 4.dp),
