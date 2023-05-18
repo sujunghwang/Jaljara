@@ -66,7 +66,7 @@ fun ParentMission(viewModel: ParentViewModel){
                 .background(
                     color = MaterialTheme.colorScheme.tertiary,
                     shape = RoundedCornerShape(12.dp)
-                ),
+                ).padding(10.dp),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
