@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -96,17 +97,26 @@ fun ParentMainView(parentViewModel: ParentViewModel,
         val todayMission = parentViewModel.todayMissionResponse
 
         Children(parentViewModel, childList, userId, parentCode)
-            if(childSleepInfo.currentReward.isBlank()) CurrentRewardContainer(R.drawable.reward,"현재 보상", "보상을 입력해 주세요!",
-                Modifier.pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = {
-                            showRewardDialog = true
-                        }
-                    )
+
+        CurrentRewardContainer(
+            img = R.drawable.reward,
+            title = "현재 보상",
+            content = childSleepInfo.currentReward,
+            modifier = Modifier.pointerInput(Unit) {
+            detectTapGestures(
+                onTap = {
+                    showRewardDialog = true
                 }
             )
-            else CurrentRewardContainer(R.drawable.reward,"현재 보상", childSleepInfo.currentReward)
-        CurrentRewardContainer(R.drawable.current_reward,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
+        })
+
+        TodayMissionContainer(
+            img = R.drawable.current_reward,
+            title = "오늘의 미션",
+            content = todayMission.content,
+            modifier = Modifier.clickable{onClickMissionParent()}
+        )
+
         Row(modifier = Modifier.fillMaxWidth()) {
             ChildSetTimeCard(painterResource(id = R.drawable.wake_up),"Wake Up",
                 "${childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
@@ -230,7 +240,6 @@ fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>, parent
 }
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int, parentId:Long) {
     var showDialog by remember { mutableStateOf(false) }
@@ -351,6 +360,43 @@ fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: M
         content = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(painter = painterResource(id = img),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(110.dp, 110.dp)
+                        .padding(15.dp)
+                )
+                Column(
+                    modifier = modifier.fillMaxWidth(0.8f)
+                ) {
+                    Text(text = title, style = MaterialTheme.typography.titleMedium, color=Color.White, fontSize = 28.sp)
+                    Text(text = if(content == "") "보상을 등록해주세요." else content, style = MaterialTheme.typography.titleSmall, fontSize=16.sp)
+                }
+                Row(
+                    modifier = modifier.fillMaxWidth().padding(12.dp),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    Icon(imageVector = Icons.Filled.Edit, contentDescription = null)
+                }
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TodayMissionContainer(img : Int, title:String, content: String, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiary
+        ),
+        content = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(painter = painterResource(id = img),
                     contentDescription = null,
