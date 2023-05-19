@@ -1,5 +1,8 @@
 # 🌜 잘자라
 
+![스크린샷 2023-05-19 10 03 06](https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/5a5c21fd-03bf-4bd5-8391-84c55cb49f87)
+
+
 ## 📅 프로젝트 진행 기간
 - 2023.04.10(월) ~ 2023.05.19(금)
 
@@ -271,3 +274,6 @@ git clone https://lab.ssafy.com/s08-final/S08P31A802.git
     </tr>
   </table>
 </div>
+
+
+![LUNA](https://github.com/leehyeji319/Android-Kotlin-Study/assets/50399088/34c880ca-32c6-4009-8251-1ed4d3e97eeb)
