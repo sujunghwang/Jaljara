@@ -52,6 +52,17 @@ import java.time.format.DateTimeFormatter
 
 
 @Composable
+fun MissionNotYet(modifier: Modifier = Modifier){
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "미션 기록이 없어요")
+    }
+}
+
+@Composable
 fun SleepTimeCircleClock(modifier: Modifier = Modifier){
     Box(
         contentAlignment = Alignment.Center,
@@ -129,27 +140,25 @@ fun MissionLogImageDetail(modifier: Modifier = Modifier, missionLog: MissionLog 
 
     val bitmap : MutableState<Bitmap?> = mutableStateOf(null)
 
-    Glide.with(LocalContext.current)
-        .asBitmap()
-        .load(missionLog.url)
-        .into(object : CustomTarget<Bitmap>(){
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                bitmap.value = resource
-            }
-            override fun onLoadCleared(placeholder: Drawable?) { }
-        })
-    // 비트 맵이 있다면
-    bitmap.value?.asImageBitmap()?.let{fetchedBitmap ->
-        Image(bitmap = fetchedBitmap,
-            contentScale = ContentScale.Fit,
-            contentDescription = "content image",
-            modifier = modifier.fillMaxSize(0.5f)
-        )
-    } ?: Image(painter = painterResource(R.drawable.today_mission),
-        contentScale = ContentScale.Fit,
-        contentDescription = "default image",
-        modifier = modifier.fillMaxSize(0.5f)
-    ) // 비트맵이 없다면
+    if(missionLog.url != null){
+        Glide.with(LocalContext.current)
+            .asBitmap()
+            .load(missionLog.url)
+            .into(object : CustomTarget<Bitmap>(){
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    bitmap.value = resource
+                }
+                override fun onLoadCleared(placeholder: Drawable?) { }
+            })
+        // 비트 맵이 있다면
+        bitmap.value?.asImageBitmap()?.let{fetchedBitmap ->
+            Image(bitmap = fetchedBitmap,
+                contentScale = ContentScale.Fit,
+                contentDescription = "content image",
+                modifier = modifier.fillMaxSize(0.5f)
+            )
+        }?:MissionNotYet(modifier = modifier)
+    }else MissionNotYet(modifier = modifier)
 }
 
 fun convertMiliSecToMinSec(mili : Float) :String{
@@ -261,10 +270,10 @@ fun AudioSlider(modifier: Modifier = Modifier, player : MediaPlayer?) {
 @Composable
 fun MissionLogAudioDetail(
     modifier: Modifier = Modifier,
-    url:String?="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    url:String?,
 ){
-    if(url != null){
 
+    if(url != null){
         var playerUiState: UiState<MediaPlayer> by remember{mutableStateOf(UiState.Loading)}
 
         var player : MediaPlayer? = remember {
@@ -309,7 +318,7 @@ fun MissionLogAudioDetail(
             }
         }
     }else{
-
+        MissionNotYet(modifier = modifier)
     }
 }
 
@@ -392,8 +401,8 @@ fun SleepLogDetailScreen(
             missionLogId = -1,
             userId = viewModel.selectedChildId,
             missionDate = displayDate,
-            missionType = "RECORD",
-            content = "미션 없는 경우 기본 값",
+            missionType = "IMAGE",
+            content = "오늘의 미션이 없어요",
             url = null,
             isSuccess = false
         )
@@ -413,6 +422,7 @@ fun SleepLogDetailScreen(
             missionLog =
                 (missionDetailLogViewModel.missionLogUiState as UiState.Success<MissionLog>).data
 
+        Log.d("미션 로그", missionLog.toString())
         BoxWithConstraints {
             val pageSize = this.maxHeight
             Column(
@@ -501,9 +511,7 @@ fun SleepLogDetailScreen(
                                 .height(pageSize / 4)
                         ) { modifier ->
                             if (missionLog.isSuccess) {
-                                Text(text = "COMPLETE!", modifier = modifier, fontSize = 20.sp)
-                            } else {
-                                Text(text = "NOT YET..", modifier = modifier, fontSize = 20.sp)
+                                Image(painter = painterResource(id = R.drawable.mission_completed), contentDescription = null, modifier = modifier.fillMaxSize())
                             }
                         }
                     }
@@ -526,8 +534,11 @@ fun SleepLogDetailScreen(
                         )
                     } else if (missionLog.missionType == Mission.RECORD.name) {
                         MissionLogAudioDetail(
-                            modifier = Modifier.height(pageSize / 2)
+                            modifier = Modifier.height(pageSize / 2),
+                            url = missionLog.url
                         )
+                    }else{
+                        MissionNotYet(modifier = Modifier.height(pageSize / 2))
                     }
                 }
             }

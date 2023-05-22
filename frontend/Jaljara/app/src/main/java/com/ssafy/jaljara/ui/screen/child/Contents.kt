@@ -82,7 +82,7 @@ fun ContentsListView(
                 contentDescription = "icon"
             )
             androidx.compose.material3.Text(
-                text = "컨텐츠 페이지",
+                text = "꿈나라 탐험",
                 style = typography.titleLarge,
             )
         }

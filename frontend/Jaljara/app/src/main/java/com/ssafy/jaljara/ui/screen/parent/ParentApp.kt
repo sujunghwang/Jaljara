@@ -22,17 +22,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
 import com.ssafy.jaljara.R
+import com.ssafy.jaljara.data.ChildInfo
 import com.ssafy.jaljara.ui.screen.ParentMainView
 import com.ssafy.jaljara.ui.theme.DarkNavy
 import com.ssafy.jaljara.ui.vm.ParentViewModel
+import com.ssafy.jaljara.utils.UiState
 import kotlinx.datetime.toJavaLocalDate
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
@@ -101,78 +100,91 @@ fun ParentApp(
 ) {
     // userId
     var userId = viewModel.test!!.userInfo.userId.toLong()
-    Log.d("userId","$userId")
+    Log.d("userId---","$userId")
 
     // 하단 네비게이션 선택 애니메이션 용
     var navBarSelectedItem by rememberSaveable { mutableStateOf(0) }
 
     val uiState by viewModel.uiState.collectAsState()
+    viewModel.getChildList(userId)
 
-    Scaffold(
-        bottomBar = {
-            if(uiState.showNavigation){ParentNavigationBar(
-                navController = navController,
-                selectedItem = navBarSelectedItem,
-            )}
-        },
-    ) { innerPadding ->
-
-        NavHost(
-            navController = navController,
-            startDestination = ParentScreen.Start.url,
-            modifier = modifier.padding(innerPadding)
-        ) {
-            composable(route = ParentScreen.Start.url) {
-                viewModel.setNavShow(true)
-                // 부모 메인 페이지
-                ParentMainView(viewModel,
-                    onClickMissionParent = {
-                        navController.navigate(ParentScreen.ParentMission.url)
-                    },
-                    onClickSetTime ={
-                        navController.navigate(ParentScreen.SetSleepTime.url)
-                    },
-                    userId
-                )
-                navBarSelectedItem = 0
+    when(viewModel.childList.isNullOrEmpty())
+    {
+        true -> {
+            when(viewModel.loadingState) {
+                is UiState.Success -> EmptyChildrenListScreen(viewModel = viewModel)
+                else -> {}
             }
-            composable(route = ParentScreen.SetSleepTime.url) {
-                viewModel.setNavShow(true)
-                // 목표 수면시간 설정
-                SleepTargetScreen(viewModel)
-                navBarSelectedItem = 1
-            }
-            composable(route = ParentScreen.SleepCalendar.url) {
-                viewModel.setNavShow(true)
-                // 내 아이 수면 달력
-                SleepCalenderScreen(viewModel = viewModel, onClickDay = {
-                    day ->
-                    Log.d("캘린더 라우터 클릭", day.toString())
+        }
+        false -> {
+            Scaffold(
+                bottomBar = {
+                    if(uiState.showNavigation){ParentNavigationBar(
+                        navController = navController,
+                        selectedItem = navBarSelectedItem,
+                    )}
+                },
+            ) { innerPadding ->
 
-                    val fomatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+                NavHost(
+                    navController = navController,
+                    startDestination = ParentScreen.Start.url,
+                    modifier = modifier.padding(innerPadding)
+                ) {
+                    composable(route = ParentScreen.Start.url) {
+                        viewModel.setNavShow(true)
+                        // 부모 메인 페이지
+                        ParentMainView(viewModel,
+                            onClickMissionParent = {
+                                navController.navigate(ParentScreen.ParentMission.url)
+                            },
+                            onClickSetTime ={
+                                navController.navigate(ParentScreen.SetSleepTime.url)
+                            },
+                            userId
+                        )
+                        navBarSelectedItem = 0
+                    }
+                    composable(route = ParentScreen.SetSleepTime.url) {
+                        viewModel.setNavShow(true)
+                        // 목표 수면시간 설정
+                        SleepTargetScreen(viewModel)
+                        navBarSelectedItem = 1
+                    }
+                    composable(route = ParentScreen.SleepCalendar.url) {
+                        viewModel.setNavShow(true)
+                        // 내 아이 수면 달력
+                        SleepCalenderScreen(viewModel = viewModel, onClickDay = {
+                                day ->
+                            Log.d("캘린더 라우터 클릭", day.toString())
 
-                    val displayDate = day.toJavaLocalDate().format(fomatter)
+                            val fomatter = DateTimeFormatter.ofPattern("yyyyMMdd")
 
-                    navController.navigate(ParentScreen.SleepLogDetail.url + "/"+displayDate)
-                })
-                navBarSelectedItem = 2
-            }
-            composable(route = ParentScreen.SleepLogDetail.url + "/{formatDate}") {
-                    backStackEntry ->
-                viewModel.setNavShow(false)
-                // 수면 기록 상세 페이지
-                SleepLogDetailScreen(
-                    viewModel = viewModel,
-                    formatDate = backStackEntry.arguments?.getString("formatDate")?:"20990513"
-                )
-            }
-            composable(route = ParentScreen.ParentMission.url) {
-                    backStackEntry ->
-                viewModel.setNavShow(true)
-                ParentMission(viewModel)
+                            val displayDate = day.toJavaLocalDate().format(fomatter)
+
+                            navController.navigate(ParentScreen.SleepLogDetail.url + "/"+displayDate)
+                        })
+                        navBarSelectedItem = 2
+                    }
+                    composable(route = ParentScreen.SleepLogDetail.url + "/{formatDate}") {
+                            backStackEntry ->
+                        viewModel.setNavShow(false)
+                        // 수면 기록 상세 페이지
+                        SleepLogDetailScreen(
+                            viewModel = viewModel,
+                            formatDate = backStackEntry.arguments?.getString("formatDate")?:"20990513"
+                        )
+                    }
+                    composable(route = ParentScreen.ParentMission.url) {
+                            backStackEntry ->
+                        viewModel.setNavShow(true)
+                        ParentMission(viewModel)
+                    }
+                }
             }
         }
     }
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
