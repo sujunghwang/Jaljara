@@ -4,12 +4,13 @@ import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.reflect.TypeToken
 import com.ssafy.jaljara.data.*
 import com.ssafy.jaljara.network.ChildApiService
 import com.ssafy.jaljara.network.ParentApiService
+import com.ssafy.jaljara.network.Result
+import com.ssafy.jaljara.network.safeApiCall
 import com.ssafy.jaljara.utils.PreferenceUtil
 import com.ssafy.jaljara.utils.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,8 @@ class ParentViewModel(application: Application) : AndroidViewModel(application) 
     private val _uiState = MutableStateFlow(ParentUiState())
     val uiState: StateFlow<ParentUiState> = _uiState.asStateFlow()
     private var preferenceUtil = PreferenceUtil<UserInfoWithTokens>(context, "user")
+
+    var loadingState : UiState<Int> by mutableStateOf(UiState.Loading)
 
     val test = preferenceUtil.getValue(
         "UserInfoWithTokens",
@@ -91,14 +94,26 @@ class ParentViewModel(application: Application) : AndroidViewModel(application) 
     var childList: List<ChildInfo> by mutableStateOf(listOf())
     fun getChildList(parentId : Long): List<ChildInfo>{
         var childListResponse: List<ChildInfo> = listOf()
-        viewModelScope.launch {
+        viewModelScope.launch {/*
             try{
-                UiState.Success(childList)
                 childListResponse = parentApiService.getChildList(parentId)
                 childList = childListResponse
+                UiState.Success(childList)
             }catch (e:Exception){
                 errorMessage = e.message.toString()
                 Log.d("errorMessage","$errorMessage")
+            }*/
+            when(val result = safeApiCall { parentApiService.getChildList(parentId) }) {
+                is Result.Success -> {
+                    childListResponse = result.data
+                    childList = childListResponse
+                    UiState.Success(childList)
+                    loadingState = UiState.Success(1)
+                }
+                is Result.Error -> {
+                    errorMessage = "실패"
+                    Log.d("errorMessage","$errorMessage")
+                }
             }
         }
         return childListResponse

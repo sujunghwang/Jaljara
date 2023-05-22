@@ -11,12 +11,12 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -33,29 +33,17 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.Glide
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.himanshoe.kalendar.component.day.config.KalendarDayColors
 import com.ssafy.jaljara.R
 import com.ssafy.jaljara.data.*
-import com.ssafy.jaljara.ui.component.ErrorScreen
-import com.ssafy.jaljara.ui.component.LoadingScreen
 import com.ssafy.jaljara.ui.screen.child.*
-import com.ssafy.jaljara.ui.screen.parent.JongSeokCalendar
-import com.ssafy.jaljara.ui.vm.CalendarViewModel
 import com.ssafy.jaljara.ui.vm.ParentViewModel
-import com.ssafy.jaljara.utils.UiState
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
-import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -96,17 +84,26 @@ fun ParentMainView(parentViewModel: ParentViewModel,
         val todayMission = parentViewModel.todayMissionResponse
 
         Children(parentViewModel, childList, userId, parentCode)
-            if(childSleepInfo.currentReward.isBlank()) CurrentRewardContainer(R.drawable.reward,"현재 보상", "보상을 입력해 주세요!",
-                Modifier.pointerInput(Unit) {
-                    detectTapGestures(
-                        onTap = {
-                            showRewardDialog = true
-                        }
-                    )
+
+        CurrentRewardContainer(
+            img = R.drawable.reward,
+            title = "현재 보상",
+            content = childSleepInfo.currentReward,
+            modifier = Modifier.pointerInput(Unit) {
+            detectTapGestures(
+                onTap = {
+                    showRewardDialog = true
                 }
             )
-            else CurrentRewardContainer(R.drawable.reward,"현재 보상", childSleepInfo.currentReward)
-        CurrentRewardContainer(R.drawable.current_reward,"오늘의 미션", todayMission.content, Modifier.clickable{onClickMissionParent()})
+        })
+
+        TodayMissionContainer(
+            img = R.drawable.current_reward,
+            title = "오늘의 미션",
+            content = todayMission.content,
+            modifier = Modifier.clickable{onClickMissionParent()}
+        )
+
         Row(modifier = Modifier.fillMaxWidth()) {
             ChildSetTimeCard(painterResource(id = R.drawable.wake_up),"Wake Up",
                 "${childSleepInfo.targetWakeupTime}", Modifier.weight(1f))
@@ -125,8 +122,7 @@ fun ParentMainView(parentViewModel: ParentViewModel,
             onDismissRequest = { showRewardDialog = false },
             title = { Text(text = "보상을 등록해주세요", style = MaterialTheme.typography.titleMedium, color = Color.White) },
             text = { TextField(modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp), value = reward, onValueChange = {reward = it}) },
+                .fillMaxWidth(), maxLines = 1, value = reward, onValueChange = {reward = it}) },
             confirmButton = {
                 Text(
                     text = "확인",
@@ -140,7 +136,9 @@ fun ParentMainView(parentViewModel: ParentViewModel,
                             parentViewModel.setReward(parentViewModel.selectedChildId, reward)
                             showRewardDialog = false
                         },
-                    color = Color.Red,
+                    color = Color(0x72ff6f).copy(1f),
+                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 20.sp
                 )
             },
             dismissButton = {
@@ -151,7 +149,9 @@ fun ParentMainView(parentViewModel: ParentViewModel,
                         .clickable {
                             showRewardDialog = false
                         },
-                    color = Color.Blue,
+                    color = Color(0xff5f72).copy(1f),
+                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 20.sp
                 )
             }
         )
@@ -230,7 +230,6 @@ fun Children(parentViewModel: ParentViewModel, children: List<ChildInfo>, parent
 }
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Child(parentViewModel: ParentViewModel, childInfo: ChildInfo, idx: Int, parentId:Long) {
     var showDialog by remember { mutableStateOf(false) }
@@ -351,6 +350,43 @@ fun CurrentRewardContainer(img : Int, title:String, content: String, modifier: M
         content = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Image(painter = painterResource(id = img),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(110.dp, 110.dp)
+                        .padding(15.dp)
+                )
+                Column(
+                    modifier = modifier.fillMaxWidth(0.8f)
+                ) {
+                    Text(text = title, style = MaterialTheme.typography.titleMedium, color=Color.White, fontSize = 28.sp)
+                    Text(text = if(content == "") "보상을 등록해주세요." else content, style = MaterialTheme.typography.titleSmall, fontSize=16.sp)
+                }
+                Row(
+                    modifier = modifier.fillMaxWidth().padding(12.dp),
+                    horizontalArrangement = Arrangement.End
+                ){
+                    Icon(imageVector = Icons.Filled.Edit, contentDescription = null)
+                }
+            }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TodayMissionContainer(img : Int, title:String, content: String, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiary
+        ),
+        content = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(painter = painterResource(id = img),
                     contentDescription = null,

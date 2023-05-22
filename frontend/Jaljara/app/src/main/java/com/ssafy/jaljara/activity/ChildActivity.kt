@@ -33,7 +33,8 @@ class ChildActivity: ComponentActivity() {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.POST_NOTIFICATIONS,
-                Manifest.permission.SCHEDULE_EXACT_ALARM
+                Manifest.permission.SCHEDULE_EXACT_ALARM,
+                Manifest.permission.ACTIVITY_RECOGNITION
             ),
             0
         )

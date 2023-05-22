@@ -1,15 +1,12 @@
 package com.ssafy.jaljara.network
 
 import android.content.Context
-import com.google.android.gms.location.SleepSegmentEvent
 import com.ssafy.jaljara.data.*
+import com.ssafy.jaljara.data.request.SleepSegmentEventDto
 import com.ssafy.jaljara.utils.RetrofitUtil
 import okhttp3.MultipartBody
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
-import java.io.File
 
 interface ChildApiService {
     @GET("/api/childinfos/detail/{childId}")
@@ -47,7 +44,7 @@ interface ChildApiService {
 
     @POST("/api/sleeplogs")
     @JvmSuppressWildcards
-    suspend fun sendSleepLog(@Body sleepSegmentEvents: List<SleepSegmentEvent>) : Response<String>
+    suspend fun sendSleepLog(@Body sleepSegmentEvents: List<SleepSegmentEventDto>) : Response<String>
 
     companion object {
         var apiService: ChildApiService? = null

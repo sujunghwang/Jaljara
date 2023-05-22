@@ -1,9 +1,6 @@
 package com.ssafy.a802.jaljara.api.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Time;
 import java.util.Date;
@@ -13,6 +10,7 @@ public class SleepLogRequestDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    @ToString
     public static class SleepSegmentEvent {
         public static final int STATUS_SUCCESSFUL = 0;
         public static final int STATUS_MISSING_DATA = 1;
